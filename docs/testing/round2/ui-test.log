@@ -1,0 +1,104 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: screenshot 01-menu
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: main menu to map selection
+PASS: screenshot 02-map
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: map to character selection
+PASS: screenshot 03-characters
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: game starts with handoff
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: handoff confirmation
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: GM opens
+PASS: screenshot 05-gm
+PASS: button exists: +1000 现金
+PASS: button enabled: +1000 现金
+PASS: GM adds cash
+PASS: button exists: 遥控骰子
+PASS: button enabled: 遥控骰子
+PASS: button exists: 1
+PASS: button enabled: 1
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: roll requests initial direction
+PASS: button exists: → 01
+PASS: button enabled: → 01
+PASS: chosen one-step die reaches selected road
+PASS: map contains multi-frontage building
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: purchase via UI assigns building ownership
+PASS: road has no duplicate ownership
+PASS: building click selects lot rather than road
+PASS: screenshot 04-game
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: turn advances and requires new human
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: second entrance charges same building rent
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 入狱2回合
+PASS: button enabled: 入狱2回合
+PASS: GM imprisonment stops current journey
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: next personal turn starts in detention
+PASS: screenshot 08-prison
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 解除停留
+PASS: button enabled: 解除停留
+PASS: GM release clears detention
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 住院2回合
+PASS: button enabled: 住院2回合
+PASS: GM hospitalization enters facility
+PASS: screenshot 09-hospital
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 解除停留
+PASS: button enabled: 解除停留
+PASS: bank landing opens service
+PASS: button exists: 存入现金
+PASS: button enabled: 存入现金
+PASS: deposit UI transfers funds
+PASS: screenshot 10-bank
+PASS: button exists: 提取存款
+PASS: button enabled: 提取存款
+PASS: withdraw UI restores cash
+PASS: button exists: 存入现金
+PASS: button enabled: 存入现金
+PASS: bank accepts exact non-hundred amount
+PASS: button exists: 提取存款
+PASS: button enabled: 提取存款
+PASS: withdraw exact 780 clears remainder
+PASS: button exists: 离开银行
+PASS: button enabled: 离开银行
+PASS: bank service can close
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: GM finishes game and opens results
+PASS: screenshot 06-results
+PASS: button exists: 相同设置
+PASS: button enabled: 相同设置
+PASS: restart creates clean state
+PASS: button exists: 主菜单
+PASS: button enabled: 主菜单
+PASS: button exists: 确认离开
+PASS: button enabled: 确认离开
+PASS: exit confirmation returns menu
+UI_TEST failures=0

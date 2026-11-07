@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>R11玩法重建 · 目标与第二轮策划</title>\n\n# R11玩法重建 · 分类策划\n\n2026-11-08 研究基线。当前为研究与重建阶段，未完成还原。原v0.1页保留为历史资料；还原目标及范围以本目录为准。以下页面明确区分已有证据、待核验参数和待实现功能。\n\n- [01 · 还原目标与完成门槛](https://dcncd5jl63xs.feishu.cn/wiki/DmtZwL6PLiFpT7kJrE0cLlGXnwf)\n- [02 · 第二轮功能与实施策划](https://dcncd5jl63xs.feishu.cn/wiki/GLW1wERv4iZCdmkSSAsc5XdAnZc)\n- [03 · 地图与建筑模型策划](https://dcncd5jl63xs.feishu.cn/wiki/AIzZw5KSxi0inGkdeoeccgoInAF)\n- [04 · 建筑经济与特殊设施](https://dcncd5jl63xs.feishu.cn/wiki/YW57wzRQSiTST8kB7nBcj9vWnDe)\n- [05 · 卡牌角色神仙与状态](https://dcncd5jl63xs.feishu.cn/wiki/Qs81w9KvFiXz6KkEA0lcXc8hnbd)\n- [06 · 原作对照与验收差距](https://dcncd5jl63xs.feishu.cn/wiki/CHibwC1gbixwh9km3V6cuqhAnef)\n\n## 第二轮实现结果\n\n道路与建筑模型已接入，银行及医院/监狱基础流程可玩。完整还原目标尚未完成，实际测试结果与剩余差距见：\n\n- [07 · 第二轮实现与原作差距](https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg)",
+      "document_id": "MPxNdiFT1oo9sKxIga7c2tz1nwd",
+      "revision_id": 3
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

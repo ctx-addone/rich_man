@@ -58,5 +58,15 @@ func _initialize() -> void:
 	invalid = fixture()
 	invalid.roads[0].cell = [1.5,0]
 	check(not model.load_layout(invalid).is_empty(), "Reject fractional cells")
+	invalid = fixture()
+	invalid.roads[0].event_ids = 3
+	check(not model.load_layout(invalid).is_empty(), "Invalid event list rejected without runtime error")
+	invalid = fixture()
+	invalid.lots[0].owner = {"unexpected": true}
+	check(not model.load_layout(invalid).is_empty(), "Invalid owner type rejected without runtime error")
+	invalid = fixture()
+	invalid.lots[0].level = -1
+	check(not model.load_layout(invalid).is_empty(), "Negative level rejected")
+	check(model.lots.large_a.owner == 2, "Malformed imports preserve valid ownership")
 	print("BOARD_MODEL_CONTRACT failures=", failures)
 	quit(1 if failures else 0)

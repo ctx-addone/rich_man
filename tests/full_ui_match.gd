@@ -10,7 +10,7 @@ func run() -> void:
 	await click("开始对局")
 	app.game.rng.seed = 19
 	var actions := 0
-	var metro_used := false
+	var bank_used := false
 	var card_played := false
 	while app.screen == "game" and actions < 5000:
 		actions += 1
@@ -21,6 +21,7 @@ func run() -> void:
 			"roll":
 				if not card_played:
 					await click("遥控骰子")
+					await click("6")
 					card_played = true
 				await click("掷骰子")
 			"move":
@@ -33,16 +34,16 @@ func run() -> void:
 				if b != null and not b.disabled: await click("购买地产")
 				elif u != null and not u.disabled: await click("升级建筑")
 				else: await click("结束回合")
-			"metro":
-				var m := find_button(app, "换乘 →")
-				if m != null and not m.disabled:
-					await click("换乘 →")
-					metro_used = true
-				else: await click("结束回合")
-			"end": await click("结束回合")
+			"bank":
+				await click("离开银行")
+				bank_used = true
+			"end", "detained", "metro": await click("结束回合")
+			_:
+				check(false, "unsupported phase: " + app.game.phase)
+				break
 	check(app.screen == "results", "complete match reaches results without GM")
 	check(not app.gm_used, "match never used GM")
-	check(card_played and metro_used, "card and metro exercised")
+	check(card_played and bank_used, "card and bank exercised")
 	check(not app.game.winners.is_empty(), "natural winner exists")
 	await capture("07-natural-results")
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])

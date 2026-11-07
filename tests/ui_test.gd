@@ -2,7 +2,7 @@ extends SceneTree
 
 var app: Control
 var failures: int = 0
-var out_dir := "res://docs/testing"
+var out_dir := "res://docs/testing/round2"
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -20,6 +20,13 @@ func find_button(node: Node, prefix: String) -> Button:
 		if found != null: return found
 	return null
 
+func find_amount(node: Node) -> SpinBox:
+	if node is SpinBox: return node
+	for child in node.get_children():
+		var found := find_amount(child)
+		if found != null: return found
+	return null
+
 func click(prefix: String) -> void:
 	await process_frame
 	await process_frame
@@ -28,6 +35,9 @@ func click(prefix: String) -> void:
 	if control == null: return
 	check(not control.disabled, "button enabled: " + prefix)
 	var point := control.get_global_rect().get_center()
+	await click_point(point)
+
+func click_point(point: Vector2) -> void:
 	var motion := InputEventMouseMotion.new()
 	motion.position = point
 	root.push_input(motion, true)
@@ -67,27 +77,82 @@ func run() -> void:
 	await capture("05-gm")
 	await click("+1000 现金")
 	check(app.game.players[0].cash == 11000 and app.gm_used, "GM adds cash")
-	app.forced_dice = 1
+	await click("遥控骰子")
+	await click("1")
 	await click("掷骰子")
 	check(app.game.phase == "move", "roll requests initial direction")
-	await click("→ 01")
-	check(app.game.phase == "land" and app.game.players[0].pos == 1, "move reaches property")
+	var move: int = app.game.available_moves()[0]
+	await click("→ %02d" % move)
+	check(app.game.players[0].pos == move, "chosen one-step die reaches selected road")
+	var lot_id := ""
+	for id in app.game.lots:
+		if app.game.lots[id].kind != "facility" and app.game.lots[id].frontage_nodes.size() > 1:
+			lot_id = id
+			break
+	check(not lot_id.is_empty(), "map contains multi-frontage building")
+	if lot_id.is_empty(): quit(1); return
+	var lot: Dictionary = app.game.lots[lot_id]
+	var first_entrance := int(lot.frontage_nodes[0])
+	var second_entrance := int(lot.frontage_nodes[1])
+	app.game.gm_teleport(0, first_entrance)
+	app.refresh()
 	await click("购买地产")
-	check(app.game.nodes[1].owner == 0, "purchase via UI")
+	check(lot.owner == 0, "purchase via UI assigns building ownership")
+	check(not app.game.nodes[first_entrance].has("owner"), "road has no duplicate ownership")
+	await process_frame
+	await click_point(app.board.global_position + app.board.lot_rects[lot_id].get_center())
+	check(app.selected_lot == lot_id, "building click selects lot rather than road")
 	await capture("04-game")
 	await click("结束回合")
 	check(app.game.current == 1 and app.handoff, "turn advances and requires new human")
 	await click("我已就位")
-	app.forced_dice = 1
-	await click("掷骰子")
-	await click("→ 01")
-	check(app.game.players[1].cash == 10000 - app.game.nodes[1].rent, "rent automatically settled")
+	app.game.gm_teleport(1, second_entrance)
+	app.refresh()
+	check(app.game.players[1].cash == 10000 - lot.rent, "second entrance charges same building rent")
+	await click("GM · F1")
+	await click("入狱2回合")
+	check(app.game.phase == "end" and app.game.players[1].status.kind == "prison", "GM imprisonment stops current journey")
+	await click("结束回合")
+	for ignored in range(3):
+		app.game.gm_teleport(app.game.current, 0)
+		app.game.end_turn()
+	app.handoff = false
+	app.refresh()
+	check(app.game.current == 1 and app.game.phase == "detained", "next personal turn starts in detention")
+	await capture("08-prison")
+	await click("GM · F1")
+	await click("解除停留")
+	check(app.game.players[1].status.is_empty(), "GM release clears detention")
+	await click("GM · F1")
+	await click("住院2回合")
+	check(app.game.players[1].status.kind == "hospital", "GM hospitalization enters facility")
+	await capture("09-hospital")
+	await click("GM · F1")
+	await click("解除停留")
+	var bank: Dictionary = app.game.facility_lot("bank")
+	app.game.gm_teleport(1, int(bank.frontage_nodes[0]))
+	app.refresh()
+	check(app.game.phase == "bank", "bank landing opens service")
+	var before_cash: int = app.game.players[1].cash
+	await click("存入现金")
+	check(app.game.players[1].deposit == 1000 and app.game.players[1].cash == before_cash - 1000, "deposit UI transfers funds")
+	await capture("10-bank")
+	await click("提取存款")
+	check(app.game.players[1].deposit == 0 and app.game.players[1].cash == before_cash, "withdraw UI restores cash")
+	find_amount(app).value = 780
+	await click("存入现金")
+	check(app.game.players[1].deposit == 780, "bank accepts exact non-hundred amount")
+	find_amount(app).value = 780
+	await click("提取存款")
+	check(app.game.players[1].deposit == 0 and app.game.players[1].cash == before_cash, "withdraw exact 780 clears remainder")
+	await click("离开银行")
+	check(app.game.phase != "bank", "bank service can close")
 	await click("GM · F1")
 	await click("立即结算整局")
 	check(app.screen == "results", "GM finishes game and opens results")
 	await capture("06-results")
 	await click("相同设置")
-	check(app.screen == "game" and app.game.nodes[1].owner == -1 and not app.gm_used, "restart creates clean state")
+	check(app.screen == "game" and app.game.lots[lot_id].owner == -1 and not app.gm_used, "restart creates clean state")
 	await click("主菜单")
 	await click("确认离开")
 	check(app.screen == "menu", "exit confirmation returns menu")

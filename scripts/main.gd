@@ -19,6 +19,7 @@ var screen: String = "menu"
 var handoff: bool = true
 var advancing: bool = false
 var selected: int = -1
+var selected_lot: String = ""
 var forced_dice: int = 0
 var gm_used: bool = false
 var generation: int = 0
@@ -123,7 +124,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.1  ·  2D 玩法验证  /  四个角色数值完全相同  /  F1 打开测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.2 开发版  ·  道路与建筑分层  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -143,15 +144,15 @@ func map_select() -> void:
 	screen = "map"
 	var v := clear_page()
 	v.add_child(label("01  /  选择地图", 32))
-	v.add_child(label("市民街区", 26, Color("e9c46a")))
-	v.add_child(label("57 个节点  ·  环路与中央十字  ·  3 座地铁站  ·  2 组信号灯"))
+	v.add_child(label("市民街区 · 系统验证地图", 26, Color("e9c46a")))
+	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱"))
 	var preview = Board.new()
 	var sample = Game.new()
 	sample.setup(player_names)
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
-	v.add_child(label("唯一地图已选中。地铁落点付费换乘；信号灯每轮切换通行方向。", 16, Color("a7bac8")))
+	v.add_child(paragraph("本图用于验证多入口建筑、银行与特殊场所，不是原版地图。当前经济参数及部分状态规则仍在核验。", 16))
 	var row := HBoxContainer.new()
 	v.add_child(row)
 	row.add_child(button("← 返回", menu))
@@ -207,6 +208,7 @@ func start_game() -> void:
 	game = Game.new()
 	game.setup(player_names, 0, turns)
 	selected = -1
+	selected_lot = ""
 	forced_dice = 0
 	gm_used = false
 	handoff = true
@@ -236,8 +238,9 @@ func build_game() -> void:
 	board.player_colors = portraits
 	board.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	board.tile_clicked.connect(on_tile)
+	board.lot_clicked.connect(on_lot)
 	board_col.add_child(board)
-	board_col.add_child(label("金框：可选下一步   ·   彩色圆点：玩家   ·   地产色：持有人   ·   点击格子查看详情", 13, Color("9cb4c4")))
+	board_col.add_child(label("金框：可走出口  ·  圆点：玩家  ·  建筑边色：产权  ·  点击建筑查看入口与详情", 13, Color("9cb4c4")))
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size.x = 355
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -261,19 +264,22 @@ func refresh() -> void:
 		var col := panel(score_row, Color("20394b") if i == game.current else Color("102535"))
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label(("▶ " if i == game.current else "") + p.name + (" · 破产" if p.bankrupt else ""), 18, COLORS[portraits[i]]))
-		col.add_child(label("现金 %s   /   资产 %s" % [p.cash, game.net_worth(i)], 14))
+		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
+		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
 	top_title.text = "市民街区   /   第 %d / %d 轮%s" % [game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
 	board.selected = selected
+	board.selected_lot = selected_lot
 	board.queue_redraw()
 	clear_children(sidebar)
 	var p: Dictionary = game.players[game.current]
 	sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
-	sidebar.add_child(paragraph("全城信号：" + game.signal_state(6), 14))
 	if handoff:
 		sidebar.add_child(paragraph("请将操作交给 %s。确认后查看手牌并开始本回合。" % p.name, 20))
 		sidebar.add_child(button("我已就位 · 开始回合", func(): handoff = false; refresh()))
 	else:
 		sidebar.add_child(label("骰子  %s    剩余步数  %d" % ["—" if game.last_roll == 0 else str(game.last_roll), game.steps_left], 20))
+		if not p.status.is_empty() and game.phase != "detained":
+			sidebar.add_child(paragraph("当前%s。本次行程已结束，后续回合在设施中停留。" % status_text(p), 16))
 		match game.phase:
 			"roll": sidebar.add_child(button("掷骰子" + ("  [GM: %d]" % forced_dice if forced_dice > 0 else ""), roll))
 			"move":
@@ -281,30 +287,63 @@ func refresh() -> void:
 				for id in game.available_moves():
 					sidebar.add_child(button("→ %02d · %s" % [id, game.nodes[id].name], func(): act_move(id)))
 			"land":
-				var n: Dictionary = game.nodes[p.pos]
-				if n.kind == "property":
-					if n.owner < 0: sidebar.add_child(button("购买地产  ·  %d" % n.price, func(): game.buy_property(); refresh(), p.cash < n.price))
-					elif n.owner == game.current and n.level < 3:
-						sidebar.add_child(button("升级建筑  ·  %d" % 600, func(): game.upgrade_property(); refresh(), p.cash < 600))
+				for lot_id in game.lots_at_node(p.pos):
+					var lot: Dictionary = game.lots[lot_id]
+					if lot.kind == "facility": continue
+					if lot.owner < 0: sidebar.add_child(button("购买地产 · %s · %d" % [lot.name, lot.price], func(): game.buy_property(lot_id); refresh(), p.cash < lot.price))
+					elif lot.owner == game.current and lot.level < 3:
+						sidebar.add_child(button("升级建筑 · %s · 600" % lot.name, func(): game.upgrade_property(lot_id); refresh(), p.cash < 600))
+			"bank":
+				sidebar.add_child(paragraph("银行服务\n可存入现金或提取存款。离开后继续剩余移动，不重复结算经过事件。"))
+				var amount := SpinBox.new()
+				amount.min_value = 0
+				amount.max_value = maxi(1000, maxi(p.cash, p.deposit))
+				amount.step = 1
+				amount.value = 1000
+				amount.prefix = "金额 "
+				sidebar.add_child(amount)
+				var bank_error := paragraph("", 14)
+				sidebar.add_child(button("存入现金", func():
+					if game.bank_transfer(int(amount.value)): refresh()
+					else: bank_error.text = "现金不足，请调整金额。"))
+				sidebar.add_child(button("提取存款", func():
+					if game.bank_transfer(-int(amount.value)): refresh()
+					else: bank_error.text = "存款不足，请调整金额。"))
+				sidebar.add_child(bank_error)
+				sidebar.add_child(button("离开银行 · 继续行程", func(): game.close_bank(); refresh()))
+			"detained":
+				sidebar.add_child(paragraph("%s\n本次无法行走或主动使用卡牌。结束回合后推进停留时间。" % status_text(p), 18))
 			"metro":
 				sidebar.add_child(paragraph("可支付 200 换乘另一地铁站，换乘后结束移动。"))
 				for n in game.nodes:
 					if n.kind == "metro" and n.id != p.pos: sidebar.add_child(button("换乘 → " + n.name, func(): game.take_metro(n.id); refresh(), p.cash < 200))
-		if game.phase in ["land", "end", "metro"]: sidebar.add_child(button("结束回合 →", next_turn))
+		if game.phase in ["land", "end", "metro", "detained"]: sidebar.add_child(button("结束回合 →", next_turn))
 		var hand := panel(sidebar)
-		hand.add_child(label("手牌  ·  掷骰前每回合最多一张", 15))
+		hand.add_child(label("手牌 · 掷骰前使用", 15))
 		if p.cards.is_empty(): hand.add_child(label("暂无卡牌", 14))
 		for card in p.cards:
-			var b := button(Game.CARD_NAMES[card], func(): game.use_card(card); refresh(), game.phase != "roll" or game.card_used or (card == "rent_free" and p.rent_shield))
+			var b := button(Game.CARD_NAMES[card], func(): play_card(card), game.phase != "roll")
 			b.tooltip_text = Game.CARD_DESCRIPTIONS[card]
 			hand.add_child(b)
 	var id: int = selected if selected >= 0 else p.pos
 	var n: Dictionary = game.nodes[id]
 	var detail := panel(sidebar)
-	detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
-	if n.kind == "property":
-		detail.add_child(paragraph("持有：%s\n等级：%d / 3\n地价：%d   租金：%d" % ["无主" if n.owner < 0 else game.players[n.owner].name, n.level, n.price, n.rent * n.level * n.level], 14))
-	else: detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, ""), 14))
+	var detail_lots: Array = [selected_lot] if game.lots.has(selected_lot) else game.lots_at_node(id)
+	if not p.status.is_empty() and selected < 0 and selected_lot.is_empty():
+		detail.add_child(label("当前停留场所", 18))
+		detail.add_child(paragraph("离开后返回：%s" % game.nodes[p.status.return_pos].name, 14))
+		detail_lots = [game.facility_lot(p.status.kind).id]
+	else:
+		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
+		detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
+	for lot_id in detail_lots:
+		var lot: Dictionary = game.lots[lot_id]
+		detail.add_child(label(lot.name, 18, Color("e9c46a")))
+		detail.add_child(paragraph("占地 %d×%d · 临街入口 %s" % [lot.footprint.size.x, lot.footprint.size.y, ", ".join(lot.frontage_nodes)], 13))
+		if lot.kind == "facility":
+			detail.add_child(paragraph({"bank":"经过时可调整现金与存款。", "hospital":"受伤角色在此停留，状态到期后返回道路。", "prison":"被拘留角色在此停留，状态到期后返回道路。"}.get(lot.building_type, "公共设施"), 14))
+		else:
+			detail.add_child(paragraph("持有：%s\n等级：%d / 3\n地价：%d   当前租金：%d" % ["无主" if lot.owner < 0 else game.players[lot.owner].name, lot.level, lot.price, lot.rent * lot.level * lot.level], 14))
 	var log_panel := panel(sidebar)
 	log_panel.add_child(label("最近动态", 16))
 	for j in range(maxi(0, game.logs.size() - 5), game.logs.size()): log_panel.add_child(paragraph(game.logs[j], 13))
@@ -315,6 +354,7 @@ func roll() -> void:
 	game.roll_dice(forced_dice)
 	forced_dice = 0
 	selected = -1
+	selected_lot = ""
 	refresh()
 
 func auto_step() -> void:
@@ -335,15 +375,56 @@ func act_move(id: int) -> void:
 	refresh()
 
 func on_tile(id: int) -> void:
+	selected_lot = ""
 	if not handoff and game.available_moves().has(id): act_move(id)
 	else:
 		selected = id
 		refresh()
 
+func on_lot(id: String) -> void:
+	selected_lot = id
+	selected = -1
+	refresh()
+
+func status_text(p: Dictionary) -> String:
+	if p.status.is_empty(): return ""
+	return "%s %d回合" % ["住院" if p.status.kind == "hospital" else "入狱", p.status.remaining]
+
+func play_card(card_id: String) -> void:
+	if game.phase != "roll": return
+	var v := modal(Game.CARD_NAMES[card_id])
+	v.add_child(paragraph(Game.CARD_DESCRIPTIONS[card_id]))
+	var target_type: String = Game.CARD_TARGETS.get(card_id, "none")
+	var error_label := paragraph("", 14)
+	if target_type == "dice":
+		var row := HBoxContainer.new()
+		v.add_child(row)
+		for number in range(1, 7):
+			row.add_child(button(str(number), func():
+				if game.use_card(card_id, -1, number): dismiss()
+				else: error_label.text = "当前无法使用这张卡。"))
+	elif target_type in ["player", "road"]:
+		var target := OptionButton.new()
+		var options: Array = game.card_targets(card_id)
+		for id in options:
+			target.add_item(game.players[id].name if target_type == "player" else "%02d · %s" % [id, game.nodes[id].name], id)
+		v.add_child(target)
+		v.add_child(button("确认使用", func():
+			if game.use_card(card_id, target.get_selected_id()): dismiss()
+			else: error_label.text = "目标状态已改变或不在有效范围内。", options.is_empty()))
+		if options.is_empty(): error_label.text = "当前没有可用目标，卡牌不会消耗。"
+	else:
+		v.add_child(button("确认使用", func():
+			if game.use_card(card_id): dismiss()
+			else: error_label.text = "当前无法使用这张卡。"))
+	v.add_child(error_label)
+	v.add_child(button("取消", dismiss))
+
 func next_turn() -> void:
 	if game.end_turn():
 		handoff = true
 		selected = -1
+		selected_lot = ""
 	refresh()
 
 func results() -> void:
@@ -353,7 +434,7 @@ func results() -> void:
 	var winner_names: Array = []
 	for id in game.winners: winner_names.append(game.players[id].name)
 	v.add_child(label("获胜：" + " / ".join(winner_names), 28, Color("e9c46a")))
-	v.add_child(label("净资产 = 现金 + 地价 + 建筑投资成本" + ("  ·  本局使用了GM" if gm_used else ""), 16))
+	v.add_child(label("净资产 = 现金 + 存款 + 地价 + 建筑投资成本" + ("  ·  本局使用了GM" if gm_used else ""), 16))
 	var ranking := [0,1,2,3]
 	ranking.sort_custom(func(a,b): return game.net_worth(a) > game.net_worth(b))
 	for i in ranking:
@@ -389,7 +470,7 @@ func dismiss() -> void:
 
 func show_help() -> void:
 	var v := modal("玩法说明")
-	v.add_child(paragraph("1. 四个席位由真人轮流操作，确认交接后开始回合。\n2. 掷骰前可使用一张卡牌。掷骰后沿路移动，路口选择方向。\n3. 无主地产可购买；再次停在自己的地产可升级，最高3级。\n4. 停在别人地产支付租金，租金随建筑等级平方增长。\n5. 停在地铁站可付200换乘；红灯限制路口出口，无法前进时停止。\n6. 现金不足会自动按半价变卖地产；仍不足则破产退出。\n7. 最后存活者获胜，或达到设定轮数后比较净资产。\n8. 点击地图格子查看详情；F1打开GM测试工具。", 18))
+	v.add_child(paragraph("1. 四个席位轮流操作；掷骰前选择卡牌，路口选择出口。\n2. 道路与建筑独立，多个入口可以关联同一建筑及产权。\n3. 停在临街入口可购买或升级对应地产，对手地产会收租。\n4. 经过银行时可存取款，离开后继续剩余步数。\n5. 住院或入狱时暂不能行走和主动出牌，按提示结束停留回合。\n6. 最后存活者获胜，或达到轮数上限后比较净资产。\n7. 点击建筑看产权与入口；F1可以构造资金、卡牌和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
 
 func confirm_menu() -> void:
@@ -426,5 +507,10 @@ func show_gm() -> void:
 	var cards := HBoxContainer.new()
 	v.add_child(cards)
 	for card in Game.CARD_NAMES: cards.add_child(button("+ " + Game.CARD_NAMES[card], func(): gm_used = true; game.gm_give_card(who.selected, card); dismiss()))
+	var state_row := HBoxContainer.new()
+	v.add_child(state_row)
+	for kind in ["hospital", "prison"]:
+		state_row.add_child(button("住院2回合" if kind == "hospital" else "入狱2回合", func(): gm_used = true; game.send_to_facility(who.selected, kind, 2); dismiss()))
+	state_row.add_child(button("解除停留", func(): gm_used = true; game.gm_release(who.selected); dismiss()))
 	v.add_child(button("立即结算整局", func(): gm_used = true; game.finish_game(); dismiss()))
 	v.add_child(button("关闭  /  Esc", dismiss))

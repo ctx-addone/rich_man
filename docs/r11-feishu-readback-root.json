@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "# 策划案\n\n## 街区大亨 v0.1 分类策划（2026-11-08）\n\n第一版为四人单机热座完整原型。以下子文档对应当前实现，未修改原有知识库内容。\n\n- [00-策划总纲](https://dcncd5jl63xs.feishu.cn/docx/ObN6dyluSoxTsRxmfoFcMMbZnac)\n- [01-功能与流程](https://dcncd5jl63xs.feishu.cn/docx/OAjhdayfaoy9Vsxrm9gcIEffnEg)\n- [02-地图策划](https://dcncd5jl63xs.feishu.cn/docx/KG8TdQAH7oNAfsxQtphc1qT8nsf)\n- [03-建筑与经济](https://dcncd5jl63xs.feishu.cn/docx/DRNUdF3ucoZyKMx9ZxvcMZupnjy)\n- [04-角色与卡牌](https://dcncd5jl63xs.feishu.cn/docx/ByANdMVo5oCHNVxlHAKcHtk5nFe)\n- [05-GM与验收](https://dcncd5jl63xs.feishu.cn/docx/Vb0Zd90L9ofwgmxT6eic7Rkpnpd)\n- [06-基础美术素材](https://dcncd5jl63xs.feishu.cn/docx/EwSbd3XfYoE31vxmm9DcoKVYnDQ)\n\n## R11重建目标与第二轮策划（2026-11-08）\n\n原v0.1页面保留为历史基线，不能作为本轮缩减目标的依据。新一轮的完整还原目标、分类研究和验收差距请见：\n\n- [R11玩法重建 · 分类目录](https://dcncd5jl63xs.feishu.cn/wiki/Vx2FwJzWNiBjJuk24Qoc0a2NnEy)",
+      "document_id": "XWrSdTN7YoLHD5x95srcx0DmnJd",
+      "revision_id": 4
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

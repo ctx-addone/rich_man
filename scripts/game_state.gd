@@ -1,296 +1,383 @@
 class_name RichGame
 extends RefCounted
 
-const CARD_NAMES = {"dice": "遥控骰子", "rent_free": "免租卡", "traffic": "信号切换", "cash": "奖金卡"}
-const CARD_DESCRIPTIONS = {"dice": "本回合下一次掷骰固定为6。", "rent_free": "免除下一次应付租金，持续到触发。", "traffic": "立即反转全城红绿灯方向。", "cash": "立即获得500现金。"}
+const BoardModel = preload("res://scripts/model/board_model.gd")
+const CARD_NAMES = {"dice":"遥控骰子", "scheme":"谋划卡", "mine":"地雷卡"}
+const CARD_DESCRIPTIONS = {"dice":"选择下一骰1～6点。", "scheme":"指定附近对手入狱2次行动；范围和计时暂用测试规则。", "mine":"在附近道路放置地雷，经过者住院2次行动；范围和计时暂用测试规则。"}
+const CARD_TARGETS = {"dice":"dice", "scheme":"player", "mine":"road"}
+const TEST_CARD_RANGE = 6
+var board_model = BoardModel.new()
+var lots: Dictionary = {}
 var nodes: Array[Dictionary] = []
 var players: Array[Dictionary] = []
-var current: int = 0
-var round_number: int = 1
-var round_limit: int = 20
-var phase: String = "roll"
-var steps_left: int = 0
-var last_roll: int = 0
+var current := 0
+var round_number := 1
+var round_limit := 20
+var phase := "roll"
+var steps_left := 0
+var last_roll := 0
 var logs: Array[String] = []
 var winners: Array[int] = []
-var traffic_phase: int = 0
+var traffic_phase := 0
 var rng := RandomNumberGenerator.new()
-var card_used: bool = false
-var controlled_dice: int = 0
+var card_used := false
+var controlled_dice := 0
+var active_lot_id := ""
+var road_objects: Dictionary = {}
+var bank_visited: Array[String] = []
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
-	if seed_value == 0:
-		rng.randomize()
-	else:
-		rng.seed = seed_value
+	if seed_value == 0: rng.randomize()
+	else: rng.seed = seed_value
 	players.clear()
 	logs.clear()
 	winners.clear()
+	road_objects.clear()
+	bank_visited.clear()
 	current = 0
 	round_number = 1
 	round_limit = maxi(1, rounds)
 	phase = "roll"
 	steps_left = 0
 	last_roll = 0
-	traffic_phase = 0
-	card_used = false
 	controlled_dice = 0
+	card_used = false
+	active_lot_id = ""
 	_build_map()
-	for i in range(names.size()):
-		players.append({"name": str(names[i]), "cash": 10000, "pos": 0, "previous": -1, "bankrupt": false, "cards": ["dice", "rent_free", "traffic"], "rent_shield": false})
-	_log("开局：每人10000现金，共%d轮；进入起点奖励1000。" % round_limit)
+	for n in names:
+		players.append({"name":str(n), "cash":10000, "deposit":0, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{}})
+	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
 
 func _build_map() -> void:
 	nodes.clear()
-	for x in range(13): _add_node(Vector2(x, 0))
-	for y in range(1, 9): _add_node(Vector2(12, y))
-	for x in range(11, -1, -1): _add_node(Vector2(x, 8))
-	for y in range(7, 0, -1): _add_node(Vector2(0, y))
-	for x in range(1, 12): _add_node(Vector2(x, 4))
-	for y in range(1, 8):
-		if y != 4: _add_node(Vector2(6, y))
+	for x in range(25): _add_node(Vector2(x,0))
+	for y in range(1,17): _add_node(Vector2(24,y))
+	for x in range(23,-1,-1): _add_node(Vector2(x,16))
+	for y in range(15,0,-1): _add_node(Vector2(0,y))
+	for x in range(1,24): _add_node(Vector2(x,8))
+	for y in range(1,16):
+		if y != 8: _add_node(Vector2(12,y))
+	var layout := {"roads":[], "lots":[]}
 	for n in nodes:
 		for other in nodes:
-			var delta: Vector2 = n.pos - other.pos
-			if absf(delta.x) + absf(delta.y) == 1.0:
-				n.neighbors.append(other.id)
-		var p: Vector2 = n.pos
+			if absf(n.pos.x-other.pos.x)+absf(n.pos.y-other.pos.y)==1: n.neighbors.append(other.id)
 		if n.id == 0:
 			n.kind = "start"
-			n.name = "市民广场"
-		elif p in [Vector2(3, 0), Vector2(12, 6), Vector2(0, 6)]:
-			n.kind = "metro"
-			n.name = "地铁站 %s" % ["北", "东", "西"][[Vector2(3, 0), Vector2(12, 6), Vector2(0, 6)].find(p)]
-		elif p in [Vector2(6, 0), Vector2(6, 4)]:
-			n.kind = "signal"
-			n.signal = true
-			n.name = "信号路口"
-		elif n.id % 9 == 0:
+			n.name = "起点"
+		elif n.id % 17 == 0:
 			n.kind = "event"
-			n.name = "城市事件"
-		elif n.neighbors.size() > 2:
-			n.kind = "junction"
-			n.name = "分岔路口"
-		else:
-			n.name = "街区 %02d" % n.id
+			n.name = "机会事件"
+		elif n.neighbors.size()>2: n.name = "岔路口"
+		var exits: Array = []
+		for id in n.neighbors: exits.append(str(id))
+		layout.roads.append({"id":str(n.id), "cell":[int(n.pos.x),int(n.pos.y)], "exits":exits})
+	# Integration layout, not a reconstruction of an original map.
+	for row in [1,9]:
+		for x in [1,7,13,19]:
+			var id := "lot_%d_%d" % [x,row]
+			var kind := "large"
+			var building := "vacant"
+			var title := "街区 %d-%d" % [x,row]
+			if x==7 and row==1: kind="facility"; building="bank"; title="银行"
+			if x==13 and row==1: kind="facility"; building="hospital"; title="医院"
+			if x==19 and row==9: kind="facility"; building="prison"; title="监狱"
+			var front: Array = []
+			var rect := Rect2i(x,row,4,4)
+			for n in nodes:
+				if BoardModel.is_edge_adjacent(Vector2i(n.pos),rect): front.append(str(n.id))
+			layout.lots.append({"id":id,"footprint":[x,row,4,4],"frontage_nodes":front,"kind":kind,"building_type":building,"trigger_events":["pass","stop"] if building=="bank" else ["stop"],"rule_id":"TEST-LAYOUT"})
+			# Model owns state; display/economic metadata attached after validated import.
+			layout.lots[-1]["name"] = title
+	for row in [6,14]:
+		for x in [1,4,7,10,13,16,19,22]:
+			var front: Array=[]
+			var footprint:=Rect2i(x,row,2,2)
+			for n in nodes:
+				if BoardModel.is_edge_adjacent(Vector2i(n.pos),footprint): front.append(str(n.id))
+			layout.lots.append({"id":"small_%d_%d"%[x,row],"name":"住宅 %d-%d"%[x,row],"footprint":[x,row,2,2],"frontage_nodes":front,"kind":"small","building_type":"vacant","trigger_events":["stop"],"rule_id":"TEST-LAYOUT"})
+	var errors: Array = board_model.load_layout(layout)
+	assert(errors.is_empty(), str(errors))
+	lots = board_model.lots
+	for spec in layout.lots:
+		lots[spec.id].name = spec.name
+		lots[spec.id].price = 1200
+		lots[spec.id].rent = 220
 
 func _add_node(pos: Vector2) -> void:
-	var id: int = nodes.size()
-	nodes.append({"id": id, "pos": pos, "kind": "property", "name": "", "price": 1000 + (id % 3) * 200, "rent": 180 + (id % 3) * 40, "neighbors": [], "owner": -1, "level": 0, "signal": false})
+	var id := nodes.size()
+	nodes.append({"id":id,"pos":pos,"kind":"road","name":"道路 %02d"%id,"neighbors":[],"signal":false})
 
-func signal_state(node_id: int) -> String:
-	if node_id < 0 or node_id >= nodes.size() or not nodes[node_id].signal: return "无信号灯"
-	return "东西通行 / 南北红灯" if traffic_phase == 0 else "南北通行 / 东西红灯"
+func lots_at_node(node_id: int) -> Array[String]:
+	var result: Array[String] = []
+	for id in board_model.frontage.get(str(node_id),[]): result.append(id)
+	return result
+
+func facility_lot(kind: String) -> Dictionary:
+	for lot in lots.values():
+		if lot.kind=="facility" and lot.building_type==kind: return lot
+	return {}
+
+func signal_state(_id: int) -> String: return "此验证地图无红绿灯"
 
 func available_moves() -> Array[int]:
 	var result: Array[int] = []
-	if players.is_empty() or phase != "move": return result
+	if phase!="move" or players.is_empty(): return result
 	var p: Dictionary = players[current]
-	var n: Dictionary = nodes[p.pos]
-	for target in n.neighbors:
-		if target == p.previous and n.neighbors.size() > 1: continue
-		if n.signal:
-			var horizontal: bool = nodes[target].pos.y == n.pos.y
-			if horizontal != (traffic_phase == 0): continue
-		result.append(target)
+	for id in nodes[p.pos].neighbors:
+		if id!=p.previous or nodes[p.pos].neighbors.size()==1: result.append(id)
 	return result
 
 func roll_dice(forced: int = 0) -> bool:
-	if phase != "roll" or players.is_empty(): return false
-	last_roll = clampi(forced, 1, 6) if forced > 0 else (controlled_dice if controlled_dice > 0 else rng.randi_range(1, 6))
-	controlled_dice = 0
-	steps_left = last_roll
-	phase = "move"
-	_log("%s 掷出 %d。" % [players[current].name, last_roll])
-	_check_movement()
+	if phase!="roll" or players.is_empty() or not players[current].status.is_empty(): return false
+	last_roll = clampi(forced,1,6) if forced>0 else (controlled_dice if controlled_dice>0 else rng.randi_range(1,6))
+	controlled_dice=0
+	steps_left=last_roll
+	active_lot_id=""
+	bank_visited.clear()
+	phase="move"
+	_log("%s 掷出%d。"%[players[current].name,last_roll])
 	return true
 
 func move_to(node_id: int) -> bool:
 	if not available_moves().has(node_id): return false
-	var p: Dictionary = players[current]
-	p.previous = p.pos
-	p.pos = node_id
-	steps_left -= 1
-	if node_id == 0:
-		p.cash += 1000
-		_log("%s 经过起点，获得1000。" % p.name)
+	var p: Dictionary=players[current]
+	p.previous=p.pos
+	p.pos=node_id
+	steps_left-=1
+	if node_id==0: p.cash+=1000; _log("经过起点获得1000（测试规则）。")
+	if road_objects.has(node_id):
+		road_objects.erase(node_id)
+		for id in lots_at_node(node_id):
+			if lots[id].kind!="facility": lots[id].level=maxi(0,lots[id].level-1)
+		send_to_facility(current,"hospital",2)
+		_log("踩中地雷，住院2次行动；临街建筑降低1层（爆炸范围待核验）。")
+		return true
+	for id in board_model.lots_for_event(str(node_id),"pass"):
+		if lots[id].building_type=="bank" and not bank_visited.has(id):
+			bank_visited.append(id)
+			phase="bank"
+			_log("经过银行，可调整现金与存款；剩余%d步。"%steps_left)
+			return true
 	_check_movement()
 	return true
 
 func _check_movement() -> void:
-	if steps_left <= 0:
-		_land()
-	elif available_moves().is_empty():
-		_log("红灯阻挡，剩余%d步作废，停在路口。" % steps_left)
-		steps_left = 0
-		_land()
+	if steps_left<=0: _land()
+	elif available_moves().is_empty(): steps_left=0; _land()
+
+func bank_transfer(amount: int) -> bool:
+	if phase!="bank" or amount==0: return false
+	var p: Dictionary=players[current]
+	if amount>p.cash or -amount>p.deposit: return false
+	p.cash-=amount
+	p.deposit+=amount
+	_log("银行转账：现金%+d，存款%+d。"%[-amount,amount])
+	return true
+
+func close_bank() -> bool:
+	if phase!="bank": return false
+	phase="move"
+	_check_movement()
+	return true
 
 func _land() -> void:
-	phase = "land"
-	var p: Dictionary = players[current]
-	var n: Dictionary = nodes[p.pos]
-	_log("%s 停在 %s。" % [p.name, n.name])
-	match n.kind:
-		"property":
-			if n.owner >= 0 and n.owner != current:
-				if p.rent_shield:
-					p.rent_shield = false
-					_log("免租卡生效，本次租金免除。")
-				else:
-					var cost: int = n.rent * n.level * n.level
-					_log("应向 %s 支付租金%d。" % [players[n.owner].name, cost])
-					_pay(current, cost, n.owner)
-		"metro": phase = "metro"
-		"event":
-			match rng.randi_range(0, 2):
-				0:
-					p.cash += 500
-					_log("城市奖励：获得500。")
-				1:
-					_log("城市维护费：支付400。")
-					_pay(current, 400)
-				2:
-					var card: String = CARD_NAMES.keys()[rng.randi_range(0, 3)]
-					p.cards.append(card)
-					_log("获得卡牌：%s。" % CARD_NAMES[card])
+	phase="land"
+	active_lot_id=""
+	var p: Dictionary=players[current]
+	_log("%s 停在%s。"%[p.name,nodes[p.pos].name])
+	for id in board_model.lots_for_event(str(p.pos),"stop"):
+		var lot: Dictionary=lots[id]
+		if lot.kind=="facility": continue
+		active_lot_id=id
+		if lot.owner>=0 and lot.owner!=current:
+			var cost: int=lot.rent*lot.level*lot.level
+			_log("向%s支付%s租金%d。"%[players[lot.owner].name,lot.name,cost])
+			_pay(current,cost,lot.owner)
+			if phase=="finished" or p.bankrupt: return
+	if nodes[p.pos].kind=="event":
+		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
+		else:
+			var card: String=CARD_NAMES.keys()[rng.randi_range(0,2)]
+			p.cards.append(card)
+			_log("机会获得"+CARD_NAMES[card])
 
-func buy_property() -> bool:
-	if phase != "land": return false
-	var n: Dictionary = nodes[players[current].pos]
-	if n.kind != "property" or n.owner != -1 or players[current].cash < n.price or players[current].bankrupt: return false
-	players[current].cash -= n.price
-	n.owner = current
-	n.level = 1
-	phase = "end"
-	_log("%s 购买%s，支付%d。" % [players[current].name, n.name, n.price])
+func _selected_lot(id: String) -> Dictionary:
+	if id.is_empty(): id=active_lot_id
+	if not lots_at_node(players[current].pos).has(id): return {}
+	return lots[id]
+
+func buy_property(lot_id: String = "") -> bool:
+	if phase!="land" or players[current].bankrupt: return false
+	var lot:=_selected_lot(lot_id)
+	if lot.is_empty() or lot.kind=="facility" or lot.owner!=-1 or players[current].cash<lot.price: return false
+	players[current].cash-=lot.price
+	lot.owner=current
+	lot.level=1
+	lot.building_type="house"
+	phase="end"
+	_log("购买"+lot.name)
 	return true
 
-func upgrade_property() -> bool:
-	if phase != "land": return false
-	var n: Dictionary = nodes[players[current].pos]
-	if n.kind != "property" or n.owner != current or n.level >= 3 or players[current].cash < 600: return false
-	players[current].cash -= 600
-	n.level += 1
-	phase = "end"
-	_log("升级%s至%d级，支付600。" % [n.name, n.level])
+func upgrade_property(lot_id: String = "") -> bool:
+	if phase!="land" or players[current].bankrupt: return false
+	var lot:=_selected_lot(lot_id)
+	if lot.is_empty() or lot.kind=="facility" or lot.owner!=current or lot.level>=3 or players[current].cash<600: return false
+	players[current].cash-=600
+	lot.level+=1
+	phase="end"
+	_log("升级%s至%d级。"%[lot.name,lot.level])
 	return true
 
-func take_metro(destination: int) -> bool:
-	if phase != "metro" or destination < 0 or destination >= nodes.size(): return false
-	var p: Dictionary = players[current]
-	if nodes[destination].kind != "metro" or destination == p.pos or p.cash < 200: return false
-	p.cash -= 200
-	p.pos = destination
-	p.previous = -1
-	phase = "end"
-	_log("支付200车费，抵达%s，结束移动。" % nodes[destination].name)
-	return true
+func _distance(from: int, to: int) -> int:
+	var queue: Array=[from]
+	var distances: Dictionary={from:0}
+	while not queue.is_empty():
+		var at: int=queue.pop_front()
+		if at==to: return distances[at]
+		for next in nodes[at].neighbors:
+			if not distances.has(next): distances[next]=distances[at]+1; queue.append(next)
+	return 9999
 
-func skip_metro() -> bool:
-	if phase != "metro": return false
-	phase = "end"
-	return true
+func card_targets(card_id: String) -> Array[int]:
+	var result: Array[int]=[]
+	if players.is_empty(): return result
+	if card_id=="dice": result.assign([1,2,3,4,5,6])
+	elif card_id=="scheme":
+		for i in range(players.size()):
+			if i!=current and not players[i].bankrupt and players[i].status.is_empty() and _distance(players[current].pos,players[i].pos)<=TEST_CARD_RANGE: result.append(i)
+	elif card_id=="mine":
+		for n in nodes:
+			if not road_objects.has(n.id) and _distance(players[current].pos,n.id)<=TEST_CARD_RANGE: result.append(n.id)
+	return result
 
-func use_card(card_id: String, _target: int = -1) -> bool:
-	if phase != "roll" or card_used or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
-	if card_id == "rent_free" and players[current].rent_shield: return false
+func use_card(card_id: String, target: int = -1, value: int = 0) -> bool:
+	if phase!="roll" or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
+	var chosen: int=value if card_id=="dice" else target
+	if not card_targets(card_id).has(chosen): return false
+	if card_id=="dice": controlled_dice=value
+	elif card_id=="scheme": send_to_facility(target,"prison",2)
+	elif card_id=="mine": road_objects[target]={"kind":"mine","owner":current}
 	players[current].cards.erase(card_id)
-	card_used = true
-	match card_id:
-		"dice": controlled_dice = 6
-		"rent_free": players[current].rent_shield = true
-		"traffic": traffic_phase = 1 - traffic_phase
-		"cash": players[current].cash += 500
-	_log("%s 使用%s。" % [players[current].name, CARD_NAMES[card_id]])
+	card_used=true
+	_log("%s 使用%s。"%[players[current].name,CARD_NAMES[card_id]])
+	return true
+
+func send_to_facility(player_id: int, kind: String, days: int) -> bool:
+	if phase=="finished" or player_id<0 or player_id>=players.size() or kind not in ["hospital","prison"] or days<1: return false
+	var p: Dictionary=players[player_id]
+	if p.bankrupt or facility_lot(kind).is_empty(): return false
+	var prior: Dictionary=p.status
+	p.status={"kind":kind,"remaining":days,"return_pos":prior.get("return_pos",p.pos),"return_previous":prior.get("return_previous",p.previous)}
+	_log("%s 进入%s，滞留%d次行动。"%[p.name,"医院" if kind=="hospital" else "监狱",days])
+	if player_id==current:
+		steps_left=0
+		controlled_dice=0
+		# The interrupted action already happened; detention starts on next turn.
+		phase="end"
+	return true
+
+func gm_release(player_id: int) -> bool:
+	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].status.is_empty(): return false
+	var p: Dictionary=players[player_id]
+	p.pos=p.status.return_pos
+	p.previous=p.status.return_previous
+	p.status={}
+	if player_id==current and phase=="detained": phase="roll"
+	_log(p.name+" 返回原路线。")
 	return true
 
 func end_turn() -> bool:
-	if phase not in ["land", "metro", "end"]: return false
+	if phase not in ["land","end","detained"]: return false
+	if phase=="detained": players[current].status.remaining=maxi(0,players[current].status.remaining-1)
 	_check_winner()
-	if phase == "finished": return true
-	var next: int = current
+	if phase=="finished": return true
 	for ignored in range(players.size()):
-		next = (next + 1) % players.size()
-		if next == 0:
-			round_number += 1
-			traffic_phase = 1 - traffic_phase
-			if round_number > round_limit:
-				finish_game()
-				return true
-		if not players[next].bankrupt: break
-	current = next
-	phase = "roll"
-	steps_left = 0
-	card_used = false
-	controlled_dice = 0
+		current=(current+1)%players.size()
+		if current==0:
+			round_number+=1
+			if round_number>round_limit: finish_game(); return true
+		if not players[current].bankrupt: break
+	phase="roll"
+	steps_left=0
+	card_used=false
+	controlled_dice=0
+	active_lot_id=""
+	if not players[current].status.is_empty():
+		if players[current].status.remaining<=0: gm_release(current)
+		else: phase="detained"
 	return true
 
 func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
-	var p: Dictionary = players[player_id]
-	for n in nodes:
-		if p.cash >= amount: break
-		if n.owner == player_id:
-			var sale: int = (n.price + 600 * (n.level - 1)) / 2
-			p.cash += sale
-			n.owner = -1
-			n.level = 0
-			_log("资金不足，%s变现%d。" % [n.name, sale])
-	var paid: int = mini(p.cash, amount)
-	p.cash -= paid
-	if receiver >= 0: players[receiver].cash += paid
-	if paid < amount:
-		p.bankrupt = true
+	var p: Dictionary=players[player_id]
+	# Provisional debt policy: cash -> deposit -> half-price liquidation. NOT verified R11.
+	var withdrawal: int=mini(p.deposit,maxi(0,amount-p.cash))
+	p.deposit-=withdrawal
+	p.cash+=withdrawal
+	for lot in lots.values():
+		if p.cash>=amount: break
+		if lot.owner==player_id:
+			p.cash+=int((lot.price+600*maxi(0,lot.level-1))/2)
+			lot.owner=-1
+			lot.level=0
+			lot.building_type="vacant"
+	var paid: int=mini(p.cash,amount)
+	p.cash-=paid
+	if receiver>=0: players[receiver].cash+=paid
+	if paid<amount:
+		p.bankrupt=true
 		p.cards.clear()
-		_log("%s 无力偿付，破产退出。" % p.name)
+		p.status={}
+		_log(p.name+" 无法偿付，破产。")
 		_check_winner()
 
 func net_worth(player_id: int) -> int:
-	var total: int = players[player_id].cash
-	for n in nodes:
-		if n.owner == player_id: total += n.price + 600 * (n.level - 1)
+	var total: int=players[player_id].cash+players[player_id].deposit
+	for lot in lots.values():
+		if lot.owner==player_id: total+=lot.price+600*maxi(0,lot.level-1)
 	return total
 
 func _check_winner() -> void:
-	var alive: int = 0
+	var alive:=0
 	for p in players:
-		if not p.bankrupt: alive += 1
-	if alive <= 1: finish_game()
+		if not p.bankrupt: alive+=1
+	if alive<=1: finish_game()
 
 func finish_game() -> void:
-	phase = "finished"
+	phase="finished"
 	winners.clear()
-	var highest: int = -1
+	var highest: int=-1
 	for i in range(players.size()):
 		if players[i].bankrupt: continue
-		var worth: int = net_worth(i)
-		if worth > highest:
-			highest = worth
-			winners.clear()
-		if worth == highest: winners.append(i)
+		var worth:=net_worth(i)
+		if worth>highest: highest=worth; winners.clear()
+		if worth==highest: winners.append(i)
 	_log("比赛结束，按未破产角色净资产结算。")
 
 func gm_cash(player_id: int, delta: int) -> bool:
-	if phase == "finished" or player_id < 0 or player_id >= players.size() or players[player_id].bankrupt: return false
-	players[player_id].cash = maxi(0, players[player_id].cash + delta)
-	_log("GM：%s现金调整%d。" % [players[player_id].name, delta])
+	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].bankrupt: return false
+	players[player_id].cash=maxi(0,players[player_id].cash+delta)
 	return true
 
 func gm_teleport(player_id: int, node_id: int) -> bool:
-	if phase == "finished" or player_id < 0 or player_id >= players.size() or node_id < 0 or node_id >= nodes.size() or players[player_id].bankrupt: return false
-	players[player_id].pos = node_id
-	players[player_id].previous = -1
-	_log("GM：%s传送至%s。" % [players[player_id].name, nodes[node_id].name])
-	if player_id == current:
-		steps_left = 0
+	if phase=="finished" or player_id<0 or player_id>=players.size() or node_id<0 or node_id>=nodes.size() or players[player_id].bankrupt or not players[player_id].status.is_empty(): return false
+	players[player_id].pos=node_id
+	players[player_id].previous=-1
+	if player_id==current:
+		steps_left=0
+		bank_visited.clear()
+		for id in lots_at_node(node_id):
+			if lots[id].building_type=="bank":
+				bank_visited.append(id)
+				phase="bank"
+				return true
 		_land()
 	return true
 
 func gm_give_card(player_id: int, card_id: String) -> bool:
-	if phase == "finished" or player_id < 0 or player_id >= players.size() or not CARD_NAMES.has(card_id) or players[player_id].bankrupt: return false
+	if phase=="finished" or player_id<0 or player_id>=players.size() or not CARD_NAMES.has(card_id) or players[player_id].bankrupt: return false
 	players[player_id].cards.append(card_id)
-	_log("GM：向%s发放%s。" % [players[player_id].name, CARD_NAMES[card_id]])
 	return true
 
 func _log(message: String) -> void:
 	logs.append(message)
-	if logs.size() > 150: logs.pop_front()
+	if logs.size()>150: logs.pop_front()

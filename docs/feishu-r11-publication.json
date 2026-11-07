@@ -1,0 +1,246 @@
+{
+  "published_at": "2026-11-08",
+  "status": "verified",
+  "parent_node": "Vx2FwJzWNiBjJuk24Qoc0a2NnEy",
+  "parent_doc": "MPxNdiFT1oo9sKxIga7c2tz1nwd",
+  "parent_url": "https://dcncd5jl63xs.feishu.cn/wiki/Vx2FwJzWNiBjJuk24Qoc0a2NnEy",
+  "pages": [
+    {
+      "file": "docs/r11-target.md",
+      "title": "01 · 还原目标与完成门槛",
+      "node_token": "DmtZwL6PLiFpT7kJrE0cLlGXnwf",
+      "document_id": "J2x5dKnuxojIkBxvhXxc09SQnze",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/DmtZwL6PLiFpT7kJrE0cLlGXnwf",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 2,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/J2x5dKnuxojIkBxvhXxc09SQnze"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-1.json",
+      "revision_id": 2,
+      "remote_characters": 3858,
+      "source_sha256": "14EFD40433B68F184D1AA0C0CB3C2B85E96AE2503180650828D0548A3DDB1747",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-02-plan.md",
+      "title": "02 · 第二轮功能与实施策划",
+      "node_token": "GLW1wERv4iZCdmkSSAsc5XdAnZc",
+      "document_id": "GWyrdu2Fdo80w2xopzwc2XTcnte",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/GLW1wERv4iZCdmkSSAsc5XdAnZc",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 6,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/GWyrdu2Fdo80w2xopzwc2XTcnte"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-2.json",
+      "revision_id": 6,
+      "remote_characters": 1262,
+      "source_sha256": "B4D4D331BFC002DFC17EAD9CF3467C5CFC81D25FFF8100DD40EB24D64540F501",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-map-contract.md",
+      "title": "03 · 地图与建筑模型策划",
+      "node_token": "AIzZw5KSxi0inGkdeoeccgoInAF",
+      "document_id": "XaFMdjIDIoKVLgxNqw5c7gWynVh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/AIzZw5KSxi0inGkdeoeccgoInAF",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 4,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/XaFMdjIDIoKVLgxNqw5c7gWynVh"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-3.json",
+      "revision_id": 4,
+      "remote_characters": 1159,
+      "source_sha256": "69857FC06F982118864FE5E8352894736BE1E44FBAFB9445CD3DBD4EFB9D3B80",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-economy-specials.md",
+      "title": "04 · 建筑经济与特殊设施",
+      "node_token": "YW57wzRQSiTST8kB7nBcj9vWnDe",
+      "document_id": "QAgydP8xyoQUj3xAzt3cjhhhnJe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/YW57wzRQSiTST8kB7nBcj9vWnDe",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 2,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/QAgydP8xyoQUj3xAzt3cjhhhnJe"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-4.json",
+      "revision_id": 2,
+      "remote_characters": 5315,
+      "source_sha256": "269DF184E5DC62539AB5F768208C92264EE45CA7F702ECB27E3A8E5FF8C436B9",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-cards-characters.md",
+      "title": "05 · 卡牌角色神仙与状态",
+      "node_token": "Qs81w9KvFiXz6KkEA0lcXc8hnbd",
+      "document_id": "OCtYd0nqRoACc4xo8iucHAlunsf",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Qs81w9KvFiXz6KkEA0lcXc8hnbd",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 2,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/OCtYd0nqRoACc4xo8iucHAlunsf"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-5.json",
+      "revision_id": 2,
+      "remote_characters": 9924,
+      "source_sha256": "32CDFCF94CE5DE93D214C8E225B911B42888E01CFA08A9A07429E6B2CD31AC82",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-current-gap-audit.md",
+      "title": "06 · 原作对照与验收差距",
+      "node_token": "CHibwC1gbixwh9km3V6cuqhAnef",
+      "document_id": "LSi1dkSEbopd6ex2IGhc1aU6nZc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/CHibwC1gbixwh9km3V6cuqhAnef",
+      "verified": true,
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 2,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/LSi1dkSEbopd6ex2IGhc1aU6nZc"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "readback_file": "docs/r11-feishu-readback-6.json",
+      "revision_id": 2,
+      "remote_characters": 5562,
+      "source_sha256": "BE961C7F39298B1D83C5066638788D52DD885563805A58B801B8B9B9BABC4B16",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-02-report.md",
+      "title": "07 · 第二轮实现与原作差距",
+      "node_token": "I73vwc6Y4iluPjkW8NMc7yxMnCg",
+      "document_id": "VF0BdvKt3o3ixHxcnKlcplgJnld",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-7.json",
+      "update_result": {
+        "ok": true,
+        "identity": "user",
+        "data": {
+          "document": {
+            "revision_id": 3,
+            "url": "https://dcncd5jl63xs.feishu.cn/docx/VF0BdvKt3o3ixHxcnKlcplgJnld"
+          },
+          "result": "success",
+          "warnings": []
+        },
+        "_notice": {
+          "update": {
+            "command": "lark-cli update",
+            "current": "1.0.96",
+            "latest": "1.0.99",
+            "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+          }
+        }
+      },
+      "revision_id": 3,
+      "remote_characters": 1175,
+      "source_sha256": "C46B13A191B03FFBFE5F6456C98BBC419F4D02DF1FBE353329DABE6B3980D6A0",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    }
+  ],
+  "navigation_verified": true,
+  "existing_index_preserved": true,
+  "report_updated_at": "2026-11-08",
+  "publication_link_mapping": {
+    "round-02-report.md": "https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg"
+  }
+}

@@ -29,6 +29,9 @@ func load_layout(layout: Dictionary) -> Array[String]:
 		if not item.get("exits", null) is Array:
 			errors.append("Road requires exits: " + id)
 			continue
+		if not item.get("event_ids", []) is Array:
+			errors.append("Road event_ids must be an array: " + id)
+			continue
 		var cell := Vector2i(int(item.cell[0]), int(item.cell[1]))
 		for existing in new_roads.values():
 			if existing.cell == cell: errors.append("Road cells overlap: " + id)
@@ -52,6 +55,12 @@ func load_layout(layout: Dictionary) -> Array[String]:
 			continue
 		if not _integer_array(item.get("footprint", null), 4):
 			errors.append("Lot requires [x,y,width,height] integer footprint: " + id)
+			continue
+		if not _integer_array([item.get("owner", -1), item.get("level", 0)], 2):
+			errors.append("Owner and level must be integers: " + id)
+			continue
+		if int(item.get("owner", -1)) < -1 or int(item.get("level", 0)) < 0:
+			errors.append("Invalid owner or level: " + id)
 			continue
 		var f: Array = item.footprint
 		var footprint := Rect2i(int(f[0]), int(f[1]), int(f[2]), int(f[3]))
