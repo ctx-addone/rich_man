@@ -99,6 +99,13 @@ func load_layout(layout: Dictionary) -> Array[String]:
 			"owner": int(item.get("owner", -1)), "level": int(item.get("level", 0)),
 			"trigger_events": events.duplicate(), "rule_id": str(item.get("rule_id", "UNVERIFIED")),
 		}
+		# Runtime map catalog validates explicit facility exit references.
+		if item.has("exit_road"):
+			if not _integer_array([item.exit_road,item.get("exit_previous",-1)],2):
+				errors.append("Facility exit must use integer road indices: "+id)
+			else:
+				new_lots[id].exit_road=int(item.exit_road)
+				new_lots[id].exit_previous=int(item.get("exit_previous",-1))
 	# Atomic replacement: malformed imports never partially corrupt a playable board.
 	if errors.is_empty():
 		roads = new_roads

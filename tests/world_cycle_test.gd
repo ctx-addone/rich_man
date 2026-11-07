@@ -101,7 +101,7 @@ func _init()->void:
 func test_ai_services()->void:
  var g=game(41)
  g.road_gods.clear()
- g.players[0].pos=g.Specials.LOTTERY_ROAD
+ g.players[0].pos=g.nodes.filter(func(node): return node.kind == "lottery")[0].id
  g.steps_left=1
  check(g.Specials.enter(g,"lottery"),"AI lottery fixture enters")
  check(AI.step(g) and g.lottery_state.tickets.size()==1 and g.players[0].cash>=AI.CASH_RESERVE,"AI buys one affordable ticket")
@@ -109,12 +109,12 @@ func test_ai_services()->void:
  g.service_visited.clear()
  check(g.Specials.enter(g,"lottery"),"same draw lottery revisit")
  check(AI.step(g) and g.phase!="lottery" and g.lottery_state.tickets.size()==1,"AI avoids duplicate spending during same draw")
- g.current=1;g.players[1].pos=g.Specials.LOTTERY_ROAD
+ g.current=1;g.players[1].pos=g.nodes.filter(func(node): return node.kind == "lottery")[0].id
  g.players[1].cash=AI.CASH_RESERVE+g.Specials.TEST_PROFILE.ticket_price-1
  g.service_visited.clear()
  check(g.Specials.enter(g,"lottery") and AI.step(g) and g.phase!="lottery","AI keeps cash reserve and exits expensive service")
  check(g.lottery_state.tickets.size()==1,"poor AI never buys ticket")
- g.players[1].pos=g.Specials.MAGIC_ROAD
+ g.players[1].pos=g.nodes.filter(func(node): return node.kind == "magic")[0].id
  g.service_visited.clear()
  check(g.Specials.enter(g,"magic"),"AI magic fixture enters")
  check(AI.step(g) and g.phase=="land" and g.magic_last_result.effect=="gain_cards","AI commits magic once then resumes landing")

@@ -11,9 +11,14 @@ const Market = preload("res://scripts/model/stock_market.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
 const Specials = preload("res://scripts/model/special_services.gd")
 const Shop = preload("res://scripts/model/shop_rules.gd")
+const Maps = preload("res://scripts/model/map_catalog.gd")
 const Teams = preload("res://scripts/model/team_rules.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const HAND_LIMIT = 8
+var map_id: String = Maps.DEFAULT_MAP_ID
+var map_metadata: Dictionary = {}
+var start_road: int = 0
+var start_bonus: int = 1000
 var gods_enabled := false
 var talents_enabled := false
 var specials_enabled := false
@@ -67,7 +72,11 @@ var landing_hotel := ""
 var landing_shop := false
 var reaction_reward_active := false
 
-func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> void:
+func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> bool:
+	var requested_id:Variant=options.get("map_id",Maps.DEFAULT_MAP_ID)
+	if not requested_id is String: return false
+	var prepared:Dictionary=Maps.load_map(requested_id)
+	if not prepared.ok: return false
 	specials_enabled = options.get("specials_enabled",false)
 	lottery_state = Specials.initial_lottery()
 	service_visited.clear()
@@ -108,85 +117,46 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	controlled_dice = 0
 	card_used = false
 	active_lot_id = ""
-	_build_map()
+	_build_map(prepared)
 	for n in names:
-		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
+		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":start_road, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
 	var characters: Array = options.get("characters",[])
 	for i in range(players.size()):
 		players[i].character_id = str(characters[i]) if i<characters.size() else ""
 		players[i].god = {}
 	Teams.assign(self,options.get("teams",null))
 	if gods_enabled: Gods.spawn(self)
-	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
+	_log(map_metadata.name+"："+map_metadata.description)
+	return true
 
-func _build_map() -> void:
+func _build_map(prepared:Dictionary={}) -> void:
+	if prepared.is_empty(): prepared=Maps.load_map(map_id)
+	assert(prepared.get("ok",false),str(prepared.get("errors",[])))
+	map_metadata=prepared.metadata.duplicate(true)
+	map_id=map_metadata.id
+	start_road=int(map_metadata.start_road)
+	start_bonus=int(map_metadata.start_bonus)
 	nodes.clear()
-	for x in range(25): _add_node(Vector2(x,0))
-	for y in range(1,17): _add_node(Vector2(24,y))
-	for x in range(23,-1,-1): _add_node(Vector2(x,16))
-	for y in range(15,0,-1): _add_node(Vector2(0,y))
-	for x in range(1,24): _add_node(Vector2(x,8))
-	for y in range(1,16):
-		if y != 8: _add_node(Vector2(12,y))
-	var layout := {"roads":[], "lots":[]}
-	for n in nodes:
-		for other in nodes:
-			if absf(n.pos.x-other.pos.x)+absf(n.pos.y-other.pos.y)==1: n.neighbors.append(other.id)
-		if n.id == 0:
-			n.kind = "start"
-			n.name = "起点"
-		elif n.id % 17 == 0:
-			n.kind = "event"
-			n.name = "机会事件"
-		elif n.neighbors.size()>2: n.name = "岔路口"
-		if specials_enabled and n.id==Specials.LOTTERY_ROAD: n.kind="lottery"; n.name="乐透站"
-		if specials_enabled and n.id==Specials.MAGIC_ROAD: n.kind="magic"; n.name="魔法屋"
-		var exits: Array = []
-		for id in n.neighbors: exits.append(str(id))
-		layout.roads.append({"id":str(n.id), "cell":[int(n.pos.x),int(n.pos.y)], "exits":exits})
-	# Integration layout, not a reconstruction of an original map.
-	for row in [1,9]:
-		for x in [1,7,13,19]:
-			var id := "lot_%d_%d" % [x,row]
-			var kind := "large"
-			var building := "vacant"
-			var title := "街区 %d-%d" % [x,row]
-			if x==7 and row==1: kind="facility"; building="bank"; title="银行"
-			if x==13 and row==1: kind="facility"; building="hospital"; title="医院"
-			if x==19 and row==9: kind="facility"; building="prison"; title="监狱"
-			var front: Array = []
-			var rect := Rect2i(x,row,4,4)
-			for n in nodes:
-				if BoardModel.is_edge_adjacent(Vector2i(n.pos),rect): front.append(str(n.id))
-			layout.lots.append({"id":id,"footprint":[x,row,4,4],"frontage_nodes":front,"kind":kind,"building_type":building,"trigger_events":["pass","stop"] if building=="bank" else ["stop"],"rule_id":"TEST-LAYOUT"})
-			# Model owns state; display/economic metadata attached after validated import.
-			layout.lots[-1]["name"] = title
-	for row in [6,14]:
-		for x in [1,4,7,10,13,16,19,22]:
-			var front: Array=[]
-			var footprint:=Rect2i(x,row,2,2)
-			for n in nodes:
-				if BoardModel.is_edge_adjacent(Vector2i(n.pos),footprint): front.append(str(n.id))
-			layout.lots.append({"id":"small_%d_%d"%[x,row],"name":"住宅 %d-%d"%[x,row],"footprint":[x,row,2,2],"frontage_nodes":front,"kind":"small","building_type":"vacant","trigger_events":["stop"],"rule_id":"TEST-LAYOUT"})
-	var errors: Array = board_model.load_layout(layout)
-	assert(errors.is_empty(), str(errors))
-	lots = board_model.lots
-	for spec in layout.lots:
-		lots[spec.id].name = spec.name
-		lots[spec.id].price = Buildings.PROFILE.land_price
-		lots[spec.id].rent = 220
-		lots[spec.id].street_id = "street_%d_%d" % [int(spec.footprint[1]),int(spec.footprint[0])/12]
-		lots[spec.id].research = {}
-		lots[spec.id].closed_until = 0
-		lots[spec.id].rent_until = 0
-	var shop:Dictionary=lots.small_22_6
-	shop.kind="facility"
-	shop.building_type="shop"
-	shop.name="卡牌商店"
-
-func _add_node(pos: Vector2) -> void:
-	var id := nodes.size()
-	nodes.append({"id":id,"pos":pos,"kind":"road","name":"道路 %02d"%id,"neighbors":[],"signal":false})
+	for spec in prepared.layout.roads:
+		var kind:String=spec.kind
+		var title:String=spec.name
+		if specials_enabled and spec.has("special_override"):
+			kind=spec.special_override.kind
+			title=spec.special_override.name
+		var neighbors:Array=[]
+		for road in spec.exits: neighbors.append(int(road))
+		nodes.append({"id":int(spec.id),"pos":Vector2(spec.cell[0],spec.cell[1]),"kind":kind,"name":title,"neighbors":neighbors,"signal":spec.get("signal",false)})
+	var errors:Array=board_model.load_layout(prepared.layout)
+	assert(errors.is_empty(),str(errors))
+	lots=board_model.lots
+	for spec in prepared.layout.lots:
+		lots[spec.id].name=spec.name
+		lots[spec.id].price=int(spec.price)
+		lots[spec.id].rent=int(spec.rent)
+		lots[spec.id].street_id=spec.street_id
+		lots[spec.id].research={}
+		lots[spec.id].closed_until=0
+		lots[spec.id].rent_until=0
 
 func lots_at_node(node_id: int) -> Array[String]:
 	var result: Array[String] = []
@@ -267,7 +237,7 @@ func move_to(node_id: int) -> bool:
 	cached_next=-1
 	forced_next=-1
 	steps_left-=1
-	if node_id==0: p.cash+=1000; _log("经过起点获得1000（测试规则）。")
+	if node_id==start_road: p.cash+=start_bonus; _log("经过起点获得%d（地图测试配置）。"%start_bonus)
 	if Explosives.after_step(self,current):
 		Combat.advance(self)
 		return true
@@ -589,7 +559,8 @@ func send_to_facility(player_id: int, kind: String, days: int, combat_internal: 
 	if p.bankrupt or facility_lot(kind).is_empty(): return false
 	var prior: Dictionary=p.status
 	if prior.get("kind","")=="sleepwalk": prior={}
-	p.status={"kind":kind,"remaining":days,"return_pos":prior.get("return_pos",p.pos),"return_previous":prior.get("return_previous",p.previous)}
+	var destination:Dictionary=facility_lot(kind)
+	p.status={"kind":kind,"remaining":days,"return_pos":destination.get("exit_road",prior.get("return_pos",p.pos)),"return_previous":destination.get("exit_previous",-1) if destination.has("exit_road") else prior.get("return_previous",p.previous)}
 	_log("%s 进入%s，滞留%d次行动。"%[p.name,"医院" if kind=="hospital" else "监狱",days])
 	if player_id==current:
 		pending_service.clear()

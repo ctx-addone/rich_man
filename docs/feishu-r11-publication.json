@@ -666,6 +666,62 @@
       "normalized_sha256": "2A40CCE32ADDA689FD153DD4C81DA1781590BD4EB422D7C3916BBA64F9BE3D13",
       "source_sha256": "3C959402E3A3A9C9CC5810CD9FC5A71D543647928CF1EA3F2D24FCFC471433FE",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-11-report.md",
+      "title": "39 · 第十一轮地图与设施出口验收",
+      "node_token": "Wq9LwqwGBiLAnvkeioKcex2Bnh9",
+      "document_id": "QmUidsJGxoyqlJxrMpzcVIajnie",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Wq9LwqwGBiLAnvkeioKcex2Bnh9",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-39.json",
+      "revision_id": 2,
+      "remote_characters": 1386,
+      "normalized_sha256": "7DE263DE71A14CCEB06709BB4007CD699FAA9FB8657551F8ACE97991DCF1A338",
+      "source_sha256": "D02067CB5C06FD99C9091259D175E14670AE43D66C01ADD1B2DD1F0BE69321FA",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-11-map-model.md",
+      "title": "40 · 地图数据与固定出口模型",
+      "node_token": "NOPcwSg2WiUZZMkaRS6cIvXNnZe",
+      "document_id": "TpaZdx8EKo19wLxUgDrcGZTrnTd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/NOPcwSg2WiUZZMkaRS6cIvXNnZe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-40.json",
+      "revision_id": 2,
+      "remote_characters": 3327,
+      "normalized_sha256": "4EE4CBA72AFE148392BCC270A1480E3BEB9C92FA093D0A16F74F6D4B0277CA6E",
+      "source_sha256": "F8712CCFD47A6DD963B66C193D066B787C991026A7AA1077C8AB446E643BBA65",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-knight-map.md",
+      "title": "41 · 骑士庄园逐格补图",
+      "node_token": "CKV4wUP1qiz3JykB4I7c1ccGnnb",
+      "document_id": "ADcDdHzegoaBqQxOyXFcOiQenwc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/CKV4wUP1qiz3JykB4I7c1ccGnnb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-41.json",
+      "revision_id": 2,
+      "remote_characters": 3879,
+      "normalized_sha256": "19279C984821D4992A14ED285FC55B218C5A7372F6451E5A72786F76ED24AF2C",
+      "source_sha256": "C7850E1D1BB72398D8AFF61E88930858A6B560C3E5849A1A5762BE1D63D3AECE",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-facility-exits.md",
+      "title": "42 · 设施出口与图例补证",
+      "node_token": "EwR0wcD8HiCBHZkMlL0cvGNBnyb",
+      "document_id": "THU6d9sN1o4lvax9AQ6cKlW2nmd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/EwR0wcD8HiCBHZkMlL0cvGNBnyb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-42.json",
+      "revision_id": 2,
+      "remote_characters": 7234,
+      "normalized_sha256": "70AD72A177B95DA3E08EAC5178DFB4C46B9D191CFF850CC9E8506E2C32EC2FD9",
+      "source_sha256": "BE26C0EA1E91823020968E87E4F03F777522D75DC5EAF5D64376C15E07F2D6F0",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -681,5 +737,6 @@
   "round7_updated_at": "2026-11-08",
   "round8_updated_at": "2026-11-08",
   "round9_updated_at": "2026-11-08",
-  "round10_updated_at": "2026-11-08"
+  "round10_updated_at": "2026-11-08",
+  "round11_updated_at": "2026-11-08"
 }

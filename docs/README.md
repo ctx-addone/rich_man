@@ -39,3 +39,5 @@
 数据和行为以当前项目实现为准；文档修改应与规则修改同步。
 
 2026-11-08 已通过 `lark-cli` 写入用户指定知识库的 [策划案目录](https://dcncd5jl63xs.feishu.cn/wiki/NWf0wjR7gikIbSkBbWAcSBiFnHe)，七份分类文档均创建为其子页；原有目录内容保留并追加导航。逐页回读记录与链接映射见 `feishu-publication.json`。
+
+- [第十一轮地图验收](round-11-report.md)、[地图数据模型](round-11-map-model.md)、[骑士庄园逐格补图](research/r11-knight-map.md)、[设施出口与图例补证](research/r11-facility-exits.md)。

@@ -11,6 +11,7 @@ const Saves = preload("res://scripts/model/save_game.gd")
 const COLORS = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")]
 const NAMES = ["赤橙", "青竹", "蓝星", "紫菀"]
 var game = Game.new()
+var map_id: String = Game.Maps.DEFAULT_MAP_ID
 var page: Control
 var board: Control
 var sidebar: VBoxContainer
@@ -192,15 +193,26 @@ func map_select() -> void:
 	screen = "map"
 	var v := clear_page()
 	v.add_child(label("01  /  选择地图", 32))
-	v.add_child(label("市民街区 · 系统验证地图", 26, Color("e9c46a")))
+	var choices := OptionButton.new()
+	choices.name = "MapChoice"
+	var maps: Array[Dictionary] = Game.Maps.entries(true)
+	for entry in maps:
+		choices.add_item(entry.name)
+		var index := choices.item_count - 1
+		choices.set_item_metadata(index, entry.id)
+		choices.set_item_disabled(index, not entry.playable)
+		choices.set_item_tooltip(index, entry.description)
+		if entry.id == map_id: choices.select(index)
+	choices.item_selected.connect(func(index): map_id = str(choices.get_item_metadata(index)); map_select())
+	v.add_child(choices)
 	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱  ·  商店"))
 	var preview = Board.new()
 	var sample = Game.new()
-	sample.setup(player_names)
+	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled})
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
-	v.add_child(paragraph("本图用于验证多入口建筑、银行与特殊场所，不是原版地图。当前经济参数及部分状态规则仍在核验。", 16))
+	v.add_child(paragraph("本图用于验证多入口建筑、银行与特殊场所，不是原版地图。骑士庄园仍在逐格核对，暂不可选。当前经济参数及部分状态规则仍在核验。", 16))
 	var row := HBoxContainer.new()
 	v.add_child(row)
 	row.add_child(button("← 返回", menu))
@@ -308,9 +320,10 @@ func capture_names() -> void:
 
 func start_game() -> void:
 	if not Game.Teams.valid_assignment(teams, 4): return
-	game = Game.new()
+	var next_game = Game.new()
 	ensure_characters()
-	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams})
+	if not next_game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams, "map_id":map_id}): return
+	game = next_game
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -381,7 +394,7 @@ func refresh() -> void:
 		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
 		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 电脑" if controllers[i] == "ai" else " · 人类") + (" · 天赋关" if not talents_enabled else ""), 13))
 		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
-	top_title.text = "市民街区   /   第 %d / %d 轮%s" % [game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
+	top_title.text = "%s   /   第 %d / %d 轮%s" % [game.map_metadata.name, game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
 	board.selected = selected
 	board.selected_lot = selected_lot
 	board.queue_redraw()
@@ -508,7 +521,7 @@ func refresh() -> void:
 		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else ([facility.id] if not facility.is_empty() else [])
 	else:
 		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
-		detail.add_child(paragraph({"lottery":"经过时可选号购票，离开继续剩余步数。", "magic":"停留时选择魔法效果，再抽取作用条件。", "metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
+		detail.add_child(paragraph({"lottery":"经过时可选号购票，离开继续剩余步数。", "magic":"停留时选择魔法效果，再抽取作用条件。", "metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取%d。" % game.start_bonus, "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
 	if n.kind == "lottery":
 		detail.add_child(paragraph("第%d轮开奖 · 当前奖池 %d" % [game.lottery_state.draw_round, game.lottery_state.pot], 14))
 		if not game.lottery_state.last_draw.is_empty():
@@ -977,7 +990,7 @@ func show_saves() -> void:
 		var title_input := LineEdit.new()
 		title_input.name = "SaveTitle"
 		title_input.max_length = 40
-		title_input.text = "市民街区 · 第%d轮 · %s" % [game.round_number, game.players[game.current].name]
+		title_input.text = "%s · 第%d轮 · %s" % [game.map_metadata.name, game.round_number, game.players[game.current].name]
 		v.add_child(title_input)
 		var feedback := paragraph("", 14)
 		v.add_child(feedback)
@@ -1037,6 +1050,7 @@ func load_snapshot(path: String) -> Dictionary:
 	if typeof(meta.get("forced_dice", 0)) != TYPE_INT or typeof(meta.get("gm_used", false)) != TYPE_BOOL:
 		return {"ok":false,"error":"测试标记或骰子信息无效。"}
 	game = loaded
+	map_id = game.map_id
 	portraits = loaded_portraits.duplicate()
 	controllers.assign(loaded_controllers)
 	player_names.clear()

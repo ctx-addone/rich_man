@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 3
+const VERSION = 4
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -105,12 +105,13 @@ static func special_state_error(state: Dictionary, game) -> String:
 		if draw.payouts.keys() != lottery.last_winners: return "乐透派奖名单不一致"
 	var visited: Dictionary = {}
 	for road in state.service_visited:
-		if not road is int or road not in [game.Specials.LOTTERY_ROAD,game.Specials.MAGIC_ROAD] or visited.has(road): return "服务经过记录无效"
+		if not road is int or road < 0 or road >= game.nodes.size() or game.nodes[road].kind not in ["lottery","magic"] or visited.has(road): return "服务经过记录无效"
 		visited[road] = true
 	var service: Dictionary = state.pending_service
 	if state.phase in ["lottery","magic"]:
 		if not state.specials_enabled or not exact_shape(service,{"kind":"","road":0,"purchases":0}): return "服务阶段缺少有效记录"
-		var road: int = game.Specials.LOTTERY_ROAD if state.phase == "lottery" else game.Specials.MAGIC_ROAD
+		var road: int = service.road
+		if road < 0 or road >= game.nodes.size() or game.nodes[road].kind != state.phase: return "服务类型与地图不一致"
 		var p: Dictionary = state.players[state.current]
 		if service.kind != state.phase or service.road != road or p.pos != road or not visited.has(road): return "服务与道路或阶段不一致"
 		if p.bankrupt or not p.status.is_empty() or p.god.get("id","") == "fierce" or not state.pending_attack.is_empty(): return "服务参与者无效"
@@ -141,8 +142,10 @@ static func special_state_error(state: Dictionary, game) -> String:
 	if state.phase == "shop" and state.specials_enabled:
 		var original_stock: int = state.shop_stock.size()+state.shop_purchases
 		if state.shop_visit_serial < 1 or original_stock < int(game.Shop.PROFILE.minimum_offers) or original_stock > int(game.Shop.PROFILE.maximum_offers): return "商店阶段库存不一致"
-		var shop: Dictionary = game.facility_lot("shop")
-		if not shop.frontage_nodes.has(str(state.players[state.current].pos)): return "商店阶段位置无效"
+		var at_shop: bool = false
+		for lot in game.lots.values():
+			if lot.kind == "facility" and lot.building_type == "shop" and lot.frontage_nodes.has(str(state.players[state.current].pos)): at_shop = true
+		if not at_shop: return "商店阶段位置无效"
 	for god_id in state.god_respawn_due:
 		if not god_id is String or not game.Gods.CATALOG.has(god_id) or not state.god_respawn_due[god_id] is int or state.god_respawn_due[god_id] < 1: return "神仙冷却状态无效"
 	# Turning gods off pauses the clock; validated cooldowns may be retained.
@@ -150,7 +153,7 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
 	if data.version == 1:
@@ -170,12 +173,21 @@ static func restore(data: Variant) -> Dictionary:
 	var team_ids: Array = []
 	for player in state.players: team_ids.append(player.get("team"))
 	if not Game.Teams.valid_assignment(team_ids, state.players.size()): return failure("队伍配置无效")
+	if data.version < 4:
+		var legacy_map: Dictionary = Game.Maps.load_map(Game.Maps.DEFAULT_MAP_ID)
+		if not legacy_map.ok: return failure("旧地图资源不可用")
+		var additions: Dictionary = {"map_id":Game.Maps.DEFAULT_MAP_ID,"map_metadata":legacy_map.metadata,"start_road":legacy_map.metadata.start_road,"start_bonus":legacy_map.metadata.start_bonus}
+		for key in additions:
+			if not state.has(key): state[key] = additions[key].duplicate(true) if additions[key] is Dictionary else additions[key]
+		if state.map_id != Game.Maps.DEFAULT_MAP_ID: return failure("旧存档地图标识无效")
+	if not state.get("map_id") is String: return failure("地图标识格式无效")
 	var game = Game.new()
-	game.setup(names,1,20,{"specials_enabled":state.specials_enabled,"teams":team_ids})
+	if not game.setup(names,1,20,{"specials_enabled":state.specials_enabled,"teams":team_ids,"map_id":state.map_id}): return failure("地图不存在或不可游玩")
 	for key in fields(game):
 		if EXCLUDED.has(key): continue
 		if not state.has(key) or not shape(state[key],game.get(key)): return failure("存档字段无效："+key)
 	if state.nodes != game.nodes or state.lots.keys() != game.lots.keys(): return failure("地图版本不兼容")
+	if state.map_metadata != game.map_metadata or state.start_road != game.start_road or state.start_bonus != game.start_bonus: return failure("地图配置不一致")
 	var count: int = state.players.size()
 	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","end","detained","reaction","finished"]: return failure("行动状态无效")
 	if state.round_number < 1 or state.round_limit < 1 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
@@ -210,7 +222,11 @@ static func restore(data: Variant) -> Dictionary:
 	for id in state.lots:
 		var lot: Dictionary = state.lots[id]
 		if not player_index(lot.owner,count,-1) or lot.level < 0 or lot.level > game.max_level(id): return failure("地产状态无效")
-		if lot.footprint != game.lots[id].footprint or lot.frontage_nodes != game.lots[id].frontage_nodes or lot.kind != game.lots[id].kind or lot.trigger_events != game.lots[id].trigger_events: return failure("地产布局不兼容")
+		for field in ["id","footprint","frontage_nodes","kind","trigger_events","name","price","rent","street_id","rule_id"]:
+			if lot[field] != game.lots[id][field]: return failure("地产地图配置不一致："+field)
+		for field in ["exit_road","exit_previous"]:
+			if lot.has(field) != game.lots[id].has(field) or lot.get(field) != game.lots[id].get(field): return failure("设施出口配置不一致")
+		if lot.kind == "facility" and lot.building_type != game.lots[id].building_type: return failure("固定设施类型与地图不一致")
 		if lot.kind != "facility" and lot.building_type != "vacant" and not game.building_options(id).has(lot.building_type): return failure("建筑类型无效")
 		if not lot.research.is_empty() and (not game.CARD_NAMES.has(lot.research.get("card_id")) or not lot.research.get("remaining") is int): return failure("研究状态无效")
 	for key in ["road_gods","road_objects"]:

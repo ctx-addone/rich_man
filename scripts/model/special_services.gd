@@ -4,8 +4,6 @@ extends RefCounted
 # R11 evidence: lottery pass service; 5,000/base ticket; 15-day draws (C).
 # Remaining numeric values and settlement policy are integration parameters.
 const TEST_PROFILE = {"number_min":1,"number_max":10,"ticket_price":5000,"visit_limit":3,"draw_interval":15,"initial_pot":10000,"demolish_levels":1}
-const LOTTERY_ROAD := 17
-const MAGIC_ROAD := 51
 const CONDITIONS = ["car","richest","most_properties"]
 const CONDITION_NAMES = {"car":"驾驶汽车","richest":"总资产最多","most_properties":"地产最多"}
 const MAGIC = [
@@ -24,7 +22,7 @@ static func enter(g, kind:String) -> bool:
 	if not g.specials_enabled or not eligible(g,g.current) or not g.pending_attack.is_empty(): return false
 	var road:int=g.players[g.current].pos
 	if g.service_visited.has(road): return false
-	if (kind=="lottery" and road!=LOTTERY_ROAD) or (kind=="magic" and road!=MAGIC_ROAD): return false
+	if kind not in ["lottery","magic"] or road < 0 or road >= g.nodes.size() or g.nodes[road].kind != kind: return false
 	g.service_visited.append(road)
 	g.pending_service={"kind":kind,"road":road,"purchases":0}
 	g.phase=kind
