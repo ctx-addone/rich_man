@@ -848,6 +848,76 @@
       "normalized_sha256": "0EFE2DC76AC4C65F8756618103651FF0F4C192BF43917ECBE9E01712BCECAFEB",
       "source_sha256": "392954B83AEF747A4D6632840E931F9C22F8866BF3A3FC0FB1EB269D57466CA1",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-14-report.md",
+      "title": "52 · 新闻与接金币玩法验收",
+      "node_token": "TQXBwFikhiUZgekPjE5c6WsjnVe",
+      "document_id": "BHHJdAQGMoARBQxhDc2cTTJmnzg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/TQXBwFikhiUZgekPjE5c6WsjnVe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-52.json",
+      "revision_id": 2,
+      "remote_characters": 1809,
+      "normalized_sha256": "D1DC3B1E38FB885EAB28BA76497FB8333147A9D4C83307AAE124BDE89CD9046C",
+      "source_sha256": "DD25EA8BA04F7725E775548281D67AB9F79EFA127A4538884AB7A80378F5D932",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-14-news.md",
+      "title": "53 · 新闻事件与结算规则",
+      "node_token": "XjZowJvfeiwaepkwScIcmTcvnKe",
+      "document_id": "QCJ3dd4RPoBIi8xJhSEcGreyngh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/XjZowJvfeiwaepkwScIcmTcvnKe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-53.json",
+      "revision_id": 2,
+      "remote_characters": 2364,
+      "normalized_sha256": "BC1233C0040C4472E8D9F6E208A3E300C9BC31B00F602D7DE42E5298C8585D8B",
+      "source_sha256": "2CC27E0D060044201823EE0FB6EE2A8A48375F87C4DE607AD7ECB6A7FF0C9FAA",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-14-minigame.md",
+      "title": "54 · 接金币与全席成绩结算",
+      "node_token": "BMiKwE46MiCaUbkEbyZcIsYQn4c",
+      "document_id": "AAeMdyl2eoF1pCxfc1DcED0Gnub",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/BMiKwE46MiCaUbkEbyZcIsYQn4c",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-54.json",
+      "revision_id": 2,
+      "remote_characters": 4679,
+      "normalized_sha256": "5CBA2EC20A5F749D1F713CF9F362BB3E4680E1274363B000D303FAC2E4EA2212",
+      "source_sha256": "47A5957F578D2C4403EB8599F3F29837B7179DDC8350832C26851027E418E479",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r14-news-minigames.md",
+      "title": "55 · 新闻小游戏原作实机证据",
+      "node_token": "UC2OwNIsjiC8QykZxyYcf2lIn3e",
+      "document_id": "SBbVdZZFZoBnkVxZayEcl5ZFnfg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/UC2OwNIsjiC8QykZxyYcf2lIn3e",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-55.json",
+      "revision_id": 2,
+      "remote_characters": 6465,
+      "normalized_sha256": "DFBD07C072111FC30219BBE047A91F11E25F4E4C9E866B58F62F212DAFC7801B",
+      "source_sha256": "66395CE76BAA31CFE3F2F9FBA745C3E2262234BE1D4F8567E9996C5533BEF405",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-14-runtime-review.md",
+      "title": "56 · 服务中断与存档独立复查",
+      "node_token": "Fjegw3tjWicamTkLNHlc4cibnqc",
+      "document_id": "S8e1djWgRoDksoxZIqEcyh0Pnad",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Fjegw3tjWicamTkLNHlc4cibnqc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-56.json",
+      "revision_id": 2,
+      "remote_characters": 1079,
+      "normalized_sha256": "A21FD66C653D96720040E476B6EBCCF7B02D6E850A98BDEA89982928E62C1A2E",
+      "source_sha256": "882372E556F88B21E78D901E015B06E41D2B1168604AF9B532A8F920AB2BD7C9",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -866,5 +936,6 @@
   "round10_updated_at": "2026-11-08",
   "round11_updated_at": "2026-11-08",
   "round12_updated_at": "2026-11-08",
-  "round13_updated_at": "2026-11-08"
+  "round13_updated_at": "2026-11-08",
+  "round14_updated_at": "2026-11-08"
 }

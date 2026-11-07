@@ -68,7 +68,7 @@ func current()->void:
 	var path:String="res://.godot/round11-v4-continuation.rms"
 	var metadata:Dictionary={"title":"v4 map identity","controllers":["human","ai","human","ai"]}
 	check(Save.save_to_file(g,path,metadata).ok,"v4 writes validated envelope")
-	check(raw_file(path).version==4,"disk envelope really contains v4")
+	check(raw_file(path).version==Save.VERSION,"new disk envelope contains current version; historical versions remain in fixtures")
 	var restored:Dictionary=Save.load_from_file(path)
 	check(restored.ok,"v4 reads disk envelope")
 	if not restored.ok: return

@@ -10,6 +10,8 @@ static func step(g) -> bool:
 	if g.players.is_empty() or g.phase == "finished": return false
 	var p: Dictionary = g.players[g.current]
 	match g.phase:
+		"news": return g.News.resolve(g)
+		"minigame": return g.Minigame.ai_step(g)
 		"reaction":
 			var options: Array = g.reaction_options()
 			var defender: int = g.reaction_player()

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>56 · 服务中断与存档独立复查</title>\n\n# 第十四轮独立边界复查\n\n本复查关注新闻、小游戏、GM中断与存档之间的接口，不重复新闻效果和小游戏计分的完整单元测试。\n\n## 已修复问题\n\n读取AI席位进行中的小游戏时，UI将 `handoff=true` 与 `ai_paused=true`。旧计时分支无条件等待handoff；用户恢复电脑后只有ai_paused变为false，AI侧栏又没有人类“我已就位”入口，导致小游戏停住。主线程已将handoff等待限定为人类席位。回归测试同时确认：恢复AI后继续计时，AI暂停仍冻结，人类交接仍冻结。\n\n## 多人结果边界\n\n本轮最终界面契约是触发席位手操一次，其余未破产席位自动计算成绩，最后统一发奖。研究已查明原作四本地人类加领主的录像中也仅有当前触发者手操，不能把全体依次人类操作当作原版规则。\n\n模型内部仍逐席模拟可复现的输入与成绩，便于记录RNG、保存进度与统一派奖。`game.player` 是当前内部计算席位，棋盘 `current` 始终为触发者；界面控制权也保持归触发者。自动成绩的具体算法和全员资格仍是测试配置。\n\n## 验收结果\n\n`tests/round14_review_test.gd` 实测：`ROUND14_REVIEW_TEST failures=0 interrupted=42`。\n\n- 7种阶段：新闻、小游戏ready/playing/participant_result、非触发席位内部ready/playing、全员result。\n- 每阶段分别中断6次：住院、入狱、度假、GM传送、凶神附身、立即结束整局。全部清除pending，不向任何席位发放尚未确认的奖励，旧命令失效，存档可精确恢复。\n- 不相关的GM资金、载具、发卡和其他角色入狱不误清待处理结果；中途从小游戏传送到新闻只结算新的新闻效果。\n- participant_result及内部其他席位的ready/playing能保存恢复；继续自动计算后的结果、RNG完全一致，棋盘current不变，最终确认前所有现金不变，确认后各席仅领取自己的成绩一次。\n- 真实v4存档保留全部节点、地图metadata及出生点意义；静态节点功能或出生点篡改被拒绝。恢复后的对局可以进入新新闻阶段。\n- AI读档handoff回归通过，内部自动计算席位不改变UI操作权。\n\n测试通过Godot命令行运行。证书存储读取警告来自环境，不影响离线模型测试退出码。此复查未修改主界面、核心状态或存档模块。",
+      "document_id": "S8e1djWgRoDksoxZIqEcyh0Pnad",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

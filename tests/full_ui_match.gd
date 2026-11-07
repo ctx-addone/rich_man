@@ -55,6 +55,16 @@ func run() -> void:
 			"shop": await click("离开商店")
 			"lottery": await click("离开乐透站")
 			"magic": await click("施放 · 获得3张卡片")
+			"news": await click("确认新闻")
+			"minigame":
+				match app.game.pending_service.game.status:
+					"ready": await click("开始接金币")
+					"participant_result": await process_frame
+					"result": await click("领取奖励")
+					"playing":
+						var next:int=app.game.Minigame.ai_cell(app.game)
+						await click_point(app.minigame_view.global_position + app.minigame_view.cells[next].get_center())
+						await create_timer(0.1).timeout
 			"reaction":
 				if find_button(app, "我来应对") != null: await click("我来应对")
 				else: await click("承受效果")

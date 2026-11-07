@@ -2,6 +2,7 @@ extends Control
 
 const Game = preload("res://scripts/game_state.gd")
 const Board = preload("res://scripts/board_view.gd")
+const MinigameView = preload("res://scripts/minigame_view.gd")
 const Cards = preload("res://scripts/model/cards_catalog.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
@@ -14,6 +15,9 @@ var game = Game.new()
 var map_id: String = Game.Maps.DEFAULT_MAP_ID
 var page: Control
 var board: Control
+var minigame_view: Control
+var board_controls: HBoxContainer
+var minigame_elapsed: float = 0.0
 var sidebar: VBoxContainer
 var sidebar_state_key: String = ""
 var top_title: Label
@@ -53,6 +57,26 @@ func is_automated() -> bool:
 	return seat >= 0 and seat < controllers.size() and controllers[seat] == "ai"
 
 func _process(delta: float) -> void:
+	if screen == "game" and game.phase == "minigame":
+		if game.pending_service.game.status != "result" and (game.pending_service.game.player != game.current or game.pending_service.game.status == "participant_result"):
+			if popup != null or (handoff and not is_automated()) or (is_automated() and ai_paused): return
+			game.Minigame.settle_others(game)
+			refresh()
+			return
+		if game.pending_service.game.status == "playing":
+			if popup != null or (handoff and not is_automated()) or (is_automated() and ai_paused): return
+			minigame_elapsed += delta
+			var interval: float = game.Minigame.TEST_PROFILE.tick_seconds
+			if minigame_elapsed >= interval:
+				minigame_elapsed = fmod(minigame_elapsed, interval)
+				if is_automated(): game.Minigame.ai_step(game)
+				else: game.Minigame.tick(game)
+				if game.pending_service.game.status == "participant_result": game.Minigame.settle_others(game)
+				if game.pending_service.game.status != "playing": refresh()
+			minigame_view.animation_fraction = minigame_elapsed / interval
+			minigame_view.queue_redraw()
+			return
+		minigame_elapsed = 0.0
 	if screen != "game" or popup != null or advancing or ai_paused or not is_automated():
 		ai_elapsed = 0.0
 		return
@@ -367,7 +391,17 @@ func build_game() -> void:
 	board.tile_clicked.connect(on_tile)
 	board.lot_clicked.connect(on_lot)
 	board_col.add_child(board)
+	minigame_elapsed = 0.0
+	minigame_view = MinigameView.new()
+	minigame_view.game = game
+	minigame_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	minigame_view.cell_selected.connect(func(cell):
+		if not handoff and not is_automated() and popup == null:
+			game.Minigame.select_cell(game, cell)
+			minigame_view.queue_redraw())
+	board_col.add_child(minigame_view)
 	var view_controls := HBoxContainer.new()
+	board_controls = view_controls
 	board_col.add_child(view_controls)
 	view_controls.add_child(button("−", func(): board.zoom_at(0.8, board.size / 2)))
 	view_controls.add_child(button("＋", func(): board.zoom_at(1.25, board.size / 2)))
@@ -390,11 +424,17 @@ func clear_children(node: Node) -> void:
 
 func refresh() -> void:
 	if screen != "game": return
-	var state_key:String="%s:%d:%d"%[game.phase,game.current,game.reaction_player()]
+	var state_key:String="%s:%d:%d"%[game.phase,automated_seat(),game.reaction_player()]
+	if game.phase == "minigame": state_key += ":" + game.pending_service.game.status
 	if is_instance_valid(sidebar) and state_key!=sidebar_state_key:
 		(sidebar.get_parent() as ScrollContainer).set_deferred("scroll_vertical",0)
 		sidebar_state_key=state_key
 	if game.phase == "finished": results(); return
+	board.visible = game.phase != "minigame"
+	board_controls.visible = board.visible
+	minigame_view.visible = game.phase == "minigame"
+	minigame_view.input_enabled = not handoff and not is_automated()
+	minigame_view.queue_redraw()
 	clear_children(score_row)
 	for i in range(4):
 		var p: Dictionary = game.players[i]
@@ -410,7 +450,7 @@ func refresh() -> void:
 	board.selected_lot = selected_lot
 	board.queue_redraw()
 	clear_children(sidebar)
-	var p: Dictionary = game.players[game.current]
+	var p: Dictionary = game.players[automated_seat()]
 	if is_automated():
 		var seat: int = automated_seat()
 		sidebar.add_child(label(("电脑应对 / " if game.phase == "reaction" else "电脑行动 / ") + game.players[seat].name, 22, COLORS[portraits[seat]]))
@@ -439,7 +479,7 @@ func refresh() -> void:
 			sidebar.add_child(label("附身 · %s · 余%d次行动" % [Gods.CATALOG[p.god.id].name, p.god.remaining], 17, Color("e9c46a")))
 			sidebar.add_child(paragraph(Gods.CATALOG[p.god.id].description, 13))
 		if p.get("turtle_turns", 0) > 0: sidebar.add_child(label("乌龟 · 余%d次行动，每次1步" % p.turtle_turns, 14))
-		if p.get("stay_turns", 0) > 0: sidebar.add_child(label("停留/麻痹 · 下次行动原地结束", 14, Color("f1a69c")))
+		if p.get("stay_turns", 0) > 0: sidebar.add_child(label("停留卡 · 下次行动原地结算落点" if p.get("stay_landing",false) else "停留/麻痹 · 下次行动原地结束", 14, Color("f1a69c")))
 		if not p.get("bomb", {}).is_empty(): sidebar.add_child(label("附身炸弹 · 剩余 %d 步" % p.bomb.remaining, 17, Color("f28a79")))
 		match game.phase:
 			"roll":
@@ -503,6 +543,32 @@ func refresh() -> void:
 					sidebar.add_child(button("施放 · " + option.name, func(): game.choose_magic(option.id); refresh()))
 					sidebar.add_child(paragraph(option.description, 13))
 				sidebar.add_child(button("离开魔法屋", func(): game.close_magic(); refresh()))
+			"news":
+				var event: Dictionary = game.News.current(game)
+				sidebar.add_child(label("新闻 · " + event.name, 24, Color("efd18b")))
+				sidebar.add_child(paragraph(event.description, 17))
+				var affected: Array[String] = []
+				for who in event.targets: affected.append(game.players[who].name)
+				sidebar.add_child(paragraph("影响角色：" + ("无" if affected.is_empty() else "、".join(affected)), 15))
+				sidebar.add_child(button("确认新闻 · 结算", func(): game.News.resolve(game); refresh()))
+			"minigame":
+				var activity: Dictionary = game.pending_service.game
+				sidebar.add_child(label("接金币", 24, Color("efd18b")))
+				sidebar.add_child(label("本次操作 · %s" % p.name, 17))
+				sidebar.add_child(paragraph("点击上下左右相邻的发光格移动。金币落地后会短暂停留，移动过去拾取；避开空中和地面的红色炸弹。", 17))
+				if activity.status == "ready":
+					sidebar.add_child(paragraph("你操作本次小游戏，其余角色自动参与并获得各自奖励。金币+100，金元宝+500；本版暂定12秒，炸弹扣300分，得分最低为0。", 15))
+					sidebar.add_child(button("开始接金币", func(): minigame_elapsed=0.0; game.Minigame.start(game); refresh()))
+				elif activity.status == "playing":
+					sidebar.add_child(button("暂停小游戏", show_minigame_pause))
+				elif activity.status == "participant_result":
+					sidebar.add_child(label("正在结算其他角色…", 20))
+				else:
+					for result in activity.history:
+						sidebar.add_child(paragraph("%s · %d 分 · 待领现金 %d" % [game.players[result.player].name, result.score, result.reward], 16))
+					sidebar.add_child(button("领取奖励 · 返回地图", func():
+						if game.Minigame.close(game): handoff=not is_automated()
+						refresh()))
 			"shop":
 				sidebar.add_child(paragraph("卡牌商店 · 本次还可买%d张\n手牌满时先弃牌；离店时结算书店奖励。" % game.shop_remaining()))
 				sidebar.add_child(button("浏览商店", show_shop))
@@ -620,6 +686,11 @@ func on_lot(id: String) -> void:
 	selected_lot = id
 	selected = -1
 	refresh()
+
+func show_minigame_pause() -> void:
+	var content := modal("小游戏已暂停")
+	content.add_child(paragraph("计时已停止。返回后继续当前进度。", 18))
+	content.add_child(button("继续小游戏", dismiss))
 
 func status_text(p: Dictionary) -> String:
 	if p.status.is_empty(): return ""

@@ -1,0 +1,57 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: news opens from actual map landing
+PASS: screenshot 01-news-release
+PASS: pending news saves and restores from UI
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 确认新闻
+PASS: button enabled: 确认新闻
+PASS: news releases prison but preserves hospital
+PASS: minigame waits for explicit start
+PASS: screenshot 02-minigame-ready
+PASS: button exists: 开始接金币
+PASS: button enabled: 开始接金币
+PASS: actual grid click moves basket
+PASS: real timer advances falling objects
+PASS: button exists: 暂停小游戏
+PASS: button enabled: 暂停小游戏
+PASS: pause freezes score, tick and RNG
+PASS: screenshot 03-minigame-pause
+PASS: button exists: 继续小游戏
+PASS: button enabled: 继续小游戏
+PASS: running minigame restores
+PASS: loaded minigame waits for hotseat handoff
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: human minigame reaches results
+PASS: only trigger seat plays manually; other local human seats receive automatic scores
+PASS: screenshot 04-minigame-result
+PASS: button exists: 领取奖励
+PASS: button enabled: 领取奖励
+PASS: reward paid once and board restored
+PASS: each seat receives its own recorded reward exactly once
+PASS: each seat receives its own recorded reward exactly once
+PASS: each seat receives its own recorded reward exactly once
+PASS: each seat receives its own recorded reward exactly once
+PASS: repeated award rejected
+PASS: button exists: 停留卡
+PASS: button enabled: 停留卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: stay card UI re-enters current minigame without movement
+PASS: screenshot 06-stay-reentry
+PASS: natural AI match completes with news and minigame
+PASS: screenshot 05-natural-match
+ROUND14_UI failures=0 frames=3361

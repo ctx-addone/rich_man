@@ -22,7 +22,7 @@ func _initialize()->void:
 	check(g.use_card("dice",-1,5) and g.roll_dice() and g.last_roll==5 and g.players[0].turtle_turns==2,"control overrides turtle consumes one duration")
 	g=fresh()
 	g.players[0].cards=["stay"]
-	check(g.use_card("stay",0) and g.roll_dice() and g.phase=="end" and g.players[0].cash==10000,"stay no landing replay")
+	check(g.use_card("stay",0) and g.roll_dice() and g.phase=="land" and g.players[0].cash==10000 and g.last_roll==0,"stay card repeats landing without movement or start reward")
 	g=fresh()
 	g.players[0].pos=5;g.players[0].previous=4
 	g.players[0].cards=["super_dice"]

@@ -130,7 +130,7 @@ func test_cash()->void:
 	check(g.resolve_reaction("free") and g.players[0].cash==10000 and not g.landing_pending,"free defense does not replay debit")
 	if twin!=null:twin.resolve_reaction("free");check(Save.snapshot(g)==Save.snapshot(twin),"cash reaction resumes exactly after restore")
 	for n in g.nodes:
-		if n.kind not in ["news","minigame","unresolved"]:continue
+		if n.kind != "unresolved":continue
 		g=fresh();g.players[0].cards.clear()
 		var before:int=g.rng.state
 		approach(g,n.id)

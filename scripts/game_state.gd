@@ -10,6 +10,8 @@ const Buildings = preload("res://scripts/model/building_rules.gd")
 const Market = preload("res://scripts/model/stock_market.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
 const Specials = preload("res://scripts/model/special_services.gd")
+const News = preload("res://scripts/model/news_rules.gd")
+const Minigame = preload("res://scripts/model/minigame_rules.gd")
 const Shop = preload("res://scripts/model/shop_rules.gd")
 const Maps = preload("res://scripts/model/map_catalog.gd")
 const Teams = preload("res://scripts/model/team_rules.gd")
@@ -198,8 +200,21 @@ func roll_dice(forced: int = 0) -> bool:
 		p.stay_turns-=1
 		last_roll=0
 		controlled_dice=0
+		if p.get("stay_landing",false):
+			p.erase("stay_landing")
+			steps_left=0
+			controlled_path.clear()
+			forced_next=-1
+			cached_next=-1
+			bank_visited.clear()
+			service_visited.clear()
+			god_pass_seen.clear()
+			active_lot_id=""
+			_log("停留卡：原地再次结算落点，不增加移动步数。")
+			_land()
+			return true
 		phase="end"
-		_log("停留：原地结束行动，不重复触发落点（测试规则）。")
+		_log("停留状态：原地结束行动，不重复触发落点（魔法/陷阱测试规则）。")
 		return true
 	if is_sleepwalking(): forced=0; controlled_dice=0; controlled_path.clear()
 	if int(p.get("turtle_turns",0))>0 and controlled_dice==0 and forced==0:
@@ -383,7 +398,9 @@ func _continue_land() -> void:
 			Money.begin(self,current,-amount,-1,"cash_tile")
 			Combat.advance(self)
 		return
-	if nodes[p.pos].kind in ["unresolved","news","minigame"]:
+	if nodes[p.pos].kind=="news" and News.enter(self): return
+	if nodes[p.pos].kind=="minigame" and Minigame.enter(self): return
+	if nodes[p.pos].kind=="unresolved":
 		_log("此道路功能尚待核验，本验证版不产生效果。")
 	if nodes[p.pos].kind=="magic" and Specials.enter(self,"magic"): return
 	if nodes[p.pos].kind=="event" and Gods.id(self,current)!="fierce":
@@ -786,6 +803,10 @@ func gm_god(player_id:int,god_id:String)->bool:
 	var attached:bool=Gods.attach(self,player_id,god_id)
 	if attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["lottery","magic"]:
 		Specials.close(self,phase)
+	elif attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["news","minigame"]:
+		pending_service.clear()
+		phase="land"
+		_log("GM改变参与资格，当前新闻/小游戏已中断，不结算奖励。")
 	return attached
 func gm_spawn_god(road:int,god_id:String)->bool:
 	if phase in ["reaction","finished"] or road<0 or road>=nodes.size(): return false

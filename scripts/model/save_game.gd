@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 4
+const VERSION = 5
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -105,7 +105,7 @@ static func special_state_error(state: Dictionary, game) -> String:
 		if draw.payouts.keys() != lottery.last_winners: return "乐透派奖名单不一致"
 	var visited: Dictionary = {}
 	for road in state.service_visited:
-		if not road is int or road < 0 or road >= game.nodes.size() or game.nodes[road].kind not in ["lottery","magic"] or visited.has(road): return "服务经过记录无效"
+		if not road is int or road < 0 or road >= game.nodes.size() or game.nodes[road].kind not in ["lottery","magic","news","minigame"] or visited.has(road): return "服务经过记录无效"
 		visited[road] = true
 	var service: Dictionary = state.pending_service
 	if state.phase in ["lottery","magic"]:
@@ -122,6 +122,12 @@ static func special_state_error(state: Dictionary, game) -> String:
 			for ticket in lottery.tickets:
 				if ticket.player == state.current: owned += 1
 			if owned < service.purchases: return "乐透购买记录不一致"
+	elif state.phase == "news":
+		var error: String = game.News.state_error(state,game)
+		if not error.is_empty(): return error
+	elif state.phase == "minigame":
+		var error: String = game.Minigame.state_error(state,game)
+		if not error.is_empty(): return error
 	elif not service.is_empty(): return "待处理服务与阶段不一致"
 	var magic: Dictionary = state.magic_last_result
 	if not magic.is_empty():
@@ -153,9 +159,10 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,3,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,4,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
+	if data.version < 5 and state.get("phase", "") in ["news","minigame"]: return failure("旧版本不包含新闻或小游戏阶段")
 	if data.version == 1:
 		var additions: Dictionary = v1_additions()
 		for key in additions:
@@ -189,7 +196,7 @@ static func restore(data: Variant) -> Dictionary:
 	if state.nodes != game.nodes or state.lots.keys() != game.lots.keys(): return failure("地图版本不兼容")
 	if state.map_metadata != game.map_metadata or state.start_road != game.start_road or state.start_bonus != game.start_bonus: return failure("地图配置不一致")
 	var count: int = state.players.size()
-	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","end","detained","reaction","finished"]: return failure("行动状态无效")
+	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","news","minigame","end","detained","reaction","finished"]: return failure("行动状态无效")
 	if state.round_number < 1 or state.round_limit < 1 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
 	if state.reaction_reward_active: return failure("不能恢复未完成的内部奖励步骤")
 	for road in [state.forced_next,state.cached_next]:
@@ -203,6 +210,7 @@ static func restore(data: Variant) -> Dictionary:
 			if not game.CARD_NAMES.has(card): return failure("未知卡牌")
 		if p.cards.size() > game.HAND_LIMIT: return failure("手牌数量无效")
 		if p.has("choose_junction") and not p.choose_junction is bool: return failure("岔路选择状态无效")
+		if p.has("stay_landing") and (not p.stay_landing is bool or not p.stay_landing or p.get("stay_turns",0) < 1): return failure("停留卡落点标记无效")
 		if p.has("glory_until") and (not p.glory_until is int or p.glory_until < 0): return failure("辉煌到期状态无效")
 		if p.has("next_direction") and (not p.next_direction is int or p.next_direction < -1 or p.next_direction >= game.nodes.size()): return failure("预选方向无效")
 		if not p.god.is_empty() and (not game.Gods.CATALOG.has(p.god.get("id")) or not p.god.get("remaining") is int): return failure("神仙状态无效")

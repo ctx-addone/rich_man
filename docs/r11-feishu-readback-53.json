@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>53 · 新闻事件与结算规则</title>\n\n# 第十四轮：新闻事件子模块\n\n新闻采用“停留触发→抽取并展示→确认结算一次→继续回合”的流程，独立于现金道路和旧验证地图的机会奖励。仅收录有11代原作证据的事件，不用虚构奖励填满事件池。\n\n## 本轮事件与证据\n\n| 事件ID | 效果 | 直接证据 | 实现边界 |\n|-|-|-|-|\n| release_prisoners | 全部未破产、当前仍在监狱中的角色获释 | 触乐祝思齐2022-10-22 Steam实玩记录：把对手送进监狱后，踩到释放所有人的新闻 | 只解释为释放囚犯，不清除医院、冬眠、梦游或度假状态；沿现有释放位置和出狱天赋接口 |\n| house_subsidy | 触发角色获得房屋补贴 | K5第8P02:05实机新闻显示10000，物价2；同一角色乌咪现金485200→495200。GameSpark独立实机图显示5000，物价1 | 当前按基准物价1给予5000；不新增全局物价状态，不对其他新闻泛化倍率 |\n\n来源：\n\n- [触乐原作者Steam体验](https://www.chuapp.com/article/288938.html)。文章直接支持释放囚犯；新闻显示标题是本实现的简洁说明，未伪称抄录完整原作标题。\n- [K5原作实机视频第8P02:05](https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=125)。新闻面板缓存由研究工作保存于 `docs/research/evidence/knight-p8-hd-125.png`，仅用于取证。\n- [GameSpark原作日文新闻截图](https://www.gamespark.jp/imgs/zoom/627516.png)。缓存 `docs/research/evidence/r14-gamespark-news.png`，图中日文标题和补贴金额清晰可辨。\n\n两份独立补贴画面支持“基准5000随物价变化”的推断，但尚未覆盖更高物价、特殊角色或其他修正。因此本轮只使用已观测的物价1数值；代码 `TEST_PROFILE.house_subsidy_amount=5000`、`price_index=1` 显式说明实现边界。事件池等权抽取是测试配置，并非已知原作权重。\n\n## 模块接口\n\n`scripts/model/news_rules.gd` 提供：\n\n- `enter(game) -> bool`：完成地产落点队列后进入新闻；只抽取一次，把事件ID写入待处理记录。\n- `current(game) -> Dictionary`：只读返回事件标题、说明、来源及当前目标预览；返回深拷贝，不重新抽取、不推进RNG。\n- `resolve(game) -> bool`：确认并结算已抽中的事件，清除待处理记录并返回land。再次确认会失败。\n- `event_info(id)`、`targets(game,id)`：目录与目标查询。\n- `state_error(state,game) -> String`：供存档恢复校验使用；空字符串表示通过。\n\n没有普通“跳过”入口。新闻会阻止结束回合，必须确认；GM传送或送入设施属于明确的调试中断，可由核心清理待处理服务。\n\n## 状态与一次结算\n\n复用现有 `pending_service`：\n\n```text\n{\"kind\":\"news\", \"road\":道路整数编号, \"event_id\":\"release_prisoners\"或\"house_subsidy\"}\n```\n\n没有新增游戏顶层状态。`service_visited` 防止同次行动在同一路格重复进入；重新投骰、GM新落点仍按核心的既有访问重置规则处理。抽取结果在确认前持久化，读档、重新渲染面板不会重新抽取。\n\n结算先清除pending并恢复land，再施加效果。释放囚犯调用现有 `gm_release`，保留每人记录的固定/返回出口方向，并让既有乌咪出狱天赋按原接口触发一次；不会额外执行出口路格落点收益。补贴只改变当前角色现金。\n\n当前采用服务开关 `specials_enabled`。仅未破产、无状态、未被凶神附身的角色进入新闻；经过时不触发，必须剩余步数0、落点队列清空且没有攻击等待。这套资格与先展示后确认流程是明确的本版交互策略，尚不能宣称已逐项实机核验。\n\n## 存档约束\n\n`state_error` 按候选state而非旧game玩家状态检查：news阶段、服务开关布尔值、精确三个pending字段及严格类型、合法事件ID、新闻道路与当前位置一致、访问记录含当前道路且无重复、参与者资格、剩余步数0、无未完成落点队列/酒店或攻击。地图kind使用重建后的game.nodes验证。\n\n根级存档校验仍负责全部玩家结构、地图身份和其他服务记录；本模块不承担替代完整存档校验的职责。版本迁移由主存档模块处理。\n\n## 验证范围\n\n`tests/news_test.gd` 验证：抽取与结算分离、只读展示、重复确认/重入拒绝、监狱释放范围、保留其他状态、破产角色不复活、固定出口方向、出狱天赋一次触发、当前角色补贴、服务资格、GM中断、严格存档状态拒绝、固定种子可复现，并运行两局带新闻的骑士庄园AI对局。完整磁盘往返和旧版本迁移由主存档集成测试覆盖。\n\n当前命令行实测结果：`NEWS_TEST failures=0 rejected=27 completed_matches=2`。Godot日志写工作区，环境证书存储读取警告不影响离线模型测试通过。",
+      "document_id": "QCJ3dd4RPoBIi8xJhSEcGreyngh",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

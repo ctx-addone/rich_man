@@ -149,7 +149,9 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 		"turtle":
 			if game.players[target].status.get("kind","") in ["hibernate","sleepwalk"]: game.players[target].status={}
 			game.players[target].turtle_turns=3
-		"stay": game.players[target].stay_turns=1
+		"stay":
+			game.players[target].stay_turns=1
+			game.players[target].stay_landing=true
 		"reverse": game.Movement.reverse(game,target)
 		"sleepwalk": return game.Combat.begin(game,card_id,game.current,[target],"sleepwalk",2)
 		"teleport":
