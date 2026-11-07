@@ -3,6 +3,7 @@ extends RefCounted
 
 # implemented means executable provisional rules, not verified original fidelity.
 const NAMES = {
+  "free": "免费卡",
   "god_bless": "神眷卡",
   "green": "绿化卡",
   "send_god": "送神卡",
@@ -52,7 +53,8 @@ const NAMES = {
   "explosive": "炸药卡"
 }
 const DESCRIPTIONS = {
-  "god_bless": "指定场上地面神仙附身；附身他人的神仙目标尚未接入。",
+  "free": "金钱损失达到测试阈值500时可反应，免除该笔付款；原作阈值及完整费用集合待核验。",
+  "god_bless": "指定地面或其他角色附身的神仙邀请到自己；新宿主时长及入场效果按测试配置重新计算。",
   "green": "清全场道具、神仙，包括附身神仙与炸弹（11代社区证据）。",
   "send_god": "移除周围角色或自己的神仙/定时炸弹。",
   "invite_god": "最近地面神仙附身；平距按地图顺序，测试规则。",
@@ -61,7 +63,7 @@ const DESCRIPTIONS = {
   "swap_house": "交换当前位置房屋与附近己方至少1级住宅或连锁店，土地所有权不变；交换等级研究为测试规则。",
   "buy_land": "市价强购附近对手地产，建筑保留；价格及资格为测试规则。",
   "same_fate": "反应谋划/冬眠/梦游时自己仍受效果，施卡者同受；无递归反击，规则待核验。",
-  "transfer": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则待核验。",
+  "transfer": "反应时转嫁住院/入狱或达到测试阈值的金钱损失；每个目标最多参与一次，原作边界待核验。",
   "immune": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则待核验。",
   "missile": "选道路爆炸使测试半径1内角色住院1次行动、临街建筑降1层，连爆地雷/炸药；载具独立毁坏，无热斗。",
   "hibernate": "指定对手冬眠2次行动；计时及目标资格尚待核验。",
@@ -74,7 +76,7 @@ const DESCRIPTIONS = {
   "audit": "获得附近对手现金的15%，向下取整。 范围、计时及边界为测试规则。",
   "equal_pair": "与附近指定对手平均现金，奇数余款留给目标。 范围、计时及边界为测试规则。",
   "equal_all": "场上未破产且未离场角色平均现金，余款按席位分配。 范围、计时及边界为测试规则。",
-  "steal": "从附近对手随机取1张牌；自己满8张时不能使用。 范围、计时及边界为测试规则。",
+  "steal": "从附近对手随机取1张牌；先消耗拾取卡再领取，因此满8张仍可使用。 范围、计时及边界为测试规则。",
   "scheme": "附近指定对手入狱2次行动。 范围、计时及边界为测试规则。",
   "raise_rent": "所选地产整街租金翻倍6轮。 范围、计时及边界为测试规则。",
   "worker": "选择附近己方一块地产增加1级。 范围、计时及边界为测试规则。",
@@ -90,7 +92,7 @@ const DESCRIPTIONS = {
   "car": "可用骰子数上限 3 范围、时序、优先级为测试规则，未实机核验。",
   "super_dice": "向前或向后选目的地 范围、时序、优先级为测试规则，未实机核验。",
   "teleport": "指定附近角色到指定道路，不立即触发事件，继续原行动。 范围、时序、优先级为测试规则，未实机核验。",
-  "robot": "选择前方10步路径，清沿途道路物件。 范围、时序、优先级为测试规则，未实机核验。",
+  "robot": "选择前方10步路径，清沿途道路物件与地面神仙，不清附身神仙。 范围、时序、优先级为测试规则，未实机核验。",
   "banana": "踩到前滑 1 步 范围、时序、优先级为测试规则，未实机核验。",
   "trap": "触碰停止，并在下一次行动原地停留1次。 范围、时序、优先级为测试规则，未实机核验。",
   "jelly": "触碰转向后移动2步替代剩余步数。 范围、时序、优先级为测试规则，未实机核验。",
@@ -101,6 +103,7 @@ const DESCRIPTIONS = {
   "explosive": "触碰或被连爆引爆，测试半径1内住院8次行动，毁车；当前不损坏建筑，也不继续传播。未实现热斗，范围与时序待核验。"
 }
 const TARGETS = {
+  "free": "reaction",
   "god_bless": "god",
   "green": "none",
   "send_god": "player",
@@ -389,13 +392,13 @@ const ALL = {
     "name": "免费卡",
     "description": "达到一定损失阈值时，可免除损失",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "阈值、费用类别、反应窗口；不能简化成预挂租金盾",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "强制金钱损失的反应卡，阈值500为测试参数；主动消费不触发。费用集合与原版阈值待核验。"
   },
   "audit": {
     "number": 20,
@@ -447,7 +450,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "从附近对手随机取1张牌；自己满8张时不能使用。 范围、计时及边界为测试规则。"
+    "implementation_note": "从附近对手随机取1张牌；先消耗拾取卡再领取，因此满8张仍可使用。 范围、计时及边界为测试规则。"
   },
   "scheme": {
     "number": 24,
@@ -486,7 +489,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则待核验。"
+    "implementation_note": "可转嫁住院/入狱及达到测试阈值的已建模金损；收款人保持不变，受让资格和阈值待原版核验。"
   },
   "immune": {
     "number": 27,
@@ -547,11 +550,11 @@ const ALL = {
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
     "implemented": true,
     "unknowns": [
-      "岔路、神仙、地图机关是否在清除集合",
+      "岔路路径与地图机关清除集合待核验，地面神仙有11代社区依据",
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "选择前方10步路径，清沿途道路物件。 范围、时序、优先级为测试规则，未实机核验。"
+    "implementation_note": "选择前方10步路径，清沿途道路物件和地面神仙，不清附身神仙。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "worker": {
     "number": 32,
@@ -759,7 +762,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "指定场上地面神仙附身；附身他人的神仙目标尚未接入。"
+    "implementation_note": "可邀请地面或其他未破产角色附身神仙；新宿主时长/入场效果重算为测试约定。自身附身不作为目标。"
   },
   "activate": {
     "number": 48,

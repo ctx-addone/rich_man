@@ -1,7 +1,7 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
-	out_dir = "res://docs/testing/round6"
+	out_dir = "res://docs/testing/round7"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()

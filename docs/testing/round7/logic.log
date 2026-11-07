@@ -1,0 +1,72 @@
+money_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+MONEY_TEST failures=0
+god_interactions_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+GOD_INTERACTIONS_TEST failures=0
+round7_review_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+ROUND7_REVIEW_TEST failures=0
+characters_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+CHARACTERS_TEST failures=0
+gods_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+GODS TEST failures=0
+round6_review_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+ROUND6_REVIEW_TEST failures=0
+core_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+R3_CORE failures=0 complete_matches=50
+buildings_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+BUILDINGS_TEST failures=0
+cards_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+R3_CARDS failures=0
+combat_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+combat_test: 0 failures
+stocks_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+STOCKS_TEST failures=0
+stock_integration_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+R4_STOCK_INTEGRATION failures=0
+route_planner_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+route_planner_test: 0 failures
+movement_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+movement_test: 0 failures
+explosives_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+explosives_test: 0 failures
+round4_review_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+ROUND4_REVIEW failures=0
+round5_review_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+round5_review_test: 0 failures
+board_model_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+BOARD_MODEL_CONTRACT failures=0

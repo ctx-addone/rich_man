@@ -30,15 +30,20 @@ static func options(g) -> Array[String]:
 	var who:int=g.reaction_player()
 	if who<0 or not g.players[who].status.is_empty(): return result
 	var attack:Dictionary=g.pending_attack
-	for card in ["immune","transfer","same_fate"]:
+	for card in ["immune","transfer","same_fate","free"]:
 		if not g.players[who].cards.has(card): continue
-		if card in ["immune","transfer"] and attack.kind in ["hospital","prison"]:
+		if attack.kind=="money" and attack.amount>=g.Money.TEST_PROFILE.reaction_threshold:
+			if card=="free" or (card=="transfer" and not targets(g,card).is_empty()): result.append(card)
+		elif card in ["immune","transfer"] and attack.kind in ["hospital","prison"]:
 			if card!="transfer" or not targets(g,card).is_empty(): result.append(card)
 		elif card=="same_fate" and attack.source in ["scheme","hibernate","sleepwalk"] and attack.attacker>=0 and attack.attacker!=who and g.players[attack.attacker].status.is_empty(): result.append(card)
 	return result
 
 static func apply_hit(g, who:int) -> void:
 	var a:Dictionary=g.pending_attack
+	if a.kind=="money":
+		g._pay(who,a.amount,a.receiver)
+		return
 	if g.Traits.target_immune(g,a.attacker,who,a.source): return
 	if a.kind in ["hibernate","sleepwalk"]:
 		var p:Dictionary=g.players[who]
@@ -59,6 +64,7 @@ static func advance(g) -> void:
 			if a.events.is_empty(): break
 			var next:Dictionary=a.events.pop_front()
 			for key in ["source","attacker","queue","kind","days","target","visited"]: a[key]=next[key]
+			for key in ["amount","receiver"]: a[key]=next.get(key,0 if key=="amount" else -1)
 			continue
 		var who:int=a.queue.pop_front()
 		if a.visited.has(who) or g.players[who].bankrupt: continue
@@ -69,16 +75,21 @@ static func advance(g) -> void:
 			g._log("等待%s选择防御或承受效果。"%g.players[who].name)
 			return
 		apply_hit(g,who)
+		if g.phase=="finished": return
 	var prior:String=a.return_phase
 	var arrival:bool=a.arrival
 	g.pending_attack={}
-	if not g.players[g.current].status.is_empty() and g.players[g.current].status.get("kind","")!="sleepwalk":
+	if g.players[g.current].bankrupt or (not g.players[g.current].status.is_empty() and g.players[g.current].status.get("kind","")!="sleepwalk"):
+		g.landing_pending=false
+		g.landing_queue.clear()
+		g.landing_hotel=""
 		g.steps_left=0
 		g.controlled_dice=0
 		g.phase="end"
 	else:
 		g.phase=prior
 		if arrival: g._resume_road_arrival()
+		elif g.landing_pending: g._continue_land()
 
 static func resolve(g, card:String, target:int) -> bool:
 	if g.phase!="reaction" or g.reaction_player()<0: return false
@@ -89,13 +100,17 @@ static func resolve(g, card:String, target:int) -> bool:
 	if card!="transfer" and target!=-1: return false
 	if card!="":
 		g.players[who].cards.erase(card)
+		g.reaction_reward_active=true
+		g.Traits.on_card_used(g,who,card)
+		g.reaction_reward_active=false
 		g._log("%s 使用%s反应。"%[g.players[who].name,g.CARD_NAMES[card]])
 	match card:
 		"transfer": a.queue.push_front(target)
 		"same_fate":
 			apply_hit(g,who)
 			apply_hit(g,a.attacker)
-		"immune": pass
+		"immune", "free": pass
 		_: apply_hit(g,who)
+	if g.phase=="finished": return true
 	advance(g)
 	return true

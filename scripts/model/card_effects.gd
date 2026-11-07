@@ -20,7 +20,7 @@ static func valid_command(game,card_id:String,target:Variant,value:int)->bool:
 		var options:Array=game.building_options(target)
 		return value>=0 and value<options.size() and options[value]!=game.lots[target].building_type
 	if card_id=="buy_land": return game.players[game.current].cash>=game.lot_value(target)
-	if card_id=="invite_god" or card_id=="god_bless": return not game.road_gods.is_empty()
+	if card_id=="invite_god": return not game.road_gods.is_empty()
 	if card_id=="rapid_missile":
 		for i in range(game.players.size()):
 			if i!=game.current and game.Explosives.on_road(game.players[i]): return true
@@ -42,7 +42,7 @@ static func targets(game, card_id: String) -> Array:
 		"dice":
 			if card_id=="super_dice": return [-6,-5,-4,-3,-2,-1,1,2,3,4,5,6]
 			return range(game.dice_count,game.dice_count*6+1)
-		"god": return game.road_gods.keys()
+		"god": return game.Gods.bless_targets(game)
 		"none": return [-1]
 		"player", "player_road":
 			for i in range(game.players.size()):
@@ -53,7 +53,7 @@ static func targets(game, card_id: String) -> Array:
 				# A sleeping road character can still be imprisoned, but cannot defend.
 				if not p.status.is_empty() and not (card_id in ["scheme","turtle","hibernate","sleepwalk"] and p.status.get("kind", "") in ["hibernate","sleepwalk"]): continue
 				if game._distance(actor.pos, p.pos) > card_range: continue
-				if card_id == "steal" and (p.cards.is_empty() or actor.cards.size() >= 8): continue
+				if card_id == "steal" and p.cards.is_empty(): continue
 				result.append(i)
 		"road":
 			for node in game.nodes:
@@ -86,7 +86,9 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 			return true
 		if card_id not in ["dice","super_dice","robot"] or not game.RoutePlanner.valid_path(game,card_id,target,value): return false
 		if card_id=="robot":
-			for road in target: game.road_objects.erase(road)
+			for road in target:
+				game.road_objects.erase(road)
+				game.road_gods.erase(road)
 			return true
 		if card_id=="super_dice":
 			game.controlled_path.clear()
@@ -105,10 +107,7 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 			game.road_objects.clear()
 			game.road_gods.clear()
 			for p in game.players: p.god={}; p.bomb={}
-		"god_bless":
-			var god_id:String=game.road_gods[target]
-			game.road_gods.erase(target)
-			return game.Gods.attach(game,game.current,god_id)
+		"god_bless": return game.Gods.bless(game,target)
 		"buy_land":
 			var lot:Dictionary=game.lots[target]
 			var cost:int=game.lot_value(target)
@@ -167,8 +166,7 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 		"mine", "roadblock", "portal", "banana", "trap", "jelly", "timebomb", "explosive": game.road_objects[target] = {"kind":card_id,"owner":game.current}
 		"audit":
 			var amount: int = int(game.players[target].cash * 15 / 100)
-			game.players[target].cash -= amount
-			actor.cash += amount
+			return game.Money.begin(game,target,amount,game.current,"audit")
 		"equal_pair":
 			var total: int = actor.cash + game.players[target].cash
 			actor.cash = int(total / 2)

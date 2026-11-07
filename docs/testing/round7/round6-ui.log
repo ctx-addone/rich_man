@@ -1,0 +1,46 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: all sixteen characters and neutral placeholder selectable
+PASS: screenshot 01-characters
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: selected character survives setup
+PASS: normal match spawns ten gods
+PASS: button exists: 神仙附身
+PASS: button enabled: 神仙附身
+PASS: GM attach uses selected character duration
+PASS: character receives robot on possession
+PASS: screenshot 02-possession
+PASS: button exists: 神眷卡
+PASS: button enabled: 神眷卡
+PASS: god card lists named road gods
+PASS: screenshot 03-god-choice
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: chosen god removed from road
+PASS: fifth card automatically synthesizes
+PASS: button exists: 绿化卡
+PASS: button enabled: 绿化卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: green clears road and attached gods
+PASS: button exists: 换屋卡
+PASS: button enabled: 换屋卡
+PASS: screenshot 05-swap-choice
+PASS: button exists: 确认交换
+PASS: button enabled: 确认交换
+PASS: two selectors exchange eligible buildings
+PASS: screenshot 04-catalog
+PASS: button exists: 关闭
+PASS: button enabled: 关闭
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: new systems still reach results
+ROUND6_UI_TEST failures=0

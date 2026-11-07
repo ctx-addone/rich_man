@@ -39,7 +39,7 @@ func _initialize() -> void:
 	check(g.use_card("steal",1) and g.players[0].cards == ["dice"] and g.players[1].cards.is_empty(), "Steal transfers one card and consumes itself")
 	g.players[0].cards = ["steal","dice","dice","dice","dice","dice","dice","dice"]
 	g.players[1].cards = ["mine"]
-	check(not g.use_card("steal",1) and g.players[1].cards == ["mine"] and g.players[0].cards.size() == 8, "Full hand rejects steal atomically")
+	check(g.use_card("steal",1) and g.players[1].cards.is_empty() and g.players[0].cards.size() == 8 and g.players[0].cards.has("mine"), "Steal consumption releases space before receiving the target card")
 	g = fresh()
 	equip(g,"roadblock")
 	check(g.use_card("roadblock",1), "Roadblock places")
@@ -88,6 +88,7 @@ func _initialize() -> void:
 	check(g.use_card("disaster") and lot.level == 1, "Disaster drops four levels")
 	equip(g,"worker")
 	check(not g.use_card("worker",lot.id) and g.players[0].cards.has("worker"), "Worker rejects opponent property without consuming")
-	check(not g.gm_give_card(0,"free"), "Unimplemented reaction card excluded from live GM pool")
+	check(g.gm_give_card(0,"free"), "Free reaction card included in live GM pool")
+	check(not g.use_card("free") and g.players[0].cards.has("free"), "Free cannot be spent as an active card")
 	print("R3_CARDS failures=",failures)
 	quit(1 if failures else 0)

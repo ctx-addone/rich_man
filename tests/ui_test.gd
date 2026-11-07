@@ -60,7 +60,10 @@ func capture(file_name: String) -> void:
 	await process_frame
 	await process_frame
 	await RenderingServer.frame_post_draw
-	check(root.get_texture().get_image().save_png(out_dir.path_join(file_name + ".png")) == OK, "screenshot " + file_name)
+	var destination: String = OS.get_environment("RICHMAN_TEST_OUTPUT")
+	if destination.is_empty(): destination = out_dir
+	DirAccess.make_dir_recursive_absolute(destination)
+	check(root.get_texture().get_image().save_png(destination.path_join(file_name + ".png")) == OK, "screenshot " + file_name)
 
 func choose_route_steps(steps: int) -> void:
 	var choice: OptionButton = app.popup.find_child("RouteChoice", true, false)

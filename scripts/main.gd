@@ -5,6 +5,7 @@ const Board = preload("res://scripts/board_view.gd")
 const Cards = preload("res://scripts/model/cards_catalog.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
+const DebugTools = preload("res://scripts/model/debug_tools.gd")
 const COLORS = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")]
 const NAMES = ["赤橙", "青竹", "蓝星", "紫菀"]
 var game = Game.new()
@@ -131,7 +132,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.6 开发版  ·  神仙与角色天赋  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.7 开发版  ·  金钱防御与神仙交互  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -502,7 +503,10 @@ func show_reaction_controls() -> void:
 		sidebar.add_child(button("我来应对 · " + p.name, func(): reaction_ack = responder; refresh()))
 		return
 	sidebar.add_child(paragraph(game.reaction_description(), 17))
-	sidebar.add_child(paragraph("只在确认后消耗防御卡。人物免疫或转移不会撤销已发生的建筑损害。", 14))
+	if game.pending_attack.get("kind", "") == "money":
+		sidebar.add_child(paragraph("费用尚未扣除。免费免除本次付款；转移由选中的角色应对。住宿等后续效果仍按事件继续。", 14))
+	else:
+		sidebar.add_child(paragraph("只在确认后消耗防御卡。人物免疫或转移不会撤销已发生的建筑损害。", 14))
 	for card_id in game.reaction_options():
 		if card_id == "transfer":
 			var choices: Array = game.reaction_targets(card_id)
@@ -678,8 +682,11 @@ func play_card(card_id: String) -> void:
 		target.name = "CardTarget"
 		var options: Array = game.card_targets(card_id)
 		for id in options:
-			var title_text: String = game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name])
-			if target_type == "god": title_text += " · " + Gods.CATALOG[game.road_gods[id]].name
+			var title_text: String
+			if target_type == "god":
+				title_text = Gods.bless_target_name(game, str(id))
+			else:
+				title_text = game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name])
 			target.add_item(title_text)
 		v.add_child(target)
 		var building_choice: OptionButton
@@ -872,6 +879,55 @@ func show_gm() -> void:
 	god_actions.add_child(button("神仙附身", func(): gm_used = true; game.gm_god(who.selected, god_ids[god_choice.selected]); dismiss(), game.phase == "reaction"))
 	god_actions.add_child(button("放置道路神仙", func(): gm_used = true; game.gm_spawn_god(destination.get_selected_id(), god_ids[god_choice.selected]); dismiss(), game.phase == "reaction"))
 	god_actions.add_child(button("清除附身神仙", func(): gm_used = true; game.gm_god(who.selected, ""); dismiss(), game.phase == "reaction"))
+	v.add_child(button("配置地产与租金测试 →", show_gm_property, game.phase in ["reaction", "move"]))
 	v.add_child(button("手动选择所有岔路 · " + ("开" if game.gm_choose_route else "关"), func(): gm_used = true; game.gm_choose_route = not game.gm_choose_route; dismiss(), game.phase != "roll"))
 	v.add_child(button("立即结算整局", func(): gm_used = true; game.finish_game(); dismiss()))
 	outer.add_child(button("关闭  /  Esc", dismiss))
+
+func show_gm_property() -> void:
+	var v := modal("GM · 配置地产")
+	v.add_child(paragraph("设置产权、建筑与等级；清除该地块的研究、涨价和停业。配置后可回GM传送到任一入口，测试租金与防御。", 14))
+	var lot_choice := OptionButton.new()
+	lot_choice.name = "GMLot"
+	var lot_ids: Array[String] = []
+	for lot in game.lots.values():
+		if lot.kind == "facility": continue
+		lot_ids.append(lot.id)
+		lot_choice.add_item(lot.name)
+	v.add_child(lot_choice)
+	var owner_choice := OptionButton.new()
+	owner_choice.name = "GMLotOwner"
+	owner_choice.add_item("无主空地", 0)
+	for i in range(game.players.size()): owner_choice.add_item(game.players[i].name, i + 1)
+	owner_choice.select(game.current + 1)
+	v.add_child(owner_choice)
+	var kind_choice := OptionButton.new()
+	kind_choice.name = "GMLotKind"
+	v.add_child(kind_choice)
+	var level := SpinBox.new()
+	level.name = "GMLotLevel"
+	level.min_value = 1
+	level.max_value = 5
+	level.value = 1
+	level.prefix = "等级 "
+	v.add_child(level)
+	var description := paragraph("", 14)
+	v.add_child(description)
+	var update_lot := func():
+		kind_choice.clear()
+		var id: String = lot_ids[lot_choice.selected]
+		for kind in game.building_options(id): kind_choice.add_item(game.building_name(kind))
+		level.max_value = game.max_level(id)
+		description.text = "道路入口：" + "、".join(game.lots[id].frontage_nodes)
+	update_lot.call()
+	lot_choice.item_selected.connect(func(_index): update_lot.call())
+	var error_text := paragraph("", 14)
+	v.add_child(error_text)
+	v.add_child(button("应用地产配置", func():
+		var id: String = lot_ids[lot_choice.selected]
+		var kind: String = game.building_options(id)[kind_choice.selected]
+		if DebugTools.configure_lot(game, id, owner_choice.get_selected_id()-1, kind, int(level.value)):
+			gm_used = true
+			dismiss()
+		else: error_text.text = "当前阶段或所有者无效，配置未应用。"))
+	v.add_child(button("返回GM", show_gm))

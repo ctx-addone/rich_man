@@ -4,6 +4,7 @@ extends RefCounted
 const Explosives = preload("res://scripts/model/explosives.gd")
 const RoutePlanner = preload("res://scripts/model/route_planner.gd")
 const Movement = preload("res://scripts/model/movement_rules.gd")
+const Money = preload("res://scripts/model/money_rules.gd")
 const Combat = preload("res://scripts/model/combat_rules.gd")
 const Buildings = preload("res://scripts/model/building_rules.gd")
 const Market = preload("res://scripts/model/stock_market.gd")
@@ -49,6 +50,11 @@ var road_objects: Dictionary = {}
 var bank_visited: Array[String] = []
 var shop_purchases: int = 0
 var pending_attack: Dictionary = {}
+var landing_pending := false
+var landing_queue: Array = []
+var landing_hotel := ""
+var landing_shop := false
+var reaction_reward_active := false
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> void:
 	gods_enabled = options.get("gods_enabled",false)
@@ -59,6 +65,9 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	if seed_value == 0: rng.randomize()
 	else: rng.seed = seed_value
 	pending_attack.clear()
+	landing_pending=false
+	landing_queue.clear()
+	landing_hotel=""
 	controlled_path.clear()
 	dice_count=1
 	last_dice.clear()
@@ -315,36 +324,59 @@ func _land() -> void:
 	var continuing_shop:bool=phase=="shop"
 	phase="land"
 	active_lot_id=""
-	var p: Dictionary=players[current]
-	_log("%s 停在%s。"%[p.name,nodes[p.pos].name])
-	for id in board_model.lots_for_event(str(p.pos),"stop"):
-		var lot: Dictionary=lots[id]
+	landing_shop=continuing_shop
+	landing_pending=true
+	landing_queue=board_model.lots_for_event(str(players[current].pos),"stop").duplicate()
+	landing_hotel=""
+	_log("%s 停在%s。"%[players[current].name,nodes[players[current].pos].name])
+	_continue_land()
+
+func _continue_land() -> void:
+	if not landing_pending or phase=="finished": return
+	var p:Dictionary=players[current]
+	if p.bankrupt:
+		landing_pending=false
+		landing_queue.clear()
+		phase="end"
+		return
+	if not landing_hotel.is_empty():
+		var hotel:String=landing_hotel
+		landing_hotel=""
+		landing_pending=false
+		landing_queue.clear()
+		send_on_vacation(current,hotel)
+		return
+	while not landing_queue.is_empty():
+		var id:String=landing_queue.pop_front()
+		var lot:Dictionary=lots[id]
 		if lot.kind=="facility":
 			if lot.building_type=="shop" and not is_sleepwalking():
 				phase="shop"
-				if not continuing_shop: shop_purchases=0
+				if not landing_shop: shop_purchases=0
 			continue
 		active_lot_id=id
 		Gods.stop_lot(self,lot)
 		if lot.owner>=0 and lot.owner!=current:
-			var cost: int=rent_preview(id,current)
+			var cost:int=rent_preview(id,current)
 			if lot.building_type=="mall":
 				var multiplier:int=rng.randi_range(1,3)
 				cost*=multiplier
 				_log("商业中心转盘：%d倍。"%multiplier)
-			_log("向%s支付%s租金%d。"%[players[lot.owner].name,lot.name,cost])
-			_pay(current,cost,lot.owner)
-			if phase=="finished" or p.bankrupt: return
-			if lot.building_type=="hotel" and lot.level>0 and lot.closed_until<=round_number:
-				send_on_vacation(current,id)
+			if lot.building_type=="hotel" and lot.level>0 and lot.closed_until<=round_number: landing_hotel=id
+			_log("待结算%s租金%d。"%[lot.name,cost])
+			if cost>0:
+				Money.begin(self,current,cost,lot.owner,"rent")
+				Combat.advance(self)
 				return
+			if not landing_hotel.is_empty(): _continue_land(); return
 		elif lot.owner==current and lot.building_type=="energy" and lot.closed_until<=round_number:
 			p.cash+=int(Buildings.PROFILE.energy_income)*lot.level
 			_log("能源中心发放收益%d。"%(int(Buildings.PROFILE.energy_income)*lot.level))
+	landing_pending=false
 	if nodes[p.pos].kind=="event" and Gods.id(self,current)!="fierce":
 		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
 		else:
-			var card: String=CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)]
+			var card:String=CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)]
 			if give_card(current,card): _log("机会获得"+CARD_NAMES[card])
 
 func _selected_lot(id: String) -> Dictionary:
@@ -423,7 +455,7 @@ func collect_research(lot_id:String)->bool:
 	lot.research={}
 	return true
 func give_card(player_id:int,card_id:String)->bool:
-	if phase=="reaction": return false
+	if phase=="reaction" and not reaction_reward_active: return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].bankrupt or not CARD_NAMES.has(card_id): return false
 	if players[player_id].cards.size()>=HAND_LIMIT:
 		_log("手牌已满，无法领取"+CARD_NAMES[card_id])
@@ -573,6 +605,8 @@ func end_turn() -> bool:
 	return true
 
 func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
+	# A transferred debt to its creditor cancels itself; never liquidate assets to pay oneself.
+	if receiver==player_id or amount<=0: return
 	var p: Dictionary=players[player_id]
 	# Provisional debt policy: cash -> deposit -> stocks -> half-price property liquidation.
 	# Neither stock liquidation priority nor property discount is verified R11.
@@ -626,6 +660,9 @@ func _check_winner() -> void:
 
 func finish_game() -> void:
 	pending_attack.clear()
+	landing_pending=false
+	landing_queue.clear()
+	landing_hotel=""
 	phase="finished"
 	winners.clear()
 	var highest: int=-1
@@ -692,6 +729,7 @@ func reaction_player() -> int:
 
 func reaction_description() -> String:
 	if reaction_player()<0: return ""
+	if pending_attack.kind=="money": return "待支付 %d 给 %s；免费免本次支付，转移改变付款人，其他后果继续。" % [pending_attack.amount,players[pending_attack.receiver].name if pending_attack.receiver>=0 else "银行"]
 	return "%s：%s，持续%d次行动（计时规则待核验）。" % [CARD_NAMES.get(pending_attack.source,pending_attack.source), {"hospital":"住院","prison":"入狱","hibernate":"冬眠","sleepwalk":"梦游"}.get(pending_attack.kind,pending_attack.kind),pending_attack.days]
 
 func reaction_options() -> Array[String]:
@@ -725,7 +763,7 @@ func gm_spawn_god(road:int,god_id:String)->bool:
 	return true
 func craft_recipes()->Array:
 	var result:Array=[]
-	for pair in [["invite_god","god_bless"],["raise_rent","glory"],["monster","disaster"],["close_street","misery"],["missile","rapid_missile"]]:
+	for pair in [["send_god","green"],["invite_god","god_bless"],["raise_rent","glory"],["monster","disaster"],["close_street","misery"],["missile","rapid_missile"]]:
 		result.append({"id":pair[1],"input":pair[0],"output":pair[1],"count":5,"available":not players.is_empty() and players[current].cards.count(pair[0])>=5})
 	return result
 func craft_card(recipe_id:String)->bool:

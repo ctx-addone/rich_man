@@ -20,7 +20,7 @@ const CATALOG = {
  "john": {"name":"约翰乔", "description":"使用路障概率返还；路障范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_15.html", "implemented":"partial"},
  "wu_meila": {"name":"舞美拉", "description":"使用停留概率返还；停留范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_16.html", "implemented":"partial"},
  "ludwig": {"name":"路德维希", "description":"回合外意外失牌，我方全体各得1卡；所有卡范围 +1。", "unknowns":"完整团队模式未实现；仅相同有效team获牌，无team只自己；随机池待核验。", "source":"https://richman.fandom.com/zh/wiki/路德維希", "implemented":"partial"},
- "eleven": {"name":"十一", "description":"用传送门得超级骰子；用免费得遥控骰子。", "unknowns":"免费卡尚未实现，相关天赋仅保留hook、待接；不视为已可玩。", "source":"https://richman.fandom.com/zh/wiki/十一", "implemented":"partial"}
+ "eleven": {"name":"十一", "description":"用传送门得超级骰子；在金钱防御中用免费卡得遥控骰子。", "unknowns":"免费触发金额、奖励与满手处理仍待原版核验。", "source":"https://richman.fandom.com/zh/wiki/十一", "implemented":"partial"}
 }
 
 static func ids() -> Array[String]:

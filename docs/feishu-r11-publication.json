@@ -442,6 +442,62 @@
       "normalized_sha256": "0915159B5CC5D0FA449A54E4EBFEFCD53734EB1AEA9A97A5442DD98EAC13BF7B",
       "source_sha256": "A910F3245B4750AC1D8D544C88EA303B3663193636414CDE511DC8F86849CC92",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-07-report.md",
+      "title": "23 · 第七轮金损防御与神仙交互",
+      "node_token": "T28QwzWckirxvHks7cJcBo8DnKh",
+      "document_id": "ZZr2dzi7doI5buxOcGwcPFKtnTc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/T28QwzWckirxvHks7cJcBo8DnKh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-23.json",
+      "revision_id": 2,
+      "remote_characters": 1475,
+      "normalized_sha256": "A54D507DC38D779908212BB1DECB3C35D3FB5DB9436EE34761FBAA2C281297FE",
+      "source_sha256": "74B3D2B59813F6525704DCFF21D129258090ACE3C5770A3BB7CCAF561A29D913",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-07-money.md",
+      "title": "24 · 待支付事件与金损防御",
+      "node_token": "TohowalVyiIc9ek2WiscIe0anfg",
+      "document_id": "I2vkdac9VoTYJTxmN00cWrpLnAh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/TohowalVyiIc9ek2WiscIe0anfg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-24.json",
+      "revision_id": 2,
+      "remote_characters": 1145,
+      "normalized_sha256": "E31BDBEA1FE127C42DE408244BC80B65BBD2CD3E69B59F5DBC75F53F01FA78D6",
+      "source_sha256": "ECBA6626488B097C0EA3C57D72E10F9CA7DBEB67838C7CA441070C6A8946C69F",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-07-gods.md",
+      "title": "25 · 神眷目标与第六合成配方",
+      "node_token": "MDt6wcaHiiNs18ke3RacKVBOnrb",
+      "document_id": "RiE5deSpvoK0FExiOOhccn7Bnwd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/MDt6wcaHiiNs18ke3RacKVBOnrb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-25.json",
+      "revision_id": 2,
+      "remote_characters": 1284,
+      "normalized_sha256": "5197C07DBD0EED79E2E470885ADF547E484748A86AFF95D04495FD3875E3C91B",
+      "source_sha256": "06813C6AB92B22FE096FA55E9D5C26EF1E41CB6ECF13442F06E8BBF01CD4934D",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-money-god-interactions.md",
+      "title": "26 · 金损与神仙交互补证",
+      "node_token": "OfhrwBZZcimyiSkr5vdclab4nlg",
+      "document_id": "DPaXdDjD0oikCBxmnrLcAFwInCb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/OfhrwBZZcimyiSkr5vdclab4nlg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-26.json",
+      "revision_id": 2,
+      "remote_characters": 3014,
+      "normalized_sha256": "A8320486252149BE0D04038F0D1231F51C9F0AFE49EB405EBC830C6F0FE259F8",
+      "source_sha256": "6A2B5E85FF1187EE9DD2FD504751F59C4EFDC31618C739D12AEBED2467832789",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -453,5 +509,6 @@
   "round3_updated_at": "2026-11-08",
   "round4_updated_at": "2026-11-08",
   "round5_updated_at": "2026-11-08",
-  "round6_updated_at": "2026-11-08"
+  "round6_updated_at": "2026-11-08",
+  "round7_updated_at": "2026-11-08"
 }

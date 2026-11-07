@@ -90,14 +90,27 @@ static func invite(g)->bool:
  g.road_gods.erase(best)
  attach(g,g.current,god_id)
  return true
-static func redistribute(g)->bool:
- if g.road_gods.is_empty(): return false
- var gods:Array=g.road_gods.values()
- var roads:Array=[]
- for node in g.nodes: roads.append(node.id)
- g.road_gods.clear()
- for god_id in gods:
-  var index:int=g.rng.randi_range(0,roads.size()-1)
-  g.road_gods[roads[index]]=god_id
-  roads.remove_at(index)
- return true
+static func bless_targets(g)->Array:
+ var result:Array=[]
+ for road in g.road_gods: result.append("road:%d"%road)
+ for who in range(g.players.size()):
+  if who!=g.current and not g.players[who].bankrupt and not id(g,who).is_empty(): result.append("player:%d"%who)
+ return result
+static func bless_target_name(g,target:String)->String:
+ if not bless_targets(g).has(target): return "神仙已离场"
+ var key:int=int(target.get_slice(":",1))
+ if target.begins_with("road:"): return "%02d · %s"%[key,CATALOG[g.road_gods[key]].name]
+ return "%s · 附身%s"%[g.players[key].name,CATALOG[id(g,key)].name]
+static func bless(g,target:String)->bool:
+ if not bless_targets(g).has(target): return false
+ var key:int=int(target.get_slice(":",1))
+ var god_id:String
+ if target.begins_with("road:"):
+  god_id=g.road_gods[key]
+  g.road_gods.erase(key)
+ else:
+  god_id=id(g,key)
+  g.players[key].god={}
+ # Reattachment uses the receiving character's duration and entry effects.
+ # Remaining-duration carryover is unknown; this is the explicit test profile.
+ return attach(g,g.current,god_id)
