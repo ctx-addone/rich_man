@@ -25,7 +25,7 @@ func _initialize()->void:
 	check(g.upgrade_property(lot.id) and lot.owner==0 and lot.level==2,"Frontage B shares same ownership")
 	g.end_turn()
 	g.gm_teleport(1,a)
-	check(g.players[1].cash==9120,"Rent charged once from frontage A")
+	check(g.players[1].cash in [9200,8400,7600],"Mall roulette charges a valid rent once")
 	g.setup(["甲","乙","丙","丁"],42)
 	g.players[0].pos=6
 	g.players[0].previous=5
@@ -84,8 +84,8 @@ func _initialize()->void:
 	g.players[0].cash=100
 	g.players[0].deposit=1000
 	g.gm_teleport(0,a)
-	check(g.players[0].cash==0 and g.players[0].deposit==220, "Cash spent before withdrawing only deposit shortfall")
-	check(g.players[1].cash==10880 and not g.players[0].bankrupt, "Full rent transferred from sufficient savings")
+	check(g.players[0].cash==0 and g.players[0].deposit==660, "Cash spent before withdrawing only deposit shortfall")
+	check(g.players[1].cash==10440 and not g.players[0].bankrupt, "Full rent transferred from sufficient savings")
 	check(g.players[0].cash+g.players[0].deposit+g.players[1].cash==11100, "Rent conserves combined liquid balances")
 	g.setup(["甲","乙","丙","丁"],42)
 	g.lots.lot_1_1.owner=1
@@ -101,7 +101,7 @@ func _initialize()->void:
 	retained.level=1
 	retained.building_type="house"
 	g.gm_teleport(0,a)
-	check(g.players[0].deposit==0 and g.players[0].cash==520, "Insufficient deposit precedes 1200 half-price liquidation and 880 rent")
+	check(g.players[0].deposit==0 and g.players[0].cash==960, "Insufficient deposit precedes 1200 half-price liquidation and 880 rent")
 	check(sale.owner==-1 and sale.level==0 and sale.building_type=="vacant", "Liquidation resets one whole lot")
 	check(retained.owner==0 and retained.level==1, "Liquidation stops once debt is covered")
 	for frontage in sale.frontage_nodes: check(g.lots_at_node(int(frontage)).has(sale.id) and g.lots[sale.id].owner==-1, "Every sold entrance shares released title")
@@ -160,13 +160,14 @@ func _initialize()->void:
 				"roll":
 					for card in g.players[g.current].cards.duplicate():
 						var targets:Array=g.card_targets(card)
-						if not targets.is_empty(): g.use_card(card,targets[0],targets[0])
+						if not targets.is_empty(): g.use_card(card,targets[0],int(targets[0]) if card=="dice" else 0)
 					g.roll_dice()
 				"move":
 					var choices:Array=g.available_moves()
 					check(not choices.is_empty(),"No stuck movement")
 					if choices.is_empty(): break
 					g.move_to(choices[g.rng.randi_range(0,choices.size()-1)])
+				"shop": g.close_shop()
 				"bank": g.bank_transfer(int(g.players[g.current].cash/2)); g.close_bank()
 				"land":
 					if not g.buy_property(): g.upgrade_property()
@@ -174,5 +175,5 @@ func _initialize()->void:
 				"end","detained": g.end_turn()
 			for p in g.players: check(p.cash>=0 and p.deposit>=0,"Nonnegative balances")
 		check(g.phase=="finished" and not g.winners.is_empty(),"Full match completes seed %d"%seed_value)
-	print("R2_CORE failures=",failures," complete_matches=50")
+	print("R3_CORE failures=",failures," complete_matches=50")
 	quit(1 if failures else 0)

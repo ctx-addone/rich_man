@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "map_id": "knight_manor",
+  "name": "骑士庄园",
+  "playable": false,
+  "reconstruction_status": "partial_visual_evidence_only",
+  "source_image": "https://img1.gamersky.com/image2022/10/20221013_xdj_187_1/14360.jpg",
+  "source_page": "https://www.gamersky.com/handbook/202210/1526713_7.shtml",
+  "image_size": [
+    1029,
+    705
+  ],
+  "coordinate_system": "source image pixel centers; not game grid coordinates",
+  "claimed_road_count": {
+    "value": 102,
+    "confidence": "C",
+    "source": "https://richman.fandom.com/zh/wiki/騎士莊園",
+    "visually_counted": false
+  },
+  "visible_large_lot_centers": [
+    [
+      626,
+      208
+    ],
+    [
+      440,
+      403
+    ],
+    [
+      804,
+      459
+    ],
+    [
+      405,
+      642
+    ]
+  ],
+  "visible_large_lot_count_is_minimum": true,
+  "landmarks": [
+    {
+      "pixel": [
+        172,
+        215
+      ],
+      "visual": "turquoise heart icon on western spur",
+      "meaning": "hospital candidate, not confirmed"
+    },
+    {
+      "pixel": [
+        426,
+        108
+      ],
+      "visual": "purple star-circle icon",
+      "meaning": "magic-house candidate, not confirmed"
+    },
+    {
+      "pixel": [
+        682,
+        573
+      ],
+      "visual": "turquoise storefront-like icon",
+      "meaning": "service type unconfirmed"
+    },
+    {
+      "pixel": [
+        537,
+        461
+      ],
+      "visual": "blue gamepad icon",
+      "meaning": "minigame candidate, not confirmed"
+    }
+  ],
+  "known_crop_regions": [
+    "topmost road behind border/title",
+    "bottom road beyond frame",
+    "far-right edge"
+  ],
+  "hospital_exit_node": null,
+  "prison_exit_node": null,
+  "road_nodes": [],
+  "edges": [],
+  "not_inferred": [
+    "full node adjacency",
+    "node event IDs",
+    "property prices",
+    "facility exits",
+    "street boundaries",
+    "all lot counts"
+  ],
+  "review": "Visual inspection performed; boundary clipping and avatar occlusion prevent complete topology. Do not load as a playable map or fill 102 nodes by guessing."
+}

@@ -2,6 +2,7 @@ extends Control
 
 const Game = preload("res://scripts/game_state.gd")
 const Board = preload("res://scripts/board_view.gd")
+const Cards = preload("res://scripts/model/cards_catalog.gd")
 const COLORS = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")]
 const NAMES = ["赤橙", "青竹", "蓝星", "紫菀"]
 var game = Game.new()
@@ -124,7 +125,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.2 开发版  ·  道路与建筑分层  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.3 开发版  ·  建筑与卡牌系统  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -145,7 +146,7 @@ func map_select() -> void:
 	var v := clear_page()
 	v.add_child(label("01  /  选择地图", 32))
 	v.add_child(label("市民街区 · 系统验证地图", 26, Color("e9c46a")))
-	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱"))
+	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱  ·  商店"))
 	var preview = Board.new()
 	var sample = Game.new()
 	sample.setup(player_names)
@@ -223,6 +224,7 @@ func build_game() -> void:
 	top_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(top_title)
 	header.add_child(button("规则", show_help))
+	header.add_child(button("卡牌图鉴", show_card_catalog))
 	header.add_child(button("GM · F1", show_gm))
 	header.add_child(button("主菜单", confirm_menu))
 	score_row = HBoxContainer.new()
@@ -290,9 +292,10 @@ func refresh() -> void:
 				for lot_id in game.lots_at_node(p.pos):
 					var lot: Dictionary = game.lots[lot_id]
 					if lot.kind == "facility": continue
-					if lot.owner < 0: sidebar.add_child(button("购买地产 · %s · %d" % [lot.name, lot.price], func(): game.buy_property(lot_id); refresh(), p.cash < lot.price))
-					elif lot.owner == game.current and lot.level < 3:
-						sidebar.add_child(button("升级建筑 · %s · 600" % lot.name, func(): game.upgrade_property(lot_id); refresh(), p.cash < 600))
+					if lot.owner < 0: sidebar.add_child(button("购买地产 · %s" % lot.name, func(): choose_building(lot_id, false)))
+					elif lot.owner == game.current:
+						sidebar.add_child(button("升级建筑 · %s · %d" % [game.building_name(lot.building_type), game.upgrade_cost(lot_id)], func(): game.upgrade_property(lot_id); refresh(), lot.level >= game.max_level(lot_id) or p.cash < game.upgrade_cost(lot_id)))
+						sidebar.add_child(button("改建项目 · " + lot.name, func(): choose_building(lot_id, true)))
 			"bank":
 				sidebar.add_child(paragraph("银行服务\n可存入现金或提取存款。离开后继续剩余移动，不重复结算经过事件。"))
 				var amount := SpinBox.new()
@@ -313,18 +316,23 @@ func refresh() -> void:
 				sidebar.add_child(button("离开银行 · 继续行程", func(): game.close_bank(); refresh()))
 			"detained":
 				sidebar.add_child(paragraph("%s\n本次无法行走或主动使用卡牌。结束回合后推进停留时间。" % status_text(p), 18))
-			"metro":
-				sidebar.add_child(paragraph("可支付 200 换乘另一地铁站，换乘后结束移动。"))
-				for n in game.nodes:
-					if n.kind == "metro" and n.id != p.pos: sidebar.add_child(button("换乘 → " + n.name, func(): game.take_metro(n.id); refresh(), p.cash < 200))
-		if game.phase in ["land", "end", "metro", "detained"]: sidebar.add_child(button("结束回合 →", next_turn))
+			"shop":
+				sidebar.add_child(paragraph("卡牌商店 · 本次还可买%d张\n手牌满时先弃牌；离店时结算书店奖励。" % game.shop_remaining()))
+				sidebar.add_child(button("浏览商店", show_shop))
+				sidebar.add_child(button("离开商店", func(): game.close_shop(); refresh()))
+		if game.phase in ["land", "end", "detained"]: sidebar.add_child(button("结束回合 →", next_turn))
 		var hand := panel(sidebar)
-		hand.add_child(label("手牌 · 掷骰前使用", 15))
+		hand.add_child(label("手牌 %d/%d · 掷骰前使用" % [p.cards.size(), Game.HAND_LIMIT], 15))
 		if p.cards.is_empty(): hand.add_child(label("暂无卡牌", 14))
-		for card in p.cards:
+		for card_index in range(p.cards.size()):
+			var card: String = p.cards[card_index]
+			var row := HBoxContainer.new()
+			hand.add_child(row)
 			var b := button(Game.CARD_NAMES[card], func(): play_card(card), game.phase != "roll")
 			b.tooltip_text = Game.CARD_DESCRIPTIONS[card]
-			hand.add_child(b)
+			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(b)
+			row.add_child(button("弃", func(): game.discard_card(card_index); refresh(), game.phase not in ["roll", "shop"]))
 	var id: int = selected if selected >= 0 else p.pos
 	var n: Dictionary = game.nodes[id]
 	var detail := panel(sidebar)
@@ -332,7 +340,7 @@ func refresh() -> void:
 	if not p.status.is_empty() and selected < 0 and selected_lot.is_empty():
 		detail.add_child(label("当前停留场所", 18))
 		detail.add_child(paragraph("离开后返回：%s" % game.nodes[p.status.return_pos].name, 14))
-		detail_lots = [game.facility_lot(p.status.kind).id]
+		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else [game.facility_lot(p.status.kind).id]
 	else:
 		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
 		detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
@@ -341,9 +349,17 @@ func refresh() -> void:
 		detail.add_child(label(lot.name, 18, Color("e9c46a")))
 		detail.add_child(paragraph("占地 %d×%d · 临街入口 %s" % [lot.footprint.size.x, lot.footprint.size.y, ", ".join(lot.frontage_nodes)], 13))
 		if lot.kind == "facility":
-			detail.add_child(paragraph({"bank":"经过时可调整现金与存款。", "hospital":"受伤角色在此停留，状态到期后返回道路。", "prison":"被拘留角色在此停留，状态到期后返回道路。"}.get(lot.building_type, "公共设施"), 14))
+			detail.add_child(paragraph({"bank":"经过时可调整现金与存款。", "hospital":"受伤角色在此停留，状态到期后返回道路。", "prison":"被拘留角色在此停留，状态到期后返回道路。", "shop":"停留可购买卡牌，离店触发书店奖励。"}.get(lot.building_type, "公共设施"), 14))
 		else:
-			detail.add_child(paragraph("持有：%s\n等级：%d / 3\n地价：%d   当前租金：%d" % ["无主" if lot.owner < 0 else game.players[lot.owner].name, lot.level, lot.price, lot.rent * lot.level * lot.level], 14))
+			detail.add_child(paragraph("持有：%s\n类型：%s  等级：%d/%d\n资产估值：%d  租金参考：%d" % ["无主" if lot.owner < 0 else game.players[lot.owner].name, game.building_name(lot.building_type), lot.level, game.max_level(lot_id), game.lot_value(lot_id), game.rent_preview(lot_id)], 14))
+			detail.add_child(paragraph(game.building_description(lot.building_type), 13))
+			if lot.get("closed_until", 0) > game.round_number: detail.add_child(label("停业 · 剩余%d轮" % (lot.closed_until - game.round_number), 14, Color("f1a69c")))
+			if lot.get("rent_until", 0) > game.round_number: detail.add_child(label("涨价 · 剩余%d轮" % (lot.rent_until - game.round_number), 14, Color("e9c46a")))
+			if lot.owner >= 0 and game.players[lot.owner].get("glory_until", 0) > game.round_number: detail.add_child(label("持有人辉煌效果生效中", 14, Color("e9c46a")))
+			if not lot.get("research", {}).is_empty(): detail.add_child(paragraph("研究：%s · %s" % [Game.CARD_NAMES.get(lot.research.card_id, lot.research.card_id), "完成待领，手牌需有空位" if lot.research.remaining == 0 else "剩余%d轮" % lot.research.remaining], 13))
+			if lot.owner == game.current and lot.building_type == "lab" and not handoff:
+				if lot.research.is_empty(): detail.add_child(button("安排研究", func(): choose_research(lot_id), game.phase not in ["land", "roll"] or lot.level <= 0 or lot.closed_until > game.round_number))
+				elif lot.research.remaining == 0: detail.add_child(button("领取研究成果", func(): game.collect_research(lot_id); refresh(), p.cards.size() >= Game.HAND_LIMIT or game.phase not in ["land", "roll", "shop"] or lot.level <= 0 or lot.closed_until > game.round_number))
 	var log_panel := panel(sidebar)
 	log_panel.add_child(label("最近动态", 16))
 	for j in range(maxi(0, game.logs.size() - 5), game.logs.size()): log_panel.add_child(paragraph(game.logs[j], 13))
@@ -388,7 +404,65 @@ func on_lot(id: String) -> void:
 
 func status_text(p: Dictionary) -> String:
 	if p.status.is_empty(): return ""
-	return "%s %d回合" % ["住院" if p.status.kind == "hospital" else "入狱", p.status.remaining]
+	return "%s %d回合" % [{"hospital":"住院", "prison":"入狱", "vacation":"度假"}.get(p.status.kind, "停留"), p.status.remaining]
+
+func scroll_content(parent: Node, height: int = 440) -> VBoxContainer:
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(620, height)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	parent.add_child(scroll)
+	var contents := VBoxContainer.new()
+	contents.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(contents)
+	return contents
+
+func choose_building(lot_id: String, rebuilding: bool) -> void:
+	var lot: Dictionary = game.lots[lot_id]
+	var v := modal(("改建项目 · " if rebuilding else "购买地产 · ") + lot.name)
+	v.add_child(paragraph("选择建筑类型。当前价格及效果参数为待核验配置。", 14))
+	var content := scroll_content(v)
+	for kind in game.building_options(lot_id):
+		var cost: int = game.rebuild_cost(lot_id, kind) if rebuilding else game.purchase_cost(lot_id, kind)
+		content.add_child(button("选择 " + game.building_name(kind) + " · %d" % cost, func():
+			var success: bool = game.rebuild_property(lot_id, kind) if rebuilding else game.buy_property(lot_id, kind)
+			if success: dismiss(), game.players[game.current].cash < cost or (rebuilding and lot.building_type == kind)))
+		content.add_child(paragraph(game.building_description(kind), 14))
+	v.add_child(button("取消", dismiss))
+
+func choose_research(lot_id: String) -> void:
+	var v := modal("安排研究")
+	v.add_child(paragraph("研究所等级决定可研究项目。具体卡池和研究时长仍需对照原版。", 14))
+	for card in game.research_options(lot_id):
+		v.add_child(button("研究 " + Game.CARD_NAMES[card] + " · %d" % game.research_cost(lot_id), func():
+			if game.start_research(lot_id, card): dismiss(), game.players[game.current].cash < game.research_cost(lot_id) or not game.lots[lot_id].research.is_empty()))
+	if game.research_options(lot_id).is_empty(): v.add_child(label("当前没有可启动项目，请检查研究进度。"))
+	v.add_child(button("返回", dismiss))
+
+func show_shop() -> void:
+	if game.phase != "shop": return
+	var v := modal("卡牌商店")
+	var p: Dictionary = game.players[game.current]
+	v.add_child(label("现金 %d · 手牌 %d/%d · 本次余量 %d" % [p.cash, p.cards.size(), Game.HAND_LIMIT, game.shop_remaining()]))
+	if p.cards.size() >= Game.HAND_LIMIT: v.add_child(paragraph("手牌已满，请返回对局弃牌后再购买。", 14))
+	var content := scroll_content(v)
+	for offer in game.shop_offers():
+		content.add_child(button("购买卡牌 · %s · %d" % [offer.name, offer.price], func():
+			if game.buy_card(offer.id): show_shop(), p.cash < offer.price or p.cards.size() >= Game.HAND_LIMIT or game.shop_remaining() <= 0))
+		content.add_child(paragraph(Game.CARD_DESCRIPTIONS[offer.id], 13))
+	v.add_child(button("返回对局", dismiss))
+
+func show_card_catalog() -> void:
+	var v := modal("卡牌图鉴 · 首发48项")
+	v.add_child(paragraph("收录有来源的规则目录；标记“可用”的卡牌已接入当前版本，其余尚未实现。范围、价格和部分交互仍待核验。", 14))
+	var content := scroll_content(v, 480)
+	for id in Cards.ALL:
+		var entry: Dictionary = Cards.ALL[id]
+		var item := panel(content)
+		item.add_child(label("%02d  %s · %s" % [entry.number, entry.name, "可用" if entry.implemented else "待实现"], 18, Color("e9c46a") if entry.implemented else Color("9cb4c4")))
+		item.add_child(paragraph(entry.description, 14))
+		if not str(entry.get("implementation_note", "")).is_empty(): item.add_child(paragraph("当前实现：" + entry.implementation_note, 13))
+		if not entry.unknowns.is_empty(): item.add_child(paragraph("待核验：" + "、".join(entry.unknowns), 12))
+	v.add_child(button("关闭", dismiss))
 
 func play_card(card_id: String) -> void:
 	if game.phase != "roll": return
@@ -403,14 +477,24 @@ func play_card(card_id: String) -> void:
 			row.add_child(button(str(number), func():
 				if game.use_card(card_id, -1, number): dismiss()
 				else: error_label.text = "当前无法使用这张卡。"))
-	elif target_type in ["player", "road"]:
+	elif target_type in ["player", "road", "lot"]:
 		var target := OptionButton.new()
 		var options: Array = game.card_targets(card_id)
 		for id in options:
-			target.add_item(game.players[id].name if target_type == "player" else "%02d · %s" % [id, game.nodes[id].name], id)
+			target.add_item(game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name]))
 		v.add_child(target)
+		var building_choice: OptionButton
+		if card_id == "rebuild" and not options.is_empty():
+			building_choice = OptionButton.new()
+			building_choice.name = "CardBuildingChoice"
+			var update_options := func():
+				building_choice.clear()
+				for kind in game.building_options(options[target.selected]): building_choice.add_item(game.building_name(kind))
+			update_options.call()
+			target.item_selected.connect(func(_index): update_options.call())
+			v.add_child(building_choice)
 		v.add_child(button("确认使用", func():
-			if game.use_card(card_id, target.get_selected_id()): dismiss()
+			if game.use_card(card_id, options[target.selected], building_choice.selected if card_id == "rebuild" else 0): dismiss()
 			else: error_label.text = "目标状态已改变或不在有效范围内。", options.is_empty()))
 		if options.is_empty(): error_label.text = "当前没有可用目标，卡牌不会消耗。"
 	else:
@@ -504,9 +588,11 @@ func show_gm() -> void:
 	for n in game.nodes: destination.add_item("%02d · %s" % [n.id,n.name], n.id)
 	v.add_child(destination)
 	v.add_child(button("传送选中玩家至此格", func(): gm_used = true; game.gm_teleport(who.selected, destination.selected); dismiss()))
-	var cards := HBoxContainer.new()
+	var cards := OptionButton.new()
+	var card_ids: Array = Game.CARD_NAMES.keys()
+	for card in card_ids: cards.add_item(Game.CARD_NAMES[card])
 	v.add_child(cards)
-	for card in Game.CARD_NAMES: cards.add_child(button("+ " + Game.CARD_NAMES[card], func(): gm_used = true; game.gm_give_card(who.selected, card); dismiss()))
+	v.add_child(button("发放选中卡牌", func(): gm_used = true; game.gm_give_card(who.selected, card_ids[cards.selected]); dismiss()))
 	var state_row := HBoxContainer.new()
 	v.add_child(state_row)
 	for kind in ["hospital", "prison"]:

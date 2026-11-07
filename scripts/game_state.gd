@@ -1,10 +1,14 @@
 class_name RichGame
 extends RefCounted
 
+const Buildings = preload("res://scripts/model/building_rules.gd")
+const HAND_LIMIT = 8
 const BoardModel = preload("res://scripts/model/board_model.gd")
-const CARD_NAMES = {"dice":"遥控骰子", "scheme":"谋划卡", "mine":"地雷卡"}
-const CARD_DESCRIPTIONS = {"dice":"选择下一骰1～6点。", "scheme":"指定附近对手入狱2次行动；范围和计时暂用测试规则。", "mine":"在附近道路放置地雷，经过者住院2次行动；范围和计时暂用测试规则。"}
-const CARD_TARGETS = {"dice":"dice", "scheme":"player", "mine":"road"}
+const CardsCatalog = preload("res://scripts/model/cards_catalog.gd")
+const CardEffects = preload("res://scripts/model/card_effects.gd")
+const CARD_NAMES = CardsCatalog.NAMES
+const CARD_DESCRIPTIONS = CardsCatalog.DESCRIPTIONS
+const CARD_TARGETS = CardsCatalog.TARGETS
 const TEST_CARD_RANGE = 6
 var board_model = BoardModel.new()
 var lots: Dictionary = {}
@@ -25,6 +29,7 @@ var controlled_dice := 0
 var active_lot_id := ""
 var road_objects: Dictionary = {}
 var bank_visited: Array[String] = []
+var shop_purchases: int = 0
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	if seed_value == 0: rng.randomize()
@@ -34,6 +39,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	winners.clear()
 	road_objects.clear()
 	bank_visited.clear()
+	shop_purchases = 0
 	current = 0
 	round_number = 1
 	round_limit = maxi(1, rounds)
@@ -100,8 +106,16 @@ func _build_map() -> void:
 	lots = board_model.lots
 	for spec in layout.lots:
 		lots[spec.id].name = spec.name
-		lots[spec.id].price = 1200
+		lots[spec.id].price = Buildings.PROFILE.land_price
 		lots[spec.id].rent = 220
+		lots[spec.id].street_id = "street_%d_%d" % [int(spec.footprint[1]),int(spec.footprint[0])/12]
+		lots[spec.id].research = {}
+		lots[spec.id].closed_until = 0
+		lots[spec.id].rent_until = 0
+	var shop:Dictionary=lots.small_22_6
+	shop.kind="facility"
+	shop.building_type="shop"
+	shop.name="卡牌商店"
 
 func _add_node(pos: Vector2) -> void:
 	var id := nodes.size()
@@ -146,12 +160,22 @@ func move_to(node_id: int) -> bool:
 	steps_left-=1
 	if node_id==0: p.cash+=1000; _log("经过起点获得1000（测试规则）。")
 	if road_objects.has(node_id):
+		var object_kind:String=road_objects[node_id].kind
 		road_objects.erase(node_id)
-		for id in lots_at_node(node_id):
-			if lots[id].kind!="facility": lots[id].level=maxi(0,lots[id].level-1)
-		send_to_facility(current,"hospital",2)
-		_log("踩中地雷，住院2次行动；临街建筑降低1层（爆炸范围待核验）。")
-		return true
+		if object_kind=="portal":
+			var choices:Array=[]
+			for road in nodes:
+				if road.id!=node_id: choices.append(road.id)
+			return gm_teleport(current,choices[rng.randi_range(0,choices.size()-1)])
+		if object_kind=="roadblock":
+			steps_left=0
+			# Arrival still resolves pass services before the final landing.
+		else:
+			for id in lots_at_node(node_id):
+				if lots[id].kind!="facility": lots[id].level=maxi(0,lots[id].level-1)
+			send_to_facility(current,"hospital",2)
+			_log("踩中地雷，住院2次行动；临街建筑降低1层（爆炸范围待核验）。")
+			return true
 	for id in board_model.lots_for_event(str(node_id),"pass"):
 		if lots[id].building_type=="bank" and not bank_visited.has(id):
 			bank_visited.append(id)
@@ -181,52 +205,170 @@ func close_bank() -> bool:
 	return true
 
 func _land() -> void:
+	var continuing_shop:bool=phase=="shop"
 	phase="land"
 	active_lot_id=""
 	var p: Dictionary=players[current]
 	_log("%s 停在%s。"%[p.name,nodes[p.pos].name])
 	for id in board_model.lots_for_event(str(p.pos),"stop"):
 		var lot: Dictionary=lots[id]
-		if lot.kind=="facility": continue
+		if lot.kind=="facility":
+			if lot.building_type=="shop":
+				phase="shop"
+				if not continuing_shop: shop_purchases=0
+			continue
 		active_lot_id=id
 		if lot.owner>=0 and lot.owner!=current:
-			var cost: int=lot.rent*lot.level*lot.level
+			var cost: int=rent_preview(id,current)
+			if lot.building_type=="mall":
+				var multiplier:int=rng.randi_range(1,3)
+				cost*=multiplier
+				_log("商业中心转盘：%d倍。"%multiplier)
 			_log("向%s支付%s租金%d。"%[players[lot.owner].name,lot.name,cost])
 			_pay(current,cost,lot.owner)
 			if phase=="finished" or p.bankrupt: return
+			if lot.building_type=="hotel" and lot.level>0 and lot.closed_until<=round_number:
+				send_on_vacation(current,id)
+				return
+		elif lot.owner==current and lot.building_type=="energy" and lot.closed_until<=round_number:
+			p.cash+=int(Buildings.PROFILE.energy_income)*lot.level
+			_log("能源中心发放收益%d。"%(int(Buildings.PROFILE.energy_income)*lot.level))
 	if nodes[p.pos].kind=="event":
 		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
 		else:
-			var card: String=CARD_NAMES.keys()[rng.randi_range(0,2)]
-			p.cards.append(card)
-			_log("机会获得"+CARD_NAMES[card])
+			var card: String=CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)]
+			if give_card(current,card): _log("机会获得"+CARD_NAMES[card])
 
 func _selected_lot(id: String) -> Dictionary:
 	if id.is_empty(): id=active_lot_id
 	if not lots_at_node(players[current].pos).has(id): return {}
 	return lots[id]
 
-func buy_property(lot_id: String = "") -> bool:
+func building_options(lot_id:String)->Array[String]:
+	return Buildings.options(lots[lot_id].kind) if lots.has(lot_id) else []
+func building_name(kind:String)->String: return Buildings.NAMES.get(kind,kind)
+func building_description(kind:String)->String: return Buildings.DESC.get(kind,"")
+func max_level(_lot_id:String)->int: return Buildings.PROFILE.max_level
+func max_building_level(lot_id:String)->int: return max_level(lot_id)
+func purchase_cost(lot_id:String,_type:String="")->int: return int(lots[lot_id].price) if lots.has(lot_id) else 0
+func upgrade_cost(lot_id:String)->int: return int(Buildings.PROFILE.upgrade_cost) if lots.has(lot_id) else 0
+func rebuild_cost(_lot_id:String,_type:String)->int: return Buildings.PROFILE.rebuild_cost
+func research_cost(_lot_id:String)->int: return Buildings.PROFILE.research_cost
+func lot_value(lot_id:String)->int:
+	var lot:Dictionary=lots[lot_id]
+	return int(lot.price+Buildings.PROFILE.upgrade_cost*maxi(0,lot.level-1))
+func rent_preview(lot_id:String,visitor_id:int=-1)->int:
+	return Buildings.rent(self,lots[lot_id],visitor_id) if lots.has(lot_id) else 0
+func buy_property(lot_id:String="",building_type:String="")->bool:
 	if phase!="land" or players[current].bankrupt: return false
 	var lot:=_selected_lot(lot_id)
-	if lot.is_empty() or lot.kind=="facility" or lot.owner!=-1 or players[current].cash<lot.price: return false
-	players[current].cash-=lot.price
+	if lot.is_empty() or lot.kind=="facility" or lot.owner!=-1: return false
+	if building_type.is_empty(): building_type="house" if lot.kind=="small" else "mall"
+	if not building_options(lot.id).has(building_type) or players[current].cash<purchase_cost(lot.id,building_type): return false
+	players[current].cash-=purchase_cost(lot.id,building_type)
 	lot.owner=current
 	lot.level=1
-	lot.building_type="house"
+	lot.building_type=building_type
+	lot.research={}
 	phase="end"
-	_log("购买"+lot.name)
+	_log("购买%s，建造%s。"%[lot.name,building_name(building_type)])
 	return true
-
-func upgrade_property(lot_id: String = "") -> bool:
+func upgrade_property(lot_id:String="")->bool:
 	if phase!="land" or players[current].bankrupt: return false
 	var lot:=_selected_lot(lot_id)
-	if lot.is_empty() or lot.kind=="facility" or lot.owner!=current or lot.level>=3 or players[current].cash<600: return false
-	players[current].cash-=600
+	if lot.is_empty() or lot.kind=="facility" or lot.owner!=current or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
+	players[current].cash-=upgrade_cost(lot.id)
 	lot.level+=1
 	phase="end"
-	_log("升级%s至%d级。"%[lot.name,lot.level])
 	return true
+func rebuild_property(lot_id:String,building_type:String)->bool:
+	if phase!="land" or players[current].bankrupt: return false
+	var lot:=_selected_lot(lot_id)
+	if lot.is_empty() or lot.owner!=current or not building_options(lot_id).has(building_type) or lot.building_type==building_type: return false
+	if players[current].cash<rebuild_cost(lot_id,building_type): return false
+	players[current].cash-=rebuild_cost(lot_id,building_type)
+	lot.building_type=building_type
+	lot.research={}
+	phase="end"
+	return true
+func research_options(lot_id:String)->Array[String]:
+	var result:Array[String]=[]
+	if not lots.has(lot_id): return result
+	# Verified research pool remains incomplete; only currently playable cards offered.
+	var pool:Array=["portal"] if CARD_NAMES.has("portal") else []
+	for i in range(mini(lots[lot_id].level,pool.size())): result.append(pool[i])
+	return result
+func start_research(lot_id:String,card_id:String)->bool:
+	if phase not in ["land","roll"] or not lots.has(lot_id): return false
+	var lot:Dictionary=lots[lot_id]
+	if lot.owner!=current or lot.building_type!="lab" or not lot.research.is_empty() or not research_options(lot_id).has(card_id) or lot.closed_until>round_number: return false
+	if players[current].cash<research_cost(lot_id): return false
+	players[current].cash-=research_cost(lot_id)
+	lot.research={"card_id":card_id,"remaining":Buildings.PROFILE.research_turns}
+	return true
+func collect_research(lot_id:String)->bool:
+	if phase not in ["roll","land","shop"] or not lots.has(lot_id): return false
+	var lot:Dictionary=lots[lot_id]
+	if lot.owner!=current or lot.building_type!="lab" or lot.level<=0 or lot.research.is_empty() or lot.research.remaining>0 or lot.closed_until>round_number: return false
+	if not give_card(current,lot.research.card_id): return false
+	lot.research={}
+	return true
+func give_card(player_id:int,card_id:String)->bool:
+	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].bankrupt or not CARD_NAMES.has(card_id): return false
+	if players[player_id].cards.size()>=HAND_LIMIT:
+		_log("手牌已满，无法领取"+CARD_NAMES[card_id])
+		return false
+	players[player_id].cards.append(card_id)
+	return true
+func discard_card(index:int)->bool:
+	if phase not in ["roll","land","shop"] or index<0 or index>=players[current].cards.size(): return false
+	players[current].cards.remove_at(index)
+	return true
+func shop_offers()->Array[Dictionary]:
+	var offers:Array[Dictionary]=[]
+	var markup:=0.0
+	for lot in lots.values():
+		if lot.owner>=0 and lot.owner!=current and lot.building_type=="energy" and lot.closed_until<=round_number: markup+=lot.level*Buildings.PROFILE.energy_markup
+	for id in CARD_NAMES:
+		if id in ["portal","glory","misery","disaster"]: continue
+		offers.append({"id":id,"name":CARD_NAMES[id],"price":int(Buildings.PROFILE.card_price*(1.0+markup))})
+	return offers
+func shop_remaining()->int:
+	return maxi(0,int(Buildings.PROFILE.shop_purchase_limit)-shop_purchases) if phase=="shop" else 0
+func buy_card(card_id:String)->bool:
+	if phase!="shop" or shop_remaining()<=0 or players[current].cards.size()>=HAND_LIMIT: return false
+	for offer in shop_offers():
+		if offer.id==card_id and players[current].cash>=offer.price:
+			if not give_card(current,card_id): return false
+			players[current].cash-=offer.price
+			shop_purchases+=1
+			return true
+	return false
+func close_shop()->bool:
+	if phase!="shop": return false
+	phase="end"
+	for lot in lots.values():
+		if lot.owner==current and lot.building_type=="bookstore" and lot.level>0 and lot.closed_until<=round_number:
+			if rng.randf()<minf(1.0,lot.level*Buildings.PROFILE.bookstore_chance_per_level):
+				for i in range(rng.randi_range(1,3)): give_card(current,CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)])
+	return true
+func send_on_vacation(player_id:int,lot_id:String)->void:
+	var p:Dictionary=players[player_id]
+	p.status={"kind":"vacation","remaining":Buildings.PROFILE.hotel_turns,"return_pos":p.pos,"return_previous":p.previous,"lot_id":lot_id}
+	if player_id==current: steps_left=0; phase="end"
+func _tick_economy()->void:
+	if (round_number-1)%int(Buildings.PROFILE.month_days)==0:
+		for p in players:
+			if not p.bankrupt:
+				var interest:int=int(p.deposit*Buildings.PROFILE.interest_rate)
+				p.deposit+=interest
+		_log("月结：存款利息已入账（测试参数）。")
+	for lot in lots.values():
+		if lot.owner<0 or lot.building_type!="lab" or lot.level<=0 or lot.research.is_empty() or lot.closed_until>round_number: continue
+		lot.research.remaining=maxi(0,lot.research.remaining-1)
+		if lot.research.remaining==0 and give_card(lot.owner,lot.research.card_id):
+			_log("研究完成："+CARD_NAMES[lot.research.card_id])
+			lot.research={}
 
 func _distance(from: int, to: int) -> int:
 	var queue: Array=[from]
@@ -238,25 +380,11 @@ func _distance(from: int, to: int) -> int:
 			if not distances.has(next): distances[next]=distances[at]+1; queue.append(next)
 	return 9999
 
-func card_targets(card_id: String) -> Array[int]:
-	var result: Array[int]=[]
-	if players.is_empty(): return result
-	if card_id=="dice": result.assign([1,2,3,4,5,6])
-	elif card_id=="scheme":
-		for i in range(players.size()):
-			if i!=current and not players[i].bankrupt and players[i].status.is_empty() and _distance(players[current].pos,players[i].pos)<=TEST_CARD_RANGE: result.append(i)
-	elif card_id=="mine":
-		for n in nodes:
-			if not road_objects.has(n.id) and _distance(players[current].pos,n.id)<=TEST_CARD_RANGE: result.append(n.id)
-	return result
-
-func use_card(card_id: String, target: int = -1, value: int = 0) -> bool:
+func card_targets(card_id:String)->Array:
+	return CardEffects.targets(self,card_id)
+func use_card(card_id:String,target:Variant=-1,value:int=0)->bool:
 	if phase!="roll" or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
-	var chosen: int=value if card_id=="dice" else target
-	if not card_targets(card_id).has(chosen): return false
-	if card_id=="dice": controlled_dice=value
-	elif card_id=="scheme": send_to_facility(target,"prison",2)
-	elif card_id=="mine": road_objects[target]={"kind":"mine","owner":current}
+	if not CardEffects.apply(self,card_id,target,value): return false
 	players[current].cards.erase(card_id)
 	card_used=true
 	_log("%s 使用%s。"%[players[current].name,CARD_NAMES[card_id]])
@@ -295,6 +423,7 @@ func end_turn() -> bool:
 		current=(current+1)%players.size()
 		if current==0:
 			round_number+=1
+			_tick_economy()
 			if round_number>round_limit: finish_game(); return true
 		if not players[current].bankrupt: break
 	phase="roll"
@@ -316,10 +445,11 @@ func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
 	for lot in lots.values():
 		if p.cash>=amount: break
 		if lot.owner==player_id:
-			p.cash+=int((lot.price+600*maxi(0,lot.level-1))/2)
+			p.cash+=int(lot_value(lot.id)/2)
 			lot.owner=-1
 			lot.level=0
 			lot.building_type="vacant"
+			lot.research={}
 	var paid: int=mini(p.cash,amount)
 	p.cash-=paid
 	if receiver>=0: players[receiver].cash+=paid
@@ -333,7 +463,7 @@ func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
 func net_worth(player_id: int) -> int:
 	var total: int=players[player_id].cash+players[player_id].deposit
 	for lot in lots.values():
-		if lot.owner==player_id: total+=lot.price+600*maxi(0,lot.level-1)
+		if lot.owner==player_id: total+=lot_value(lot.id)
 	return total
 
 func _check_winner() -> void:
@@ -375,8 +505,7 @@ func gm_teleport(player_id: int, node_id: int) -> bool:
 
 func gm_give_card(player_id: int, card_id: String) -> bool:
 	if phase=="finished" or player_id<0 or player_id>=players.size() or not CARD_NAMES.has(card_id) or players[player_id].bankrupt: return false
-	players[player_id].cards.append(card_id)
-	return true
+	return give_card(player_id,card_id)
 
 func _log(message: String) -> void:
 	logs.append(message)

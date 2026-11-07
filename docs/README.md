@@ -6,6 +6,9 @@
 
 - [第二轮设计与优化](round-02-plan.md)：本轮顺序、决策及验收标准。
 - [第二轮实现与原作差距](round-02-report.md)：当前实现、测试证据及仍未完成的目标。
+- [第三轮建筑经济与卡牌](round-03-report.md)：最新功能与未对齐项。
+- [第三轮卡牌边界](round-03-cards.md)：17项效果及48项目录的区别。
+- [原作地图证据盘点](research/r11-map-catalog.md)：16张地图、实际图像依据和待补拓扑。
 - [现有实现差距审查](research/r11-current-gap-audit.md)：22项系统差距与代码位置。
 - [经济与特殊设施研究](research/r11-economy-specials.md)：规则来源、证据等级及待核验数值。
 - [卡牌、神仙、角色与状态研究](research/r11-cards-characters.md)：48张首发卡、角色天赋、神仙与领主目录及待核验项。

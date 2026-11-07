@@ -31,12 +31,19 @@ func run() -> void:
 			"land":
 				var b := find_button(app, "购买地产")
 				var u := find_button(app, "升级建筑")
-				if b != null and not b.disabled: await click("购买地产")
+				if b != null and not b.disabled:
+					await click("购买地产")
+					var choice := find_button(app, "选择 ")
+					if choice != null and not choice.disabled: await click("选择 ")
+					else:
+						await click("取消")
+						await click("结束回合")
 				elif u != null and not u.disabled: await click("升级建筑")
 				else: await click("结束回合")
 			"bank":
 				await click("离开银行")
 				bank_used = true
+			"shop": await click("离开商店")
 			"end", "detained", "metro": await click("结束回合")
 			_:
 				check(false, "unsupported phase: " + app.game.phase)

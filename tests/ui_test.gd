@@ -2,7 +2,7 @@ extends SceneTree
 
 var app: Control
 var failures: int = 0
-var out_dir := "res://docs/testing/round2"
+var out_dir := "res://docs/testing/round3"
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -34,6 +34,12 @@ func click(prefix: String) -> void:
 	check(control != null, "button exists: " + prefix)
 	if control == null: return
 	check(not control.disabled, "button enabled: " + prefix)
+	var ancestor := control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer: ancestor.ensure_control_visible(control)
+		ancestor = ancestor.get_parent()
+	await process_frame
+	await process_frame
 	var point := control.get_global_rect().get_center()
 	await click_point(point)
 
@@ -86,7 +92,7 @@ func run() -> void:
 	check(app.game.players[0].pos == move, "chosen one-step die reaches selected road")
 	var lot_id := ""
 	for id in app.game.lots:
-		if app.game.lots[id].kind != "facility" and app.game.lots[id].frontage_nodes.size() > 1:
+		if app.game.lots[id].kind == "small" and app.game.lots[id].frontage_nodes.size() > 1:
 			lot_id = id
 			break
 	check(not lot_id.is_empty(), "map contains multi-frontage building")
@@ -97,6 +103,7 @@ func run() -> void:
 	app.game.gm_teleport(0, first_entrance)
 	app.refresh()
 	await click("购买地产")
+	await click("选择 住宅")
 	check(lot.owner == 0, "purchase via UI assigns building ownership")
 	check(not app.game.nodes[first_entrance].has("owner"), "road has no duplicate ownership")
 	await process_frame

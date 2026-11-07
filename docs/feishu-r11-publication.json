@@ -235,6 +235,45 @@
       "remote_characters": 1175,
       "source_sha256": "C46B13A191B03FFBFE5F6456C98BBC419F4D02DF1FBE353329DABE6B3980D6A0",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-03-report.md",
+      "title": "08 · 第三轮建筑经济与实现",
+      "node_token": "V7v8wW0C5icW1tk2czecQ9qMn2f",
+      "document_id": "X9qed7slSo4l4pxx5sCcTKfGnvd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/V7v8wW0C5icW1tk2czecQ9qMn2f",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-8.json",
+      "revision_id": 2,
+      "remote_characters": 1732,
+      "source_sha256": "1A1E0493D5A097F535EA9F5C9A3421C70A2E53FB7BE96D76BA4665B396422129",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-03-cards.md",
+      "title": "09 · 卡牌实现边界",
+      "node_token": "VMn2wO4fgiql1nk1OpRcA1PEnEd",
+      "document_id": "NBRWdybh2ogYlexKLwjctbQxnxg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/VMn2wO4fgiql1nk1OpRcA1PEnEd",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-9.json",
+      "revision_id": 2,
+      "remote_characters": 1089,
+      "source_sha256": "2E141818A67A940557250434555D40FE2B437B56E9BCE4F376ECBC75CCFC1713",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-map-catalog.md",
+      "title": "10 · 地图证据盘点",
+      "node_token": "KV1ZwDar5io9VDkRsLTc2NDUnXe",
+      "document_id": "LCmpdreKnocBdsxqjrBcRp5Gndb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/KV1ZwDar5io9VDkRsLTc2NDUnXe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-10.json",
+      "revision_id": 2,
+      "remote_characters": 3331,
+      "source_sha256": "FE42E82251C3B4F27B2CBCD08B326ED0F30D31221CB7F479B2A43F40405034E1",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -242,5 +281,6 @@
   "report_updated_at": "2026-11-08",
   "publication_link_mapping": {
     "round-02-report.md": "https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg"
-  }
+  },
+  "round3_updated_at": "2026-11-08"
 }

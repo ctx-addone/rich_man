@@ -90,9 +90,10 @@ func _draw() -> void:
 			var mine_centre := pos + Vector2(cell * 0.22, -cell * 0.24)
 			var radius := maxf(4, cell * 0.19)
 			draw_circle(mine_centre, radius + 1, Color("ffdb9f"))
-			draw_circle(mine_centre, radius, Color("a12e38"))
+			var object_kind: String = game.road_objects[n.id].kind
+			draw_circle(mine_centre, radius, Color("bc8136") if object_kind in ["barrier", "roadblock"] else Color("7757be") if object_kind == "portal" else Color("a12e38"))
 			draw_line(mine_centre - Vector2(radius * 0.55, 0), mine_centre + Vector2(radius * 0.55, 0), Color("ffead2"), 2)
-			draw_line(mine_centre - Vector2(0, radius * 0.55), mine_centre + Vector2(0, radius * 0.55), Color("ffead2"), 2)
+			if object_kind not in ["barrier", "roadblock"]: draw_line(mine_centre - Vector2(0, radius * 0.55), mine_centre + Vector2(0, radius * 0.55), Color("ffead2"), 2)
 	_draw_players()
 
 func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
@@ -110,12 +111,14 @@ func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
 	draw_style_box(_tile_style(fill, 6), box)
 	draw_rect(box.grow(-1), accent.darkened(0.25), false, 1)
 	if highlighted: draw_rect(box.grow(2), Color("73e6d0"), false, 3)
+	if lot.get("closed_until", 0) > game.round_number: draw_rect(box.grow(-3), Color("de7d73"), false, 3)
 	if lot.kind == "small":
 		_draw_small_lot(lot, box, accent)
 	else:
 		var font := get_theme_default_font()
 		var name_size: int = clampi(int(step * 0.48), 10, 17)
 		var title: String = str(lot.name)
+		if not facility and lot.owner >= 0: title = game.building_name(lot.building_type)
 		if font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, name_size).x > box.size.x - 8:
 			name_size = maxi(9, int((box.size.x - 8) / maxf(1, title.length())))
 		draw_string(font, box.position + Vector2(4, name_size + 4), title, HORIZONTAL_ALIGNMENT_CENTER, box.size.x - 8, name_size, Color("eaf3ed"))
@@ -124,6 +127,10 @@ func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
 		icon_size = minf(icon_size, step * 2.1)
 		if facility:
 			_draw_facility(str(lot.building_type), centre, icon_size, accent)
+		elif lot.owner >= 0 and lot.building_type in ["mall", "hotel", "estate", "bookstore", "energy", "lab", "park"]:
+			draw_rect(Rect2(centre - Vector2.ONE * icon_size * 0.4, Vector2.ONE * icon_size * 0.8), accent.darkened(0.35))
+			var glyph: String = {"mall":"商", "hotel":"宿", "estate":"产", "bookstore":"书", "energy":"能", "lab":"研", "park":"园"}[lot.building_type]
+			draw_string(font, centre + Vector2(-icon_size / 2, icon_size * 0.22), glyph, HORIZONTAL_ALIGNMENT_CENTER, icon_size, int(icon_size * 0.6), accent.lightened(0.4))
 		else:
 			var texture_key := "level_%d" % clampi(int(lot.level), 0, 3)
 			if textures.has(texture_key):
@@ -148,7 +155,10 @@ func _draw_small_lot(lot: Dictionary, box: Rect2, accent: Color) -> void:
 	var icon_centre: Vector2 = box.get_center() + Vector2(0, 2)
 	var unit: float = minf(box.size.x * 0.16, box.size.y * 0.14)
 	var roof := PackedVector2Array([icon_centre + Vector2(-unit * 1.5, 0), icon_centre + Vector2(0, -unit * 1.25), icon_centre + Vector2(unit * 1.5, 0)])
-	draw_colored_polygon(roof, accent.lightened(0.25))
+	if lot.building_type == "chain":
+		draw_rect(Rect2(icon_centre + Vector2(-unit * 1.5, -unit), Vector2(unit * 3, unit)), accent.lightened(0.35))
+		for stripe in range(3): draw_rect(Rect2(icon_centre + Vector2(-unit * 1.5 + stripe * unit, -unit), Vector2(unit * 0.5, unit)), Color("f0d9aa"))
+	else: draw_colored_polygon(roof, accent.lightened(0.25))
 	draw_rect(Rect2(icon_centre + Vector2(-unit, 0), Vector2(unit * 2, unit)), accent)
 	draw_rect(Rect2(icon_centre + Vector2(-unit * 0.22, unit * 0.3), Vector2(unit * 0.44, unit * 0.7)), Color("27453d"))
 	var subtitle: String = "待购" if lot.owner < 0 else "%d级" % int(lot.level)
@@ -156,7 +166,10 @@ func _draw_small_lot(lot: Dictionary, box: Rect2, accent: Color) -> void:
 
 func _draw_facility(kind: String, centre: Vector2, width: float, accent: Color) -> void:
 	var unit: float = width / 6
-	if kind == "hospital":
+	if kind == "shop":
+		draw_rect(Rect2(centre - Vector2(width * 0.4, width * 0.2), Vector2(width * 0.8, width * 0.65)), accent)
+		for stripe in range(4): draw_rect(Rect2(centre + Vector2(-width * 0.5 + stripe * width * 0.25, -width * 0.4), Vector2(width * 0.25, width * 0.25)), accent if stripe % 2 == 0 else Color("f1d6a0"))
+	elif kind == "hospital":
 		draw_rect(Rect2(centre - Vector2(unit, 3 * unit), Vector2(2 * unit, 6 * unit)), accent)
 		draw_rect(Rect2(centre - Vector2(3 * unit, unit), Vector2(6 * unit, 2 * unit)), accent)
 	elif kind == "prison":
@@ -178,6 +191,8 @@ func _draw_players() -> void:
 		var pos: Vector2 = points[p.pos]
 		var badge_radius: float = clampf(cell * 0.24, 5, 10)
 		if not p.get("status", {}).is_empty():
+			if p.status.kind == "vacation" and lot_rects.has(p.status.get("lot_id", "")):
+				pos = lot_rects[p.status.lot_id].get_center() + Vector2(0, step * 0.8)
 			for lot in game.lots.values():
 				if lot.building_type == p.status.kind and lot.kind == "facility":
 					var box: Rect2 = lot_rects[lot.id]
