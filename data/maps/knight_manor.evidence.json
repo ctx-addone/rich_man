@@ -87,5 +87,7 @@
     "street boundaries",
     "all lot counts"
   ],
-  "review": "Visual inspection performed; boundary clipping and avatar occlusion prevent complete topology. Do not load as a playable map or fill 102 nodes by guessing."
+  "review": "Visual inspection performed; boundary clipping and avatar occlusion prevent complete topology. Do not load as a playable map or fill 102 nodes by guessing.",
+  "trace_artifact": "res://data/maps/knight_manor.trace.json",
+  "trace_status": "102 manually traced candidate nodes / 104 undirected edges; geometry cross-audited, property triggers and facility behavior pending"
 }

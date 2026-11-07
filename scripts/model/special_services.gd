@@ -1,16 +1,13 @@
 class_name RichSpecialServices
 extends RefCounted
 
-# R11 evidence: lottery pass service; 5,000/base ticket; 15-day draws (C).
-# Remaining numeric values and settlement policy are integration parameters.
-const TEST_PROFILE = {"number_min":1,"number_max":10,"ticket_price":5000,"visit_limit":3,"draw_interval":15,"initial_pot":10000,"demolish_levels":1}
-const CONDITIONS = ["car","richest","most_properties"]
-const CONDITION_NAMES = {"car":"驾驶汽车","richest":"总资产最多","most_properties":"地产最多"}
-const MAGIC = [
-	{"id":"demolish","name":"摧毁建筑","description":"随机条件筛选在场角色，其地产降低1级（层数为测试配置）。"},
-	{"id":"gain_cards","name":"获得3张卡片","description":"随机条件筛选在场角色，获得3张随机卡；遵守手牌上限。"},
-	{"id":"deposit_cash","name":"存入所有现金","description":"随机条件筛选在场角色，将全部现金存入银行。"}
-]
+# R11 UI confirms numbers 01..30. The 1,500 screenshot uses Tangtang, so it
+# does not establish a universal base price. Price/quota/pool remain provisional.
+const TEST_PROFILE = {"number_min":1,"number_max":30,"ticket_price":5000,"visit_limit":3,"draw_interval":15,"initial_pot":10000}
+const Magic = preload("res://scripts/model/magic_house.gd")
+const CONDITIONS = Magic.CONDITIONS
+const CONDITION_NAMES = Magic.CONDITION_NAMES
+const MAGIC = Magic.CATALOG
 
 static func initial_lottery() -> Dictionary:
 	return {"pot":TEST_PROFILE.initial_pot,"tickets":[],"draw_round":1+TEST_PROFILE.draw_interval,"last_draw":{},"last_winners":[],"draw_count":0}
@@ -83,47 +80,7 @@ static func options() -> Array[Dictionary]:
 	return result
 
 static func targets(g, condition:String) -> Array[int]:
-	var result:Array[int]=[]
-	var best:int=-1
-	for who in range(g.players.size()):
-		var p:Dictionary=g.players[who]
-		# Disappeared lords do not participate. Sleepwalking does not disappear.
-		if p.bankrupt or p.status.get("kind","") in ["hospital","prison","vacation"]: continue
-		if condition=="car":
-			if p.vehicle=="car": result.append(who)
-			continue
-		var value:int=g.net_worth(who) if condition=="richest" else 0
-		if condition=="most_properties":
-			for lot in g.lots.values():
-				if lot.owner==who: value+=1
-		if value>best: result.clear(); best=value
-		if value==best: result.append(who)
-	return result
+	return Magic.targets(g,condition)
 
 static func choose(g, effect:String) -> bool:
-	if not g.specials_enabled or g.phase!="magic" or g.pending_service.get("kind","")!="magic" or not eligible(g,g.current): return false
-	var valid:bool=false
-	var effect_name:String=""
-	for option in MAGIC:
-		if option.id==effect: valid=true; effect_name=option.name
-	if not valid: return false
-	# Selection commits before the random condition is drawn; never redraw empty sets.
-	g.pending_service.clear()
-	g.phase="land"
-	var condition:String=CONDITIONS[g.rng.randi_range(0,CONDITIONS.size()-1)]
-	var affected:Array[int]=targets(g,condition)
-	g.magic_last_result={"effect":effect,"condition":condition,"targets":affected.duplicate()}
-	for who in affected:
-		match effect:
-			"demolish":
-				for lot in g.lots.values():
-					if lot.owner==who and lot.level>0:
-						lot.level=maxi(0,lot.level-TEST_PROFILE.demolish_levels)
-						if lot.level==0: lot.building_type="vacant"; lot.research={}
-			"gain_cards":
-				for ignored in range(3): g.give_card(who,g.random_card())
-			"deposit_cash":
-				g.players[who].deposit+=g.players[who].cash
-				g.players[who].cash=0
-	g._log("魔法屋：%s → %s，影响%d名在场角色。"%[effect_name,CONDITION_NAMES[condition],affected.size()])
-	return true
+	return Magic.choose(g,effect)

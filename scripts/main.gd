@@ -15,6 +15,7 @@ var map_id: String = Game.Maps.DEFAULT_MAP_ID
 var page: Control
 var board: Control
 var sidebar: VBoxContainer
+var sidebar_state_key: String = ""
 var top_title: Label
 var score_row: HBoxContainer
 var popup: Control
@@ -383,6 +384,10 @@ func clear_children(node: Node) -> void:
 
 func refresh() -> void:
 	if screen != "game": return
+	var state_key:String="%s:%d:%d"%[game.phase,game.current,game.reaction_player()]
+	if is_instance_valid(sidebar) and state_key!=sidebar_state_key:
+		(sidebar.get_parent() as ScrollContainer).set_deferred("scroll_vertical",0)
+		sidebar_state_key=state_key
 	if game.phase == "finished": results(); return
 	clear_children(score_row)
 	for i in range(4):
@@ -487,7 +492,7 @@ func refresh() -> void:
 				sidebar.add_child(button("离开乐透站 · 继续行程", func(): game.close_lottery(); refresh()))
 			"magic":
 				sidebar.add_child(label("魔法屋", 24, Color("c5b6dd")))
-				sidebar.add_child(paragraph("先选择效果，再随机抽取作用条件：驾驶汽车、总资产最多或地产最多。在场且符合条件的角色都会受到影响。", 16))
+				sidebar.add_child(paragraph("先选择效果，再随机抽取条件：载具、资产、地产、卡片、性别、神仙或所在位置。在场且符合条件的角色都会受到影响。原创无性别角色不参与男女条件。", 16))
 				for option in game.magic_options():
 					sidebar.add_child(button("施放 · " + option.name, func(): game.choose_magic(option.id); refresh()))
 					sidebar.add_child(paragraph(option.description, 13))

@@ -1,0 +1,5703 @@
+{
+  "schema_version": 1,
+  "map_id": "knight_manor",
+  "playable": false,
+  "status": "manually_traced_geometry_pending_rules_and_property_validation",
+  "created": "2026-11-08",
+  "coordinate_system": {
+    "origin": "K2 top zebra corner",
+    "axes": "a southeast, b southwest",
+    "K2_origin": [
+      590,
+      201
+    ],
+    "K2_a": [
+      26,
+      20
+    ],
+    "K2_b": [
+      -31,
+      17
+    ],
+    "K1_origin": [
+      402,
+      89
+    ],
+    "K1_a": [
+      24.15,
+      18.71
+    ],
+    "K1_b": [
+      -28.82,
+      15.73
+    ],
+    "warning": "Logical coordinates describe adjacency geometry only. Never infer all Manhattan-neighbor edges."
+  },
+  "sources": {
+    "K1": {
+      "url": "https://img1.gamersky.com/image2022/10/20221013_xdj_187_1/14360.jpg",
+      "size": [
+        1029,
+        705
+      ],
+      "label": "2022-10-21 guide minimap"
+    },
+    "K2": {
+      "url": "https://imgheybox.max-c.com/web/bbs/2022/11/21/189e6597a2de007e8887761a642843ed/thumb.jpeg",
+      "size": [
+        1726,
+        970
+      ],
+      "label": "2022-11-22 review minimap"
+    },
+    "K3": {
+      "url": "https://imgheybox.max-c.com/web/bbs/2022/11/21/d4d189d36231e4091df2be9a9f8e95e1/thumb.jpeg",
+      "label": "2022 tutorial, right boundary"
+    },
+    "K5-90": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=90",
+      "time_seconds": 90,
+      "label": "four-corner road texture is purchasable land"
+    },
+    "K5-105": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=105",
+      "time_seconds": 105,
+      "label": "bottom corner overview"
+    },
+    "K5-110": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=110",
+      "time_seconds": 110,
+      "label": "bottom corner closeup"
+    },
+    "K5-130": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=130",
+      "time_seconds": 130,
+      "label": "hospital-prison northwest road"
+    },
+    "K5-135": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=135",
+      "time_seconds": 135,
+      "label": "northwest shop elbow"
+    },
+    "K5-150": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=150",
+      "time_seconds": 150,
+      "label": "south edge and service bends"
+    }
+  },
+  "nodes": [
+    {
+      "id": "n_00_m02",
+      "logical_candidate": [
+        0,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          459.64,
+          57.54
+        ],
+        "K2": [
+          652,
+          167
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_m01"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "gray_bars",
+      "type_candidates": [
+        "prison"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_00_m01",
+      "logical_candidate": [
+        0,
+        -1
+      ],
+      "screen_estimates": {
+        "K1": [
+          430.82,
+          73.27
+        ],
+        "K2": [
+          621,
+          184
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_00",
+        "n_00_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_2000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "printed_cash": 2000
+    },
+    {
+      "id": "n_00_00",
+      "logical_candidate": [
+        0,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          402.0,
+          89.0
+        ],
+        "K2": [
+          590,
+          201
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_01",
+        "n_00_m01",
+        "n_01_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_00_01",
+      "logical_candidate": [
+        0,
+        1
+      ],
+      "screen_estimates": {
+        "K1": [
+          373.18,
+          104.73
+        ],
+        "K2": [
+          559,
+          218
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_00",
+        "n_00_02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_001"
+    },
+    {
+      "id": "n_00_02",
+      "logical_candidate": [
+        0,
+        2
+      ],
+      "screen_estimates": {
+        "K1": [
+          344.36,
+          120.46
+        ],
+        "K2": [
+          528,
+          235
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_01",
+        "n_00_03"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_002"
+    },
+    {
+      "id": "n_00_03",
+      "logical_candidate": [
+        0,
+        3
+      ],
+      "screen_estimates": {
+        "K1": [
+          315.54,
+          136.19
+        ],
+        "K2": [
+          497,
+          252
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_02",
+        "n_00_04"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_003"
+    },
+    {
+      "id": "n_00_04",
+      "logical_candidate": [
+        0,
+        4
+      ],
+      "screen_estimates": {
+        "K1": [
+          286.72,
+          151.92
+        ],
+        "K2": [
+          466,
+          269
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_03",
+        "n_01_04"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_00_08",
+      "logical_candidate": [
+        0,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          171.44,
+          214.84
+        ],
+        "K2": [
+          342,
+          337
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_01_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cyan_heart",
+      "type_candidates": [
+        "hospital"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_01_00",
+      "logical_candidate": [
+        1,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          426.15,
+          107.71
+        ],
+        "K2": [
+          616,
+          221
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_00",
+        "n_02_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "purple_pentagram",
+      "type_candidates": [
+        "magic_house"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_01_04",
+      "logical_candidate": [
+        1,
+        4
+      ],
+      "screen_estimates": {
+        "K1": [
+          310.87,
+          170.63
+        ],
+        "K2": [
+          492,
+          289
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_04",
+        "n_02_04"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cyan_storefront",
+      "type_candidates": [
+        "shop"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_01_08",
+      "logical_candidate": [
+        1,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          195.59,
+          233.55
+        ],
+        "K2": [
+          368,
+          357
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_00_08",
+        "n_02_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_2000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "printed_cash": 2000
+    },
+    {
+      "id": "n_02_00",
+      "logical_candidate": [
+        2,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          450.3,
+          126.42
+        ],
+        "K2": [
+          642,
+          241
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_01_00",
+        "n_03_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_004"
+    },
+    {
+      "id": "n_02_04",
+      "logical_candidate": [
+        2,
+        4
+      ],
+      "screen_estimates": {
+        "K1": [
+          335.02,
+          189.34
+        ],
+        "K2": [
+          518,
+          309
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_01_04",
+        "n_02_05"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_-2000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "printed_cash": -2000
+    },
+    {
+      "id": "n_02_05",
+      "logical_candidate": [
+        2,
+        5
+      ],
+      "screen_estimates": {
+        "K1": [
+          306.2,
+          205.07
+        ],
+        "K2": [
+          487,
+          326
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_02_04",
+        "n_02_06"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_009"
+    },
+    {
+      "id": "n_02_06",
+      "logical_candidate": [
+        2,
+        6
+      ],
+      "screen_estimates": {
+        "K1": [
+          277.38,
+          220.8
+        ],
+        "K2": [
+          456,
+          343
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_02_05",
+        "n_02_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_010"
+    },
+    {
+      "id": "n_02_07",
+      "logical_candidate": [
+        2,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          248.56,
+          236.53
+        ],
+        "K2": [
+          425,
+          360
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_02_06",
+        "n_02_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_011"
+    },
+    {
+      "id": "n_02_08",
+      "logical_candidate": [
+        2,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          219.74,
+          252.26
+        ],
+        "K2": [
+          394,
+          377
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_01_08",
+        "n_02_07",
+        "n_03_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_03_00",
+      "logical_candidate": [
+        3,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          474.45,
+          145.13
+        ],
+        "K2": [
+          668,
+          261
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_02_00",
+        "n_04_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_005"
+    },
+    {
+      "id": "n_03_08",
+      "logical_candidate": [
+        3,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          243.89,
+          270.97
+        ],
+        "K2": [
+          420,
+          397
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_02_08",
+        "n_04_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_012"
+    },
+    {
+      "id": "n_04_00",
+      "logical_candidate": [
+        4,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          498.6,
+          163.84
+        ],
+        "K2": [
+          694,
+          281
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_03_00",
+        "n_05_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_006"
+    },
+    {
+      "id": "n_04_08",
+      "logical_candidate": [
+        4,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          268.04,
+          289.68
+        ],
+        "K2": [
+          446,
+          417
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_03_08",
+        "n_05_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_013"
+    },
+    {
+      "id": "n_05_00",
+      "logical_candidate": [
+        5,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          522.75,
+          182.55
+        ],
+        "K2": [
+          720,
+          301
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_04_00",
+        "n_06_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_card_rectangle",
+      "type_candidates": [
+        "unresolved_service"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "n_05_08",
+      "logical_candidate": [
+        5,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          292.19,
+          308.39
+        ],
+        "K2": [
+          472,
+          437
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_04_08",
+        "n_05_09"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_014"
+    },
+    {
+      "id": "n_05_09",
+      "logical_candidate": [
+        5,
+        9
+      ],
+      "screen_estimates": {
+        "K1": [
+          263.37,
+          324.12
+        ],
+        "K2": [
+          441,
+          454
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_05_08",
+        "n_05_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_015"
+    },
+    {
+      "id": "n_05_10",
+      "logical_candidate": [
+        5,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          234.55,
+          339.85
+        ],
+        "K2": [
+          410,
+          471
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_05_09",
+        "n_06_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "property_ref": "p_016"
+    },
+    {
+      "id": "n_06_00",
+      "logical_candidate": [
+        6,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          546.9,
+          201.26
+        ],
+        "K2": [
+          746,
+          321
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_05_00",
+        "n_07_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_06_10",
+      "logical_candidate": [
+        6,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          258.7,
+          358.56
+        ],
+        "K2": [
+          436,
+          491
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_05_10",
+        "n_07_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "red_exclamation",
+      "type_candidates": [
+        "event"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_07_00",
+      "logical_candidate": [
+        7,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          571.05,
+          219.97
+        ],
+        "K2": [
+          772,
+          341
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_06_00",
+        "n_08_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_059"
+    },
+    {
+      "id": "n_07_10",
+      "logical_candidate": [
+        7,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          282.85,
+          377.27
+        ],
+        "K2": [
+          462,
+          511
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_06_10",
+        "n_08_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_017"
+    },
+    {
+      "id": "n_08_00",
+      "logical_candidate": [
+        8,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          595.2,
+          238.68
+        ],
+        "K2": [
+          798,
+          361
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_07_00",
+        "n_09_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_059"
+    },
+    {
+      "id": "n_08_10",
+      "logical_candidate": [
+        8,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          307.0,
+          395.98
+        ],
+        "K2": [
+          488,
+          531
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_07_10",
+        "n_09_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_018"
+    },
+    {
+      "id": "n_09_00",
+      "logical_candidate": [
+        9,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          619.35,
+          257.39
+        ],
+        "K2": [
+          824,
+          381
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_08_00",
+        "n_10_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_007"
+    },
+    {
+      "id": "n_09_10",
+      "logical_candidate": [
+        9,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          331.15,
+          414.69
+        ],
+        "K2": [
+          514,
+          551
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_08_10",
+        "n_10_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_019"
+    },
+    {
+      "id": "n_10_00",
+      "logical_candidate": [
+        10,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          643.5,
+          276.1
+        ],
+        "K2": [
+          850,
+          401
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_09_00",
+        "n_11_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_008"
+    },
+    {
+      "id": "n_10_10",
+      "logical_candidate": [
+        10,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          355.3,
+          433.4
+        ],
+        "K2": [
+          540,
+          571
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_09_10",
+        "n_11_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_11_00",
+      "logical_candidate": [
+        11,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          667.65,
+          294.81
+        ],
+        "K2": [
+          876,
+          421
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_10_00",
+        "n_12_00"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_11_09",
+      "logical_candidate": [
+        11,
+        9
+      ],
+      "screen_estimates": {
+        "K1": [
+          408.27,
+          436.38
+        ],
+        "K2": [
+          597,
+          574
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_10",
+        "n_12_09"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_-5000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "printed_cash": -5000
+    },
+    {
+      "id": "n_11_10",
+      "logical_candidate": [
+        11,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          379.45,
+          452.11
+        ],
+        "K2": [
+          566,
+          591
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_10_10",
+        "n_11_09",
+        "n_11_11"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "yellow_pig_like",
+      "type_candidates": [
+        "unresolved_service"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_11_11",
+      "logical_candidate": [
+        11,
+        11
+      ],
+      "screen_estimates": {
+        "K1": [
+          350.63,
+          467.84
+        ],
+        "K2": [
+          535,
+          608
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_10",
+        "n_11_12"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_card_rectangle",
+      "type_candidates": [
+        "unresolved_service"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_11_12",
+      "logical_candidate": [
+        11,
+        12
+      ],
+      "screen_estimates": {
+        "K1": [
+          321.81,
+          483.57
+        ],
+        "K2": [
+          504,
+          625
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_11",
+        "n_11_13"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_020"
+    },
+    {
+      "id": "n_11_13",
+      "logical_candidate": [
+        11,
+        13
+      ],
+      "screen_estimates": {
+        "K1": [
+          292.99,
+          499.3
+        ],
+        "K2": [
+          473,
+          642
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_12",
+        "n_11_14"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_021"
+    },
+    {
+      "id": "n_11_14",
+      "logical_candidate": [
+        11,
+        14
+      ],
+      "screen_estimates": {
+        "K1": [
+          264.17,
+          515.03
+        ],
+        "K2": [
+          442,
+          659
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_13",
+        "n_11_15"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_022"
+    },
+    {
+      "id": "n_11_15",
+      "logical_candidate": [
+        11,
+        15
+      ],
+      "screen_estimates": {
+        "K1": [
+          235.35,
+          530.76
+        ],
+        "K2": [
+          411,
+          676
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_14",
+        "n_11_16"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_023"
+    },
+    {
+      "id": "n_11_16",
+      "logical_candidate": [
+        11,
+        16
+      ],
+      "screen_estimates": {
+        "K1": [
+          206.53,
+          546.49
+        ],
+        "K2": [
+          380,
+          693
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_15",
+        "n_11_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_024"
+    },
+    {
+      "id": "n_11_17",
+      "logical_candidate": [
+        11,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          177.71,
+          562.22
+        ],
+        "K2": [
+          349,
+          710
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_16",
+        "n_12_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "n_12_m02",
+      "logical_candidate": [
+        12,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          749.44,
+          282.06
+        ],
+        "K2": [
+          964,
+          407
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_m01",
+        "n_13_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_041"
+    },
+    {
+      "id": "n_12_m01",
+      "logical_candidate": [
+        12,
+        -1
+      ],
+      "screen_estimates": {
+        "K1": [
+          720.62,
+          297.79
+        ],
+        "K2": [
+          933,
+          424
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_00",
+        "n_12_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "red_exclamation",
+      "type_candidates": [
+        "event"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_12_00",
+      "logical_candidate": [
+        12,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          691.8,
+          313.52
+        ],
+        "K2": [
+          902,
+          441
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_00",
+        "n_12_01",
+        "n_12_m01"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "yellow_pig_like",
+      "type_candidates": [
+        "unresolved_service"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_12_01",
+      "logical_candidate": [
+        12,
+        1
+      ],
+      "screen_estimates": {
+        "K1": [
+          662.98,
+          329.25
+        ],
+        "K2": [
+          871,
+          458
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_00",
+        "n_12_02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_049"
+    },
+    {
+      "id": "n_12_02",
+      "logical_candidate": [
+        12,
+        2
+      ],
+      "screen_estimates": {
+        "K1": [
+          634.16,
+          344.98
+        ],
+        "K2": [
+          840,
+          475
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_01",
+        "n_12_03"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_050"
+    },
+    {
+      "id": "n_12_03",
+      "logical_candidate": [
+        12,
+        3
+      ],
+      "screen_estimates": {
+        "K1": [
+          605.34,
+          360.71
+        ],
+        "K2": [
+          809,
+          492
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_02",
+        "n_13_03"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_051"
+    },
+    {
+      "id": "n_12_07",
+      "logical_candidate": [
+        12,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          490.06,
+          423.63
+        ],
+        "K2": [
+          685,
+          560
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_08",
+        "n_13_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_060"
+    },
+    {
+      "id": "n_12_08",
+      "logical_candidate": [
+        12,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          461.24,
+          439.36
+        ],
+        "K2": [
+          654,
+          577
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_07",
+        "n_12_09"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_060"
+    },
+    {
+      "id": "n_12_09",
+      "logical_candidate": [
+        12,
+        9
+      ],
+      "screen_estimates": {
+        "K1": [
+          432.42,
+          455.09
+        ],
+        "K2": [
+          623,
+          594
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_09",
+        "n_12_08"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_12_17",
+      "logical_candidate": [
+        12,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          201.86,
+          580.93
+        ],
+        "K2": [
+          375,
+          730
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_11_17",
+        "n_13_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_2000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "printed_cash": 2000
+    },
+    {
+      "id": "n_13_m02",
+      "logical_candidate": [
+        13,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          773.59,
+          300.77
+        ],
+        "K2": [
+          990,
+          427
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_m02",
+        "n_14_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_042"
+    },
+    {
+      "id": "n_13_03",
+      "logical_candidate": [
+        13,
+        3
+      ],
+      "screen_estimates": {
+        "K1": [
+          629.49,
+          379.42
+        ],
+        "K2": [
+          835,
+          512
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_03",
+        "n_13_04"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_numbered_balls",
+      "type_candidates": [
+        "lottery"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_13_04",
+      "logical_candidate": [
+        13,
+        4
+      ],
+      "screen_estimates": {
+        "K1": [
+          600.67,
+          395.15
+        ],
+        "K2": [
+          804,
+          529
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_03",
+        "n_13_05"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_052"
+    },
+    {
+      "id": "n_13_05",
+      "logical_candidate": [
+        13,
+        5
+      ],
+      "screen_estimates": {
+        "K1": [
+          571.85,
+          410.88
+        ],
+        "K2": [
+          773,
+          546
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_04",
+        "n_13_06"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_053"
+    },
+    {
+      "id": "n_13_06",
+      "logical_candidate": [
+        13,
+        6
+      ],
+      "screen_estimates": {
+        "K1": [
+          543.03,
+          426.61
+        ],
+        "K2": [
+          742,
+          563
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_05",
+        "n_13_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_054"
+    },
+    {
+      "id": "n_13_07",
+      "logical_candidate": [
+        13,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          514.21,
+          442.34
+        ],
+        "K2": [
+          711,
+          580
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_07",
+        "n_13_06",
+        "n_14_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_13_17",
+      "logical_candidate": [
+        13,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          226.01,
+          599.64
+        ],
+        "K2": [
+          401,
+          750
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_12_17",
+        "n_14_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_025"
+    },
+    {
+      "id": "n_14_m02",
+      "logical_candidate": [
+        14,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          797.74,
+          319.48
+        ],
+        "K2": [
+          1016,
+          447
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_m02",
+        "n_15_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_043"
+    },
+    {
+      "id": "n_14_07",
+      "logical_candidate": [
+        14,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          538.36,
+          461.05
+        ],
+        "K2": [
+          737,
+          600
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_07",
+        "n_15_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_gamepad",
+      "type_candidates": [
+        "minigame"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_14_17",
+      "logical_candidate": [
+        14,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          250.16,
+          618.35
+        ],
+        "K2": [
+          427,
+          770
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_13_17",
+        "n_15_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_026"
+    },
+    {
+      "id": "n_15_m02",
+      "logical_candidate": [
+        15,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          821.89,
+          338.19
+        ],
+        "K2": [
+          1042,
+          467
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_14_m02",
+        "n_16_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_044"
+    },
+    {
+      "id": "n_15_07",
+      "logical_candidate": [
+        15,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          562.51,
+          479.76
+        ],
+        "K2": [
+          763,
+          620
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_14_07",
+        "n_16_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_055"
+    },
+    {
+      "id": "n_15_17",
+      "logical_candidate": [
+        15,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          274.31,
+          637.06
+        ],
+        "K2": [
+          453,
+          790
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_14_17",
+        "n_16_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_027"
+    },
+    {
+      "id": "n_16_m02",
+      "logical_candidate": [
+        16,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          846.04,
+          356.9
+        ],
+        "K2": [
+          1068,
+          487
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_15_m02",
+        "n_17_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_16_07",
+      "logical_candidate": [
+        16,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          586.66,
+          498.47
+        ],
+        "K2": [
+          789,
+          640
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_15_07",
+        "n_17_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_056"
+    },
+    {
+      "id": "n_16_17",
+      "logical_candidate": [
+        16,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          298.46,
+          655.77
+        ],
+        "K2": [
+          479,
+          810
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_15_17",
+        "n_17_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_028"
+    },
+    {
+      "id": "n_17_m02",
+      "logical_candidate": [
+        17,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          870.19,
+          375.61
+        ],
+        "K2": [
+          1094,
+          507
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_16_m02",
+        "n_18_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_045"
+    },
+    {
+      "id": "n_17_07",
+      "logical_candidate": [
+        17,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          610.81,
+          517.18
+        ],
+        "K2": [
+          815,
+          660
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_16_07",
+        "n_18_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_057"
+    },
+    {
+      "id": "n_17_17",
+      "logical_candidate": [
+        17,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          322.61,
+          674.48
+        ],
+        "K2": [
+          505,
+          830
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_16_17",
+        "n_18_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_5000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "printed_cash": 5000,
+      "pixel_visibility": {
+        "K1": "partly clipped",
+        "K2": "clipped",
+        "K5-105": "visible",
+        "K5-110": "visible"
+      }
+    },
+    {
+      "id": "n_18_m02",
+      "logical_candidate": [
+        18,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          894.34,
+          394.32
+        ],
+        "K2": [
+          1120,
+          527
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_17_m02",
+        "n_19_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_046"
+    },
+    {
+      "id": "n_18_07",
+      "logical_candidate": [
+        18,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          634.96,
+          535.89
+        ],
+        "K2": [
+          841,
+          680
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_17_07",
+        "n_19_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_058"
+    },
+    {
+      "id": "n_18_17",
+      "logical_candidate": [
+        18,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          346.76,
+          693.19
+        ],
+        "K2": [
+          531,
+          850
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_17_17",
+        "n_19_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "purple_pentagram",
+      "type_candidates": [
+        "magic_house"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "pixel_visibility": {
+        "K1": "partly clipped",
+        "K2": "clipped",
+        "K5-105": "visible",
+        "K5-110": "visible"
+      }
+    },
+    {
+      "id": "n_19_m02",
+      "logical_candidate": [
+        19,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          918.49,
+          413.03
+        ],
+        "K2": [
+          1146,
+          547
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_18_m02",
+        "n_20_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_047"
+    },
+    {
+      "id": "n_19_07",
+      "logical_candidate": [
+        19,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          659.11,
+          554.6
+        ],
+        "K2": [
+          867,
+          700
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_18_07",
+        "n_20_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_19_12",
+      "logical_candidate": [
+        19,
+        12
+      ],
+      "screen_estimates": {
+        "K1": [
+          515.01,
+          633.25
+        ],
+        "K2": [
+          712,
+          785
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_13",
+        "n_20_12"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-90",
+        "K5-150"
+      ],
+      "property_ref": "p_030"
+    },
+    {
+      "id": "n_19_13",
+      "logical_candidate": [
+        19,
+        13
+      ],
+      "screen_estimates": {
+        "K1": [
+          486.19,
+          648.98
+        ],
+        "K2": [
+          681,
+          802
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_12",
+        "n_19_14"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_029"
+    },
+    {
+      "id": "n_19_14",
+      "logical_candidate": [
+        19,
+        14
+      ],
+      "screen_estimates": {
+        "K1": [
+          457.37,
+          664.71
+        ],
+        "K2": [
+          650,
+          819
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_13",
+        "n_19_15"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_061"
+    },
+    {
+      "id": "n_19_15",
+      "logical_candidate": [
+        19,
+        15
+      ],
+      "screen_estimates": {
+        "K1": [
+          428.55,
+          680.44
+        ],
+        "K2": [
+          619,
+          836
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_14",
+        "n_19_16"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "property_ref": "p_061"
+    },
+    {
+      "id": "n_19_16",
+      "logical_candidate": [
+        19,
+        16
+      ],
+      "screen_estimates": {
+        "K1": [
+          399.73,
+          696.17
+        ],
+        "K2": [
+          588,
+          853
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_15",
+        "n_19_17"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "red_exclamation",
+      "type_candidates": [
+        "event"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "pixel_visibility": {
+        "K1": "partly clipped",
+        "K2": "clipped",
+        "K5-105": "visible",
+        "K5-110": "visible"
+      }
+    },
+    {
+      "id": "n_19_17",
+      "logical_candidate": [
+        19,
+        17
+      ],
+      "screen_estimates": {
+        "K1": [
+          370.91,
+          711.9
+        ],
+        "K2": [
+          557,
+          870
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_18_17",
+        "n_19_16"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "zebra_road",
+      "type_candidates": [
+        "road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "pixel_visibility": {
+        "K1": "partly clipped",
+        "K2": "clipped",
+        "K5-105": "visible",
+        "K5-110": "visible"
+      }
+    },
+    {
+      "id": "n_20_m02",
+      "logical_candidate": [
+        20,
+        -2
+      ],
+      "screen_estimates": {
+        "K1": [
+          942.64,
+          431.74
+        ],
+        "K2": [
+          1172,
+          567
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_m02",
+        "n_20_m01"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_048"
+    },
+    {
+      "id": "n_20_m01",
+      "logical_candidate": [
+        20,
+        -1
+      ],
+      "screen_estimates": {
+        "K1": [
+          913.82,
+          447.47
+        ],
+        "K2": [
+          1141,
+          584
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_00",
+        "n_20_m02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_039"
+    },
+    {
+      "id": "n_20_00",
+      "logical_candidate": [
+        20,
+        0
+      ],
+      "screen_estimates": {
+        "K1": [
+          885.0,
+          463.2
+        ],
+        "K2": [
+          1110,
+          601
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_01",
+        "n_20_m01"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_062"
+    },
+    {
+      "id": "n_20_01",
+      "logical_candidate": [
+        20,
+        1
+      ],
+      "screen_estimates": {
+        "K1": [
+          856.18,
+          478.93
+        ],
+        "K2": [
+          1079,
+          618
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_00",
+        "n_20_02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_062"
+    },
+    {
+      "id": "n_20_02",
+      "logical_candidate": [
+        20,
+        2
+      ],
+      "screen_estimates": {
+        "K1": [
+          827.36,
+          494.66
+        ],
+        "K2": [
+          1048,
+          635
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_01",
+        "n_21_02"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "four_corner_road_texture",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "property_ref": "p_040"
+    },
+    {
+      "id": "n_20_07",
+      "logical_candidate": [
+        20,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          683.26,
+          573.31
+        ],
+        "K2": [
+          893,
+          720
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_07",
+        "n_20_08",
+        "n_21_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cyan_storefront",
+      "type_candidates": [
+        "shop"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "n_20_08",
+      "logical_candidate": [
+        20,
+        8
+      ],
+      "screen_estimates": {
+        "K1": [
+          654.44,
+          589.04
+        ],
+        "K2": [
+          862,
+          737
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_07",
+        "n_20_09"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_031"
+    },
+    {
+      "id": "n_20_09",
+      "logical_candidate": [
+        20,
+        9
+      ],
+      "screen_estimates": {
+        "K1": [
+          625.62,
+          604.77
+        ],
+        "K2": [
+          831,
+          754
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_08",
+        "n_20_10"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_032"
+    },
+    {
+      "id": "n_20_10",
+      "logical_candidate": [
+        20,
+        10
+      ],
+      "screen_estimates": {
+        "K1": [
+          596.8,
+          620.5
+        ],
+        "K2": [
+          800,
+          771
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_09",
+        "n_20_11"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_033"
+    },
+    {
+      "id": "n_20_11",
+      "logical_candidate": [
+        20,
+        11
+      ],
+      "screen_estimates": {
+        "K1": [
+          567.98,
+          636.23
+        ],
+        "K2": [
+          769,
+          788
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_10",
+        "n_20_12"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_034"
+    },
+    {
+      "id": "n_20_12",
+      "logical_candidate": [
+        20,
+        12
+      ],
+      "screen_estimates": {
+        "K1": [
+          539.16,
+          651.96
+        ],
+        "K2": [
+          738,
+          805
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_19_12",
+        "n_20_11"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_numbered_balls",
+      "type_candidates": [
+        "lottery"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-90",
+        "K5-150"
+      ]
+    },
+    {
+      "id": "n_21_02",
+      "logical_candidate": [
+        21,
+        2
+      ],
+      "screen_estimates": {
+        "K1": [
+          851.51,
+          513.37
+        ],
+        "K2": [
+          1074,
+          655
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_02",
+        "n_21_03"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "blue_card_rectangle",
+      "type_candidates": [
+        "unresolved_service"
+      ],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "n_21_03",
+      "logical_candidate": [
+        21,
+        3
+      ],
+      "screen_estimates": {
+        "K1": [
+          822.69,
+          529.1
+        ],
+        "K2": [
+          1043,
+          672
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_21_02",
+        "n_21_04"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_035"
+    },
+    {
+      "id": "n_21_04",
+      "logical_candidate": [
+        21,
+        4
+      ],
+      "screen_estimates": {
+        "K1": [
+          793.87,
+          544.83
+        ],
+        "K2": [
+          1012,
+          689
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_21_03",
+        "n_21_05"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_036"
+    },
+    {
+      "id": "n_21_05",
+      "logical_candidate": [
+        21,
+        5
+      ],
+      "screen_estimates": {
+        "K1": [
+          765.05,
+          560.56
+        ],
+        "K2": [
+          981,
+          706
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_21_04",
+        "n_21_06"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_037"
+    },
+    {
+      "id": "n_21_06",
+      "logical_candidate": [
+        21,
+        6
+      ],
+      "screen_estimates": {
+        "K1": [
+          736.23,
+          576.29
+        ],
+        "K2": [
+          950,
+          723
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_21_05",
+        "n_21_07"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "plain_road",
+      "type_candidates": [
+        "property_road"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "property_ref": "p_038"
+    },
+    {
+      "id": "n_21_07",
+      "logical_candidate": [
+        21,
+        7
+      ],
+      "screen_estimates": {
+        "K1": [
+          707.41,
+          592.02
+        ],
+        "K2": [
+          919,
+          740
+        ]
+      },
+      "screen_method": "affine visual alignment; not exact mouse picks",
+      "neighbors": [
+        "n_20_07",
+        "n_21_06"
+      ],
+      "geometry_confidence": "B_visual",
+      "visual": "cash_2000",
+      "type_candidates": [
+        "cash"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "printed_cash": 2000
+    }
+  ],
+  "edges": [
+    {
+      "from": "n_00_m02",
+      "to": "n_00_m01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_facility_entry_release",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_m01",
+      "to": "n_00_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_00",
+      "to": "n_00_01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_00",
+      "to": "n_01_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_00_01",
+      "to": "n_00_02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_02",
+      "to": "n_00_03",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_03",
+      "to": "n_00_04",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N01"
+    },
+    {
+      "from": "n_00_04",
+      "to": "n_01_04",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N02"
+    },
+    {
+      "from": "n_00_08",
+      "to": "n_01_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_facility_entry_release",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N04"
+    },
+    {
+      "from": "n_01_00",
+      "to": "n_02_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_01_04",
+      "to": "n_02_04",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N02"
+    },
+    {
+      "from": "n_01_08",
+      "to": "n_02_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N04"
+    },
+    {
+      "from": "n_02_00",
+      "to": "n_03_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_02_04",
+      "to": "n_02_05",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N03"
+    },
+    {
+      "from": "n_02_05",
+      "to": "n_02_06",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N03"
+    },
+    {
+      "from": "n_02_06",
+      "to": "n_02_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N03"
+    },
+    {
+      "from": "n_02_07",
+      "to": "n_02_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N03"
+    },
+    {
+      "from": "n_02_08",
+      "to": "n_03_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N04"
+    },
+    {
+      "from": "n_03_00",
+      "to": "n_04_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_03_08",
+      "to": "n_04_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N04"
+    },
+    {
+      "from": "n_04_00",
+      "to": "n_05_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_04_08",
+      "to": "n_05_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N04"
+    },
+    {
+      "from": "n_05_00",
+      "to": "n_06_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_05_08",
+      "to": "n_05_09",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N05"
+    },
+    {
+      "from": "n_05_09",
+      "to": "n_05_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N05"
+    },
+    {
+      "from": "n_05_10",
+      "to": "n_06_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_06_00",
+      "to": "n_07_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_06_10",
+      "to": "n_07_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_07_00",
+      "to": "n_08_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_07_10",
+      "to": "n_08_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_08_00",
+      "to": "n_09_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_08_10",
+      "to": "n_09_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_09_00",
+      "to": "n_10_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_09_10",
+      "to": "n_10_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_10_00",
+      "to": "n_11_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_10_10",
+      "to": "n_11_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N06"
+    },
+    {
+      "from": "n_11_00",
+      "to": "n_12_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "N07"
+    },
+    {
+      "from": "n_11_09",
+      "to": "n_11_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C07"
+    },
+    {
+      "from": "n_11_09",
+      "to": "n_12_09",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C06"
+    },
+    {
+      "from": "n_11_10",
+      "to": "n_11_11",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_11",
+      "to": "n_11_12",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_12",
+      "to": "n_11_13",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_13",
+      "to": "n_11_14",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_14",
+      "to": "n_11_15",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_15",
+      "to": "n_11_16",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_16",
+      "to": "n_11_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S01"
+    },
+    {
+      "from": "n_11_17",
+      "to": "n_12_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_12_m02",
+      "to": "n_12_m01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C01"
+    },
+    {
+      "from": "n_12_m02",
+      "to": "n_13_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_12_m01",
+      "to": "n_12_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C01"
+    },
+    {
+      "from": "n_12_00",
+      "to": "n_12_01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C01"
+    },
+    {
+      "from": "n_12_01",
+      "to": "n_12_02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C01"
+    },
+    {
+      "from": "n_12_02",
+      "to": "n_12_03",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C01"
+    },
+    {
+      "from": "n_12_03",
+      "to": "n_13_03",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C02"
+    },
+    {
+      "from": "n_12_07",
+      "to": "n_12_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C05"
+    },
+    {
+      "from": "n_12_07",
+      "to": "n_13_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C04"
+    },
+    {
+      "from": "n_12_08",
+      "to": "n_12_09",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C05"
+    },
+    {
+      "from": "n_12_17",
+      "to": "n_13_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_13_m02",
+      "to": "n_14_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_13_03",
+      "to": "n_13_04",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C03"
+    },
+    {
+      "from": "n_13_04",
+      "to": "n_13_05",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C03"
+    },
+    {
+      "from": "n_13_05",
+      "to": "n_13_06",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C03"
+    },
+    {
+      "from": "n_13_06",
+      "to": "n_13_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C03"
+    },
+    {
+      "from": "n_13_07",
+      "to": "n_14_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_13_17",
+      "to": "n_14_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_14_m02",
+      "to": "n_15_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_14_07",
+      "to": "n_15_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_14_17",
+      "to": "n_15_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_15_m02",
+      "to": "n_16_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_15_07",
+      "to": "n_16_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_15_17",
+      "to": "n_16_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_16_m02",
+      "to": "n_17_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_16_07",
+      "to": "n_17_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_16_17",
+      "to": "n_17_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_17_m02",
+      "to": "n_18_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_17_07",
+      "to": "n_18_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_17_17",
+      "to": "n_18_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_18_m02",
+      "to": "n_19_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_18_07",
+      "to": "n_19_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_18_17",
+      "to": "n_19_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S02"
+    },
+    {
+      "from": "n_19_m02",
+      "to": "n_20_m02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E05"
+    },
+    {
+      "from": "n_19_07",
+      "to": "n_20_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "C08"
+    },
+    {
+      "from": "n_19_12",
+      "to": "n_19_13",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-150",
+        "K5-90"
+      ],
+      "segment": "S03"
+    },
+    {
+      "from": "n_19_12",
+      "to": "n_20_12",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-150",
+        "K5-90"
+      ],
+      "segment": "S04"
+    },
+    {
+      "from": "n_19_13",
+      "to": "n_19_14",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S03"
+    },
+    {
+      "from": "n_19_14",
+      "to": "n_19_15",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S03"
+    },
+    {
+      "from": "n_19_15",
+      "to": "n_19_16",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S03"
+    },
+    {
+      "from": "n_19_16",
+      "to": "n_19_17",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "segment": "S03"
+    },
+    {
+      "from": "n_20_m02",
+      "to": "n_20_m01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E04"
+    },
+    {
+      "from": "n_20_m01",
+      "to": "n_20_00",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E04"
+    },
+    {
+      "from": "n_20_00",
+      "to": "n_20_01",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E04"
+    },
+    {
+      "from": "n_20_01",
+      "to": "n_20_02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E04"
+    },
+    {
+      "from": "n_20_02",
+      "to": "n_21_02",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E03"
+    },
+    {
+      "from": "n_20_07",
+      "to": "n_20_08",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S05"
+    },
+    {
+      "from": "n_20_07",
+      "to": "n_21_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E01"
+    },
+    {
+      "from": "n_20_08",
+      "to": "n_20_09",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S05"
+    },
+    {
+      "from": "n_20_09",
+      "to": "n_20_10",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S05"
+    },
+    {
+      "from": "n_20_10",
+      "to": "n_20_11",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "S05"
+    },
+    {
+      "from": "n_20_11",
+      "to": "n_20_12",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-150",
+        "K5-90"
+      ],
+      "segment": "S05"
+    },
+    {
+      "from": "n_21_02",
+      "to": "n_21_03",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ],
+      "segment": "E02"
+    },
+    {
+      "from": "n_21_03",
+      "to": "n_21_04",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E02"
+    },
+    {
+      "from": "n_21_04",
+      "to": "n_21_05",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E02"
+    },
+    {
+      "from": "n_21_05",
+      "to": "n_21_06",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E02"
+    },
+    {
+      "from": "n_21_06",
+      "to": "n_21_07",
+      "geometry_confidence": "B_visual",
+      "traversal_rule": "U_direction_selection_not_verified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "segment": "E02"
+    }
+  ],
+  "route_segments": [
+    {
+      "id": "N01",
+      "nodes": [
+        "n_00_m02",
+        "n_00_m01",
+        "n_00_00",
+        "n_00_01",
+        "n_00_02",
+        "n_00_03",
+        "n_00_04"
+      ]
+    },
+    {
+      "id": "N02",
+      "nodes": [
+        "n_00_04",
+        "n_01_04",
+        "n_02_04"
+      ]
+    },
+    {
+      "id": "N03",
+      "nodes": [
+        "n_02_04",
+        "n_02_05",
+        "n_02_06",
+        "n_02_07",
+        "n_02_08"
+      ]
+    },
+    {
+      "id": "N04",
+      "nodes": [
+        "n_00_08",
+        "n_01_08",
+        "n_02_08",
+        "n_03_08",
+        "n_04_08",
+        "n_05_08"
+      ]
+    },
+    {
+      "id": "N05",
+      "nodes": [
+        "n_05_08",
+        "n_05_09",
+        "n_05_10"
+      ]
+    },
+    {
+      "id": "N06",
+      "nodes": [
+        "n_05_10",
+        "n_06_10",
+        "n_07_10",
+        "n_08_10",
+        "n_09_10",
+        "n_10_10",
+        "n_11_10"
+      ]
+    },
+    {
+      "id": "N07",
+      "nodes": [
+        "n_00_00",
+        "n_01_00",
+        "n_02_00",
+        "n_03_00",
+        "n_04_00",
+        "n_05_00",
+        "n_06_00",
+        "n_07_00",
+        "n_08_00",
+        "n_09_00",
+        "n_10_00",
+        "n_11_00",
+        "n_12_00"
+      ]
+    },
+    {
+      "id": "S01",
+      "nodes": [
+        "n_11_10",
+        "n_11_11",
+        "n_11_12",
+        "n_11_13",
+        "n_11_14",
+        "n_11_15",
+        "n_11_16",
+        "n_11_17"
+      ]
+    },
+    {
+      "id": "S02",
+      "nodes": [
+        "n_11_17",
+        "n_12_17",
+        "n_13_17",
+        "n_14_17",
+        "n_15_17",
+        "n_16_17",
+        "n_17_17",
+        "n_18_17",
+        "n_19_17"
+      ]
+    },
+    {
+      "id": "S03",
+      "nodes": [
+        "n_19_17",
+        "n_19_16",
+        "n_19_15",
+        "n_19_14",
+        "n_19_13",
+        "n_19_12"
+      ]
+    },
+    {
+      "id": "S04",
+      "nodes": [
+        "n_19_12",
+        "n_20_12"
+      ]
+    },
+    {
+      "id": "S05",
+      "nodes": [
+        "n_20_12",
+        "n_20_11",
+        "n_20_10",
+        "n_20_09",
+        "n_20_08",
+        "n_20_07"
+      ]
+    },
+    {
+      "id": "E01",
+      "nodes": [
+        "n_20_07",
+        "n_21_07"
+      ]
+    },
+    {
+      "id": "E02",
+      "nodes": [
+        "n_21_07",
+        "n_21_06",
+        "n_21_05",
+        "n_21_04",
+        "n_21_03",
+        "n_21_02"
+      ]
+    },
+    {
+      "id": "E03",
+      "nodes": [
+        "n_21_02",
+        "n_20_02"
+      ]
+    },
+    {
+      "id": "E04",
+      "nodes": [
+        "n_20_02",
+        "n_20_01",
+        "n_20_00",
+        "n_20_m01",
+        "n_20_m02"
+      ]
+    },
+    {
+      "id": "E05",
+      "nodes": [
+        "n_20_m02",
+        "n_19_m02",
+        "n_18_m02",
+        "n_17_m02",
+        "n_16_m02",
+        "n_15_m02",
+        "n_14_m02",
+        "n_13_m02",
+        "n_12_m02"
+      ]
+    },
+    {
+      "id": "C01",
+      "nodes": [
+        "n_12_m02",
+        "n_12_m01",
+        "n_12_00",
+        "n_12_01",
+        "n_12_02",
+        "n_12_03"
+      ]
+    },
+    {
+      "id": "C02",
+      "nodes": [
+        "n_12_03",
+        "n_13_03"
+      ]
+    },
+    {
+      "id": "C03",
+      "nodes": [
+        "n_13_03",
+        "n_13_04",
+        "n_13_05",
+        "n_13_06",
+        "n_13_07"
+      ]
+    },
+    {
+      "id": "C04",
+      "nodes": [
+        "n_13_07",
+        "n_12_07"
+      ]
+    },
+    {
+      "id": "C05",
+      "nodes": [
+        "n_12_07",
+        "n_12_08",
+        "n_12_09"
+      ]
+    },
+    {
+      "id": "C06",
+      "nodes": [
+        "n_12_09",
+        "n_11_09"
+      ]
+    },
+    {
+      "id": "C07",
+      "nodes": [
+        "n_11_09",
+        "n_11_10"
+      ]
+    },
+    {
+      "id": "C08",
+      "nodes": [
+        "n_13_07",
+        "n_14_07",
+        "n_15_07",
+        "n_16_07",
+        "n_17_07",
+        "n_18_07",
+        "n_19_07",
+        "n_20_07"
+      ]
+    }
+  ],
+  "properties": [
+    {
+      "id": "p_001",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_00_01"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_002",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_00_02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_003",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_00_03"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_004",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_02_00"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_005",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_03_00"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_006",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_04_00"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_007",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_09_00"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_008",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_10_00"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_009",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_02_05"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_010",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_02_06"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_011",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_02_07"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_012",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_03_08"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_013",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_04_08"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_014",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_05_08"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_015",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_05_09"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_016",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_05_10"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_017",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_07_10"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_018",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_08_10"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_019",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_09_10"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_020",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_11_12"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_021",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_11_13"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_022",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_11_14"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_023",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_11_15"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_024",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_11_16"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_025",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_13_17"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_026",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_14_17"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_027",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_15_17"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_028",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_16_17"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_029",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_19_13"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_030",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_19_12"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_031",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_08"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_032",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_09"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_033",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_10"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_034",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_11"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_035",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_21_03"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_036",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_21_04"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_037",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_21_05"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_038",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_21_06"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_039",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_m01"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_040",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_041",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_12_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_042",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_13_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_043",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_14_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_044",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_15_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_045",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_17_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_046",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_18_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_047",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_19_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_048",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_20_m02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_049",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_12_01"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_050",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_12_02"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_051",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_12_03"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_052",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_13_04"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_053",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_13_05"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_054",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_13_06"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_055",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_15_07"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_056",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_16_07"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_057",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_17_07"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_058",
+      "kind_candidate": "small",
+      "adjacent_road_nodes": [
+        "n_18_07"
+      ],
+      "entrance_rule": "single visible frontage cell",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_059",
+      "kind_candidate": "large",
+      "adjacent_road_nodes": [
+        "n_07_00",
+        "n_08_00"
+      ],
+      "entrance_rule": "U: two visible frontage cells; ownership/charging equivalence unverified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_060",
+      "kind_candidate": "large",
+      "adjacent_road_nodes": [
+        "n_12_07",
+        "n_12_08"
+      ],
+      "entrance_rule": "U: two visible frontage cells; ownership/charging equivalence unverified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_061",
+      "kind_candidate": "large",
+      "adjacent_road_nodes": [
+        "n_19_14",
+        "n_19_15"
+      ],
+      "entrance_rule": "U: two visible frontage cells; ownership/charging equivalence unverified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "p_062",
+      "kind_candidate": "large",
+      "adjacent_road_nodes": [
+        "n_20_00",
+        "n_20_01"
+      ],
+      "entrance_rule": "U: two visible frontage cells; ownership/charging equivalence unverified",
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    }
+  ],
+  "counts": {
+    "nodes": 102,
+    "undirected_edges": 104,
+    "degree_histogram": {
+      "2": 94,
+      "1": 2,
+      "3": 6
+    },
+    "cycle_rank_connected": 3,
+    "small_plot_candidates": 58,
+    "large_plot_candidates": 4
+  },
+  "unknowns": [
+    "Rules allowing regular traversal into hospital/prison endpoints and forced release direction",
+    "Turn-selection rules and any directional restrictions",
+    "Large properties have two visible frontage cells; whether both trigger one shared property is not yet verified",
+    "Service glyph semantics remain candidates where no opening dialogue was inspected",
+    "Property names/prices/street groups not reconstructed",
+    "Different-year snapshots do not establish every patch has identical rules"
+  ],
+  "independent_review": "round9_services independently enumerated 102 nodes / 104 edges using visible segments; initial false straight-line/lottery-spur hypotheses corrected before this file"
+}

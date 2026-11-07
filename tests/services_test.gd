@@ -17,7 +17,7 @@ func force_condition(g,index:int)->void:
 	for seed_value in range(1,1000):
 		var probe=RandomNumberGenerator.new()
 		probe.seed=seed_value
-		if probe.randi_range(0,2)==index:
+		if probe.randi_range(0,Services.CONDITIONS.size()-1)==index:
 			g.rng.seed=seed_value
 			return
 func _init()->void:
@@ -74,7 +74,7 @@ func _init()->void:
 	check(g.phase=="end" and g.pending_service.is_empty(),"hospitalized arrival never opens service")
 	# Winning number is predicted from a clone, without changing the game's RNG.
 	g=fresh(); var probe=RandomNumberGenerator.new(); probe.state=g.rng.state
-	var winning:int=probe.randi_range(1,10)
+	var winning:int=probe.randi_range(Services.TEST_PROFILE.number_min,Services.TEST_PROFILE.number_max)
 	g.lottery_state.pot=10001
 	g.lottery_state.tickets=[{"player":0,"number":winning},{"player":1,"number":winning},{"player":2,"number":winning}]
 	g.players[2].bankrupt=true; g.round_number=16
@@ -85,7 +85,7 @@ func _init()->void:
 	check(g.lottery_state.draw_count==1 and g.rng.state==rng_before,"same boundary cannot draw or pay twice")
 	g=fresh(); g.round_number=16; Services.advance_round(g)
 	check(g.lottery_state.pot==10000 and g.lottery_state.draw_round==31,"no winner carries pool to next period")
-	g=fresh(15); probe.state=g.rng.state; winning=probe.randi_range(1,10)
+	g=fresh(15); probe.state=g.rng.state; winning=probe.randi_range(Services.TEST_PROFILE.number_min,Services.TEST_PROFILE.number_max)
 	g.lottery_state.tickets=[{"player":1,"number":winning}]
 	g.round_number=15; g.current=3; g.phase="end"; g.end_turn()
 	check(g.phase=="finished" and g.lottery_state.draw_count==1 and g.winners==[1],"final completed period pays before match ranking")
@@ -95,7 +95,7 @@ func _init()->void:
 	g=fresh(); g.players[0].pos=50; g.players[0].previous=49; g.roll_dice(2); g.move_to(51)
 	check(g.phase=="move" and g.magic_last_result.is_empty(),"passing magic house does not activate it")
 	g=fresh(); g.gm_teleport(0,51); rng_before=g.rng.state
-	check(g.phase=="magic" and g.magic_options().size()==3 and g.rng.state==rng_before,"magic menu draws no condition")
+	check(g.phase=="magic" and g.magic_options().size()==9 and g.rng.state==rng_before,"magic menu draws no condition")
 	check(not g.choose_magic("invented") and g.rng.state==rng_before and g.phase=="magic","invalid effect consumes nothing")
 	force_condition(g,0); g.choose_magic("demolish")
 	check(g.magic_last_result.targets.is_empty() and g.magic_last_result.condition=="car" and g.phase=="land","empty condition consumes visit without reroll")
@@ -106,7 +106,7 @@ func _init()->void:
 	g.lots.small_1_6.owner=0; g.lots.small_1_6.level=2; g.lots.small_1_6.building_type="house"
 	g.lots.small_4_6.owner=1; g.lots.small_4_6.level=2; g.lots.small_4_6.building_type="house"
 	g.gm_teleport(0,51); force_condition(g,0); g.choose_magic("demolish")
-	check(g.lots.small_1_6.level==1 and g.lots.small_4_6.level==2,"demolition excludes disappeared players and preserves ownership")
+	check(g.lots.small_1_6.level==0 and g.lots.small_1_6.owner==0 and g.lots.small_4_6.level==2,"demolition removes one whole building, excludes disappeared players and preserves ownership")
 	g=fresh(); g.players[0].vehicle="car"; g.gm_teleport(0,51); force_condition(g,0)
 	g.choose_magic("deposit_cash")
 	check(g.players[0].cash==0 and g.players[0].deposit==10000,"deposit effect conserves wealth")

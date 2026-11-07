@@ -1,0 +1,11 @@
+{
+  "nodes": 102,
+  "edges": 104,
+  "connected": true,
+  "cycle_rank": 3,
+  "sources_valid": true,
+  "playable": false,
+  "scope": "Structural self-consistency only; source geometry and gameplay require separate visual audit",
+  "adjacency_exact": true,
+  "references_nonempty": true
+}

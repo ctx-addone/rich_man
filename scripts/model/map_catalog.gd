@@ -5,7 +5,7 @@ const Board = preload("res://scripts/model/board_model.gd")
 const DEFAULT_MAP_ID := "integration_city"
 const REGISTRY = {
 	"integration_city":{"id":"integration_city","name":"集成验证城","description":"117道路、24地产；用于系统验证，非原版地图。","playable":true,"source_status":"prototype","path":"res://data/maps/integration_city.json"},
-	"knight_manor":{"id":"knight_manor","name":"骑士庄园（研究中）","description":"仅有局部画面证据，尚未核定完整道路和产权。","playable":false,"source_status":"partial_visual_evidence","path":"res://data/maps/knight_manor.evidence.json"}
+	"knight_manor":{"id":"knight_manor","name":"骑士庄园（研究中）","description":"102节点候选描图已建立，产权、设施和通行规则仍在核验。","playable":false,"source_status":"traced_geometry_pending_validation","path":"res://data/maps/knight_manor.evidence.json"}
 }
 const ROAD_KINDS = ["road","start","event","lottery","magic"]
 const BUILDINGS = ["vacant","house","chain","mall","hotel","estate","bookstore","energy","lab","park"]

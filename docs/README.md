@@ -41,3 +41,5 @@
 2026-11-08 已通过 `lark-cli` 写入用户指定知识库的 [策划案目录](https://dcncd5jl63xs.feishu.cn/wiki/NWf0wjR7gikIbSkBbWAcSBiFnHe)，七份分类文档均创建为其子页；原有目录内容保留并追加导航。逐页回读记录与链接映射见 `feishu-publication.json`。
 
 - [第十一轮地图验收](round-11-report.md)、[地图数据模型](round-11-map-model.md)、[骑士庄园逐格补图](research/r11-knight-map.md)、[设施出口与图例补证](research/r11-facility-exits.md)。
+
+- [第十二轮魔法屋与地图验收](round-12-report.md)、[九项效果与八类条件](round-12-services.md)、[乐透魔法原作补证](research/r12-special-services.md)、[骑士庄园编号图](research/r12-knight-trace.md)、[地图独立审查](research/r12-map-audit.md)。

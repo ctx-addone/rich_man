@@ -722,6 +722,76 @@
       "normalized_sha256": "70AD72A177B95DA3E08EAC5178DFB4C46B9D191CFF850CC9E8506E2C32EC2FD9",
       "source_sha256": "BE26C0EA1E91823020968E87E4F03F777522D75DC5EAF5D64376C15E07F2D6F0",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-12-report.md",
+      "title": "43 · 第十二轮魔法屋与地图描图验收",
+      "node_token": "Akwiwotdgim5SskVkfNctZBhnTf",
+      "document_id": "Y9EDd8CGEow2zdxkHaucj4rnnAb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Akwiwotdgim5SskVkfNctZBhnTf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-43.json",
+      "revision_id": 2,
+      "remote_characters": 1533,
+      "normalized_sha256": "297B2C7C327AA60322C4AAC8AB48FB07D38C4791CE031A6DD833003BF365707E",
+      "source_sha256": "0706BB2A03CABC2E40F2D7126C5381675223B473BFA3FEBDF127470494C0AD16",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-12-services.md",
+      "title": "44 · 九项魔法与八类条件",
+      "node_token": "AblxwSDRRiQSyikUJRFc82GunFd",
+      "document_id": "WGQOd5vLdo1mCOxkITacEpaCn3e",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/AblxwSDRRiQSyikUJRFc82GunFd",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-44.json",
+      "revision_id": 2,
+      "remote_characters": 1975,
+      "normalized_sha256": "B650C12975672D53586CADEBCFA9A9BEA04F974A3254CF1F0840898EA5EB7F23",
+      "source_sha256": "EDBEEEB0C423DFF95A2D3128A890124D67E828EB2A50AF1FE2787B2A0C139581",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r12-special-services.md",
+      "title": "45 · 乐透与魔法实际行为补证",
+      "node_token": "Vdw1w6IPOigIZfka83CcKz0unme",
+      "document_id": "F0lwdVjMYo0v8zxVJ91cug5fnwb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Vdw1w6IPOigIZfka83CcKz0unme",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-45.json",
+      "revision_id": 2,
+      "remote_characters": 5436,
+      "normalized_sha256": "03ED2246576AD65843858A4D7A2B811A4EE8E2F95C12E18655C8FD49C8433642",
+      "source_sha256": "C6AB5E62682F88C0E5DCCAC45CBC0F5CB7F8A2F1BCE86522730C3195A41843D9",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r12-knight-trace.md",
+      "title": "46 · 骑士庄园102节点候选描图",
+      "node_token": "RPIRwQC7YiVL6QkmTK0cc6Wknjb",
+      "document_id": "WqrVdSC3Noexd4xxXzlcwawunXg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/RPIRwQC7YiVL6QkmTK0cc6Wknjb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-46.json",
+      "revision_id": 2,
+      "remote_characters": 4238,
+      "normalized_sha256": "C02400E623D0C868FCB2D068352917DCE4C27BC58889825C6FBD5C65FEF35F7B",
+      "source_sha256": "77F8A5C3E12F8AB4A8873FAA56E231F2D95A093A335DC5C3F54ACD192C262E00",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r12-map-audit.md",
+      "title": "47 · 骑士庄园路网独立复核",
+      "node_token": "Y1c9wmHThil1pek4VIIcbO9Tndb",
+      "document_id": "ZYNzdcu8voA8nFx6cmUcNKTUnpd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Y1c9wmHThil1pek4VIIcbO9Tndb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-47.json",
+      "revision_id": 2,
+      "remote_characters": 6299,
+      "normalized_sha256": "F8A61653762718E196A0CB252CC157A7DB4B654846D8620556675485382BD244",
+      "source_sha256": "DDE2BAEEDDBE72AC9BFC8EA8336461236149A3AF617AA5595F745B8C90981997",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -738,5 +808,6 @@
   "round8_updated_at": "2026-11-08",
   "round9_updated_at": "2026-11-08",
   "round10_updated_at": "2026-11-08",
-  "round11_updated_at": "2026-11-08"
+  "round11_updated_at": "2026-11-08",
+  "round12_updated_at": "2026-11-08"
 }

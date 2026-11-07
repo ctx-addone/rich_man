@@ -58,9 +58,8 @@ static func step(g) -> bool:
 				if not numbers.is_empty() and g.buy_ticket(numbers[(g.current + g.round_number) % numbers.size()]): return true
 			return g.close_lottery()
 		"magic":
-			# Commit before the random condition is known; never simulate or redraw it.
-			for option in g.magic_options():
-				if option.id == "gain_cards" and g.choose_magic(option.id): return true
+			# Compare visible outcomes across all conditions, before any random draw.
+			if g.choose_magic(g.Specials.Magic.ai_effect(g)): return true
 			return g.close_magic()
 		"land":
 			if not g.is_sleepwalking():
