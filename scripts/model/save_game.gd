@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 1
+const VERSION = 2
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -51,25 +51,113 @@ static func event_valid(event: Dictionary, count: int) -> bool:
 	if event.kind == "money":
 		if not event.get("amount") is int or event.amount < 0 or not player_index(event.get("receiver"),count,-1): return false
 	return true
+static func v1_additions() -> Dictionary:
+	# Only fields introduced by version 2 may be repaired. Missing v1 fields
+	# remain errors; the original road layout must not silently gain services.
+	return {"specials_enabled":false,"lottery_state":Game.Specials.initial_lottery(),
+		"service_visited":[],"pending_service":{},"magic_last_result":{},
+		"god_respawn_due":{},"shop_stock":[],"shop_visit_serial":0}
+static func exact_shape(value: Variant, template: Dictionary) -> bool:
+	return value is Dictionary and value.size() == template.size() and shape(value,template)
+static func unique_indices(value: Variant, count: int) -> bool:
+	if not value is Array: return false
+	var seen: Dictionary = {}
+	for who in value:
+		if not player_index(who,count) or seen.has(who): return false
+		seen[who] = true
+	return true
+static func special_state_error(state: Dictionary, game) -> String:
+	var count: int = state.players.size()
+	var profile: Dictionary = game.Specials.TEST_PROFILE
+	var lottery: Dictionary = state.lottery_state
+	if not exact_shape(lottery,game.Specials.initial_lottery()): return "乐透数据格式无效"
+	if lottery.pot < 0 or lottery.draw_round < 1 or lottery.draw_count < 0: return "乐透数值无效"
+	if state.specials_enabled and lottery.draw_round <= state.round_number: return "乐透开奖时点无效"
+	for ticket in lottery.tickets:
+		if not exact_shape(ticket,{"player":0,"number":1}): return "乐透票据格式无效"
+		if not player_index(ticket.player,count) or not game.Specials.numbers().has(ticket.number): return "乐透票据无效"
+	if not unique_indices(lottery.last_winners,count): return "乐透获奖者无效"
+	if lottery.draw_count == 0:
+		if not lottery.last_draw.is_empty() or not lottery.last_winners.is_empty(): return "乐透开奖记录不一致"
+	else:
+		var draw: Dictionary = lottery.last_draw
+		if not exact_shape(draw,{"round":1,"number":1,"pot":0,"payouts":{}}): return "乐透开奖记录格式无效"
+		if draw.round < 1 or draw.round > state.round_number or draw.round >= lottery.draw_round or draw.pot < 0 or not game.Specials.numbers().has(draw.number): return "乐透开奖记录无效"
+		var total: int = 0
+		for who in draw.payouts:
+			if not player_index(who,count) or not draw.payouts[who] is int or draw.payouts[who] < 0 or draw.payouts[who] > draw.pot-total: return "乐透派奖无效"
+			total += draw.payouts[who]
+		if not draw.payouts.is_empty() and total != draw.pot: return "乐透派奖总额无效"
+		if draw.payouts.keys() != lottery.last_winners: return "乐透派奖名单不一致"
+	var visited: Dictionary = {}
+	for road in state.service_visited:
+		if not road is int or road not in [game.Specials.LOTTERY_ROAD,game.Specials.MAGIC_ROAD] or visited.has(road): return "服务经过记录无效"
+		visited[road] = true
+	var service: Dictionary = state.pending_service
+	if state.phase in ["lottery","magic"]:
+		if not state.specials_enabled or not exact_shape(service,{"kind":"","road":0,"purchases":0}): return "服务阶段缺少有效记录"
+		var road: int = game.Specials.LOTTERY_ROAD if state.phase == "lottery" else game.Specials.MAGIC_ROAD
+		var p: Dictionary = state.players[state.current]
+		if service.kind != state.phase or service.road != road or p.pos != road or not visited.has(road): return "服务与道路或阶段不一致"
+		if p.bankrupt or not p.status.is_empty() or p.god.get("id","") == "fierce" or not state.pending_attack.is_empty(): return "服务参与者无效"
+		if service.purchases < 0 or service.purchases > int(profile.visit_limit): return "服务购买次数无效"
+		if state.phase == "magic" and (service.purchases != 0 or state.steps_left != 0): return "魔法屋落地状态无效"
+		if state.phase == "lottery":
+			var owned: int = 0
+			for ticket in lottery.tickets:
+				if ticket.player == state.current: owned += 1
+			if owned < service.purchases: return "乐透购买记录不一致"
+	elif not service.is_empty(): return "待处理服务与阶段不一致"
+	var magic: Dictionary = state.magic_last_result
+	if not magic.is_empty():
+		if not exact_shape(magic,{"effect":"","condition":"","targets":[]}): return "魔法结果格式无效"
+		var effects: Array = []
+		for option in game.Specials.MAGIC: effects.append(option.id)
+		if not effects.has(magic.effect) or not game.Specials.CONDITIONS.has(magic.condition) or not unique_indices(magic.targets,count): return "魔法结果无效"
+	if not state.specials_enabled and (not visited.is_empty() or not magic.is_empty() or lottery != game.Specials.initial_lottery()): return "未启用的服务存在活动状态"
+	if state.shop_visit_serial < 0 or state.shop_purchases < 0 or state.shop_purchases > int(game.Buildings.PROFILE.shop_purchase_limit): return "商店访问计数无效"
+	var stocked: Dictionary = {}
+	var pool: Array = game.Shop.pool(game)
+	for card in state.shop_stock:
+		if not card is String or not pool.has(card) or stocked.has(card): return "商店库存无效"
+		stocked[card] = true
+	if state.shop_stock.size() > int(game.Shop.PROFILE.maximum_offers): return "商店库存过多"
+	if not state.specials_enabled and not state.shop_stock.is_empty(): return "旧版商店不能包含随机库存"
+	if not state.shop_stock.is_empty() and state.shop_visit_serial == 0: return "商店库存缺少访问记录"
+	if state.phase == "shop" and state.specials_enabled:
+		var original_stock: int = state.shop_stock.size()+state.shop_purchases
+		if state.shop_visit_serial < 1 or original_stock < int(game.Shop.PROFILE.minimum_offers) or original_stock > int(game.Shop.PROFILE.maximum_offers): return "商店阶段库存不一致"
+		var shop: Dictionary = game.facility_lot("shop")
+		if not shop.frontage_nodes.has(str(state.players[state.current].pos)): return "商店阶段位置无效"
+	for god_id in state.god_respawn_due:
+		if not god_id is String or not game.Gods.CATALOG.has(god_id) or not state.god_respawn_due[god_id] is int or state.god_respawn_due[god_id] < 1: return "神仙冷却状态无效"
+	# Turning gods off pauses the clock; validated cooldowns may be retained.
+	return ""
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if data.get("version") != VERSION: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
+	if data.version == 1:
+		var additions: Dictionary = v1_additions()
+		for key in additions:
+			if not state.has(key): state[key] = additions[key]
+		if state.specials_enabled != false: return failure("旧版本不能启用新增服务地图")
+	if not state.get("specials_enabled") is bool: return failure("服务开关格式无效")
 	if not state.get("players") is Array or state.players.size() < 2 or state.players.size() > 4: return failure("玩家数量无效")
 	var names: Array = []
 	for player in state.players:
 		if not player is Dictionary or not player.get("name") is String: return failure("玩家格式无效")
 		names.append(player.name)
 	var game = Game.new()
-	game.setup(names,1)
+	game.setup(names,1,20,{"specials_enabled":state.specials_enabled})
 	for key in fields(game):
 		if EXCLUDED.has(key): continue
 		if not state.has(key) or not shape(state[key],game.get(key)): return failure("存档字段无效："+key)
 	if state.nodes != game.nodes or state.lots.keys() != game.lots.keys(): return failure("地图版本不兼容")
 	var count: int = state.players.size()
-	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","end","detained","reaction","finished"]: return failure("行动状态无效")
+	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","end","detained","reaction","finished"]: return failure("行动状态无效")
 	if state.round_number < 1 or state.round_limit < 1 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
 	if state.reaction_reward_active: return failure("不能恢复未完成的内部奖励步骤")
 	for road in [state.forced_next,state.cached_next]:
@@ -128,6 +216,8 @@ static func restore(data: Variant) -> Dictionary:
 		for event in a.events:
 			if not event is Dictionary or not event_valid(event,count): return failure("后续事件无效")
 	elif not state.pending_attack.is_empty(): return failure("事件与阶段不一致")
+	var service_error: String = special_state_error(state,game)
+	if not service_error.is_empty(): return failure(service_error)
 	var market: Dictionary = data.market
 	if not shape(market,{"quotes":game.stock_market.quotes,"ledger":[],"market_round":1,"rng_seed":1,"rng_state":1}) or not data.get("rng_seed") is int or not data.get("rng_state") is int: return failure("市场或随机数状态无效")
 	if market.quotes.keys() != game.stock_market.quotes.keys() or market.market_round < 1: return failure("市场目录无效")

@@ -9,10 +9,20 @@ const Combat = preload("res://scripts/model/combat_rules.gd")
 const Buildings = preload("res://scripts/model/building_rules.gd")
 const Market = preload("res://scripts/model/stock_market.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
+const Specials = preload("res://scripts/model/special_services.gd")
+const Shop = preload("res://scripts/model/shop_rules.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const HAND_LIMIT = 8
 var gods_enabled := false
 var talents_enabled := false
+var specials_enabled := false
+var lottery_state: Dictionary = Specials.initial_lottery()
+var service_visited: Array[int] = []
+var pending_service: Dictionary = {}
+var magic_last_result: Dictionary = {}
+var god_respawn_due: Dictionary = {}
+var shop_stock: Array[String] = []
+var shop_visit_serial: int = 0
 var road_gods: Dictionary = {}
 var god_pass_seen: Dictionary = {}
 const BoardModel = preload("res://scripts/model/board_model.gd")
@@ -57,6 +67,14 @@ var landing_shop := false
 var reaction_reward_active := false
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> void:
+	specials_enabled = options.get("specials_enabled",false)
+	lottery_state = Specials.initial_lottery()
+	service_visited.clear()
+	pending_service.clear()
+	magic_last_result.clear()
+	god_respawn_due.clear()
+	shop_stock.clear()
+	shop_visit_serial=0
 	gods_enabled = options.get("gods_enabled",false)
 	talents_enabled = options.get("talents_enabled",false)
 	road_gods.clear()
@@ -119,6 +137,8 @@ func _build_map() -> void:
 			n.kind = "event"
 			n.name = "机会事件"
 		elif n.neighbors.size()>2: n.name = "岔路口"
+		if specials_enabled and n.id==Specials.LOTTERY_ROAD: n.kind="lottery"; n.name="乐透站"
+		if specials_enabled and n.id==Specials.MAGIC_ROAD: n.kind="magic"; n.name="魔法屋"
 		var exits: Array = []
 		for id in n.neighbors: exits.append(str(id))
 		layout.roads.append({"id":str(n.id), "cell":[int(n.pos.x),int(n.pos.y)], "exits":exits})
@@ -224,6 +244,8 @@ func roll_dice(forced: int = 0) -> bool:
 	steps_left=last_roll
 	active_lot_id=""
 	bank_visited.clear()
+	service_visited.clear()
+	pending_service.clear()
 	god_pass_seen.clear()
 	cached_next=-1
 	p.choose_junction=nodes[p.pos].neighbors.size()>2
@@ -299,6 +321,7 @@ func _continue_arrival() -> void:
 			phase="bank"
 			_log("经过银行，可调整现金与存款；剩余%d步。"%steps_left)
 			return
+	if nodes[node_id].kind=="lottery" and Specials.enter(self,"lottery"): return
 	_check_movement()
 
 func _check_movement() -> void:
@@ -352,7 +375,9 @@ func _continue_land() -> void:
 		if lot.kind=="facility":
 			if lot.building_type=="shop" and not is_sleepwalking():
 				phase="shop"
-				if not landing_shop: shop_purchases=0
+				if not landing_shop:
+					shop_purchases=0
+					Shop.enter(self)
 			continue
 		active_lot_id=id
 		Gods.stop_lot(self,lot)
@@ -373,6 +398,7 @@ func _continue_land() -> void:
 			p.cash+=int(Buildings.PROFILE.energy_income)*lot.level
 			_log("能源中心发放收益%d。"%(int(Buildings.PROFILE.energy_income)*lot.level))
 	landing_pending=false
+	if nodes[p.pos].kind=="magic" and Specials.enter(self,"magic"): return
 	if nodes[p.pos].kind=="event" and Gods.id(self,current)!="fierce":
 		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
 		else:
@@ -468,14 +494,7 @@ func discard_card(index:int)->bool:
 	players[current].cards.remove_at(index)
 	return true
 func shop_offers()->Array[Dictionary]:
-	var offers:Array[Dictionary]=[]
-	var markup:=0.0
-	for lot in lots.values():
-		if lot.owner>=0 and lot.owner!=current and lot.building_type=="energy" and lot.closed_until<=round_number: markup+=lot.level*Buildings.PROFILE.energy_markup
-	for id in CARD_NAMES:
-		if id in ["portal","trap","super_dice","teleport","quantum","glory","misery","disaster","rapid_missile"]: continue
-		offers.append({"id":id,"name":CARD_NAMES[id],"price":int(Buildings.PROFILE.card_price*(1.0+markup)*Traits.shop_price_multiplier(self,current))})
-	return offers
+	return Shop.offers(self)
 func shop_remaining()->int:
 	return maxi(0,int(Buildings.PROFILE.shop_purchase_limit)-shop_purchases) if phase=="shop" else 0
 func buy_card(card_id:String)->bool:
@@ -485,6 +504,7 @@ func buy_card(card_id:String)->bool:
 			if not give_card(current,card_id): return false
 			players[current].cash-=offer.price
 			shop_purchases+=1
+			Shop.purchased(self,card_id)
 			return true
 	return false
 func close_shop()->bool:
@@ -499,10 +519,17 @@ func close_shop()->bool:
 func send_on_vacation(player_id:int,lot_id:String)->void:
 	var p:Dictionary=players[player_id]
 	p.status={"kind":"vacation","remaining":Buildings.PROFILE.hotel_turns,"return_pos":p.pos,"return_previous":p.previous,"lot_id":lot_id}
-	if player_id==current: steps_left=0; phase="end"
+	if player_id==current:
+		pending_service.clear()
+		steps_left=0
+		phase="end"
 func _tick_economy()->void:
 	# Final settlement uses the last playable day's quotes, not an unplayed day.
-	if round_number <= round_limit: stock_market.advance(round_number)
+	# Lottery tickets for the just-completed final day still settle before ranking.
+	Specials.advance_round(self)
+	if round_number <= round_limit:
+		stock_market.advance(round_number)
+		Gods.advance_round(self)
 	if (round_number-1)%int(Buildings.PROFILE.month_days)==0:
 		for p in players:
 			if not p.bankrupt:
@@ -557,6 +584,7 @@ func send_to_facility(player_id: int, kind: String, days: int, combat_internal: 
 	p.status={"kind":kind,"remaining":days,"return_pos":prior.get("return_pos",p.pos),"return_previous":prior.get("return_previous",p.previous)}
 	_log("%s 进入%s，滞留%d次行动。"%[p.name,"医院" if kind=="hospital" else "监狱",days])
 	if player_id==current:
+		pending_service.clear()
 		steps_left=0
 		controlled_dice=0
 		# The interrupted action already happened; detention starts on next turn.
@@ -591,6 +619,7 @@ func end_turn() -> bool:
 			if round_number>round_limit: finish_game(); return true
 		if not players[current].bankrupt: break
 	phase="roll"
+	pending_service.clear()
 	controlled_path.clear()
 	dice_count=1
 	forced_next=-1
@@ -659,6 +688,7 @@ func _check_winner() -> void:
 	if alive<=1: finish_game()
 
 func finish_game() -> void:
+	pending_service.clear()
 	pending_attack.clear()
 	landing_pending=false
 	landing_queue.clear()
@@ -692,6 +722,9 @@ func gm_teleport(player_id: int, node_id: int) -> bool:
 		cached_next=-1
 		steps_left=0
 		bank_visited.clear()
+		service_visited.clear()
+		pending_service.clear()
+		if nodes[node_id].kind=="lottery" and Specials.enter(self,"lottery"): return true
 		for id in lots_at_node(node_id):
 			if lots[id].building_type=="bank":
 				bank_visited.append(id)
@@ -754,7 +787,10 @@ func random_card()->String:
 func gm_god(player_id:int,god_id:String)->bool:
 	if phase in ["reaction","finished"] or player_id<0 or player_id>=players.size(): return false
 	if god_id=="": players[player_id].god={}; return true
-	return Gods.attach(self,player_id,god_id)
+	var attached:bool=Gods.attach(self,player_id,god_id)
+	if attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["lottery","magic"]:
+		Specials.close(self,phase)
+	return attached
 func gm_spawn_god(road:int,god_id:String)->bool:
 	if phase in ["reaction","finished"] or road<0 or road>=nodes.size(): return false
 	if god_id=="": road_gods.erase(road); return true
@@ -780,3 +816,16 @@ func _auto_craft(who:int)->void:
 			for ignored in range(5): players[who].cards.erase(recipe.input)
 			players[who].cards.append(recipe.output)
 			_log(players[who].name+" 自动合成"+CARD_NAMES[recipe.output])
+
+func lottery_numbers() -> Array[int]:
+	return Specials.numbers()
+func buy_ticket(number:int) -> bool:
+	return Specials.buy(self,number)
+func close_lottery() -> bool:
+	return Specials.close(self,"lottery")
+func magic_options() -> Array[Dictionary]:
+	return Specials.options()
+func choose_magic(effect:String) -> bool:
+	return Specials.choose(self,effect)
+func close_magic() -> bool:
+	return Specials.close(self,"magic")

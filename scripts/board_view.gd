@@ -75,6 +75,8 @@ func _draw() -> void:
 		var fill := Color("c3d0cf")
 		if n.kind == "start": fill = Color("efd18b")
 		elif n.kind == "event": fill = Color("c5b6dd")
+		elif n.kind == "lottery": fill = Color("f1ce72")
+		elif n.kind == "magic": fill = Color("b99be3")
 		elif n.kind == "metro": fill = Color("91d3dc")
 		draw_style_box(_tile_style(fill, 3), box)
 		if active_roads.has(n.id): draw_rect(box.grow(1), Color("73e6d0"), false, 2)
@@ -83,6 +85,8 @@ func _draw() -> void:
 		var caption: String = str(n.id)
 		if n.kind == "start": caption = "起"
 		elif n.kind == "event": caption = "?"
+		elif n.kind == "lottery": caption = "彩"
+		elif n.kind == "magic": caption = "魔"
 		elif n.kind == "metro": caption = "M"
 		var font_size: int = clampi(int(cell * 0.43), 9, 14)
 		draw_string(font, pos + Vector2(-cell / 2, font_size * 0.35), caption, HORIZONTAL_ALIGNMENT_CENTER, cell, font_size, Color("27434a"))

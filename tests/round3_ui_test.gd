@@ -7,6 +7,8 @@ func run() -> void:
 	app.controllers.assign(["human", "human", "human", "human"])
 	app.talents_enabled = false
 	app.gods_enabled = false
+	# This historical fixture exercises the fixed shop; round9_ui_test covers random stock.
+	app.specials_enabled = false
 	root.add_child(app)
 	await click("开始游戏")
 	await click("选择角色")

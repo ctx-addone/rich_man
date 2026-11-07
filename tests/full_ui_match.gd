@@ -1,7 +1,7 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
-	out_dir = "res://docs/testing/round8"
+	out_dir = "res://docs/testing/round9"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
@@ -49,6 +49,8 @@ func run() -> void:
 				await click("离开银行")
 				bank_used = true
 			"shop": await click("离开商店")
+			"lottery": await click("离开乐透站")
+			"magic": await click("施放 · 获得3张卡片")
 			"reaction":
 				if find_button(app, "我来应对") != null: await click("我来应对")
 				else: await click("承受效果")

@@ -1,0 +1,100 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: screenshot 11-building-choice
+PASS: button exists: 选择 大饭店
+PASS: button enabled: 选择 大饭店
+PASS: hotel selected through purchase UI
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: opponent landing enters hotel vacation
+PASS: screenshot 12-hotel
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 选择 研究所
+PASS: button enabled: 选择 研究所
+PASS: research building selected
+PASS: button exists: 安排研究
+PASS: button enabled: 安排研究
+PASS: button exists: 研究 
+PASS: button enabled: 研究 
+PASS: research starts actual portal project
+PASS: screenshot 13-research
+PASS: completed research grants usable card
+PASS: shop service opens on landing
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: screenshot 14-shop
+PASS: button exists: 购买卡牌 · 查账
+PASS: button enabled: 购买卡牌 · 查账
+PASS: shop purchase spends cash and gives card
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: full hand disables purchase
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: manual discard frees hand slot
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: button exists: 购买卡牌 · 遥控
+PASS: button enabled: 购买卡牌 · 遥控
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: button exists: 购买卡牌 · 遥控
+PASS: button enabled: 购买卡牌 · 遥控
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: visit quota blocks purchase even with free hand slot
+PASS: screenshot 16-shop-quota
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 离开商店
+PASS: button enabled: 离开商店
+PASS: shop closes once
+PASS: button exists: 卡牌图鉴
+PASS: button enabled: 卡牌图鉴
+PASS: screenshot 15-card-catalog
+PASS: button exists: 关闭
+PASS: button enabled: 关闭
+PASS: catalog closes to match
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 查账卡
+PASS: button enabled: 查账卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: player-target card UI applies to selected opponent
+PASS: button exists: 改建卡
+PASS: button enabled: 改建卡
+PASS: lot-target rebuild offers small-building types
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: lot ID and selected building type reach card effect
+PASS: screenshot 17-chain-card
+R3_UI failures=0

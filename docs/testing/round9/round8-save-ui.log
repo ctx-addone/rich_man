@@ -1,0 +1,42 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: default is one human with three computer opponents
+PASS: screenshot 01-controllers
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 新建存档
+PASS: button enabled: 新建存档
+PASS: saving creates a historical record
+PASS: screenshot 02-save-history
+PASS: button exists: 读取存档
+PASS: button enabled: 读取存档
+PASS: button exists: 读取 · 移动中回放
+PASS: button enabled: 读取 · 移动中回放
+PASS: button exists: 确认读取
+PASS: button enabled: 确认读取
+PASS: menu load restores unfinished movement
+PASS: load restores exact model state before any next action
+PASS: load retains control settings and test marker, pauses AI
+PASS: screenshot 03-loaded-movement
+PASS: button exists: 新建存档
+PASS: button enabled: 新建存档
+PASS: second save appends a separate record
+PASS: button exists: 返回
+PASS: button enabled: 返回
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: live controls can hand all seats to AI
+PASS: screenshot 04-paused-ai
+PASS: button exists: 接管当前席位
+PASS: button enabled: 接管当前席位
+PASS: takeover returns action to a human
+PASS: all-AI UI match finishes naturally without GM
+PASS: screenshot 05-ai-natural-results
+ROUND8_UI_TEST failures=0 frames=193

@@ -3,6 +3,9 @@ extends RefCounted
 
 # Unknown values are explicit integration parameters, never recovered original data.
 const PROFILE = {"duration":5,"cash_entry":500,"confused_failure":0.25,"confused_reverse":0.2,"spawn_count":10,"fierce_ignored_kinds":["event","bank"]}
+# PROVISIONAL: original refresh interval is unknown. Missing gods wait one
+# complete global-round boundary after detection; never respawn during a card.
+const CYCLE_PROFILE = {"reappear_after":1,"check_every_rounds":1}
 const CATALOG = {
  "wealth":{"name":"财神","description":"入场收取对手现金；测试实现免租，其他费用集合待核验。"},
  "poor":{"name":"穷神","description":"入场向对手支付现金；租金加倍。"},
@@ -45,14 +48,40 @@ static func attach(g,who:int,god_id:String)->bool:
  g._log(p.name+" 附身"+CATALOG[god_id].name+"（基础时长为测试配置）。")
  return true
 static func spawn(g)->void:
- var roads:Array=[]
- for node in g.nodes:
-  if node.id!=0: roads.append(node.id)
+ var roads:Array=spawn_roads(g)
  for god_id in CATALOG:
   if roads.is_empty(): break
   var index:int=g.rng.randi_range(0,roads.size()-1)
   g.road_gods[roads[index]]=god_id
   roads.remove_at(index)
+static func spawn_roads(g)->Array:
+ var occupied:Dictionary={}
+ for p in g.players: occupied[p.pos]=true
+ var roads:Array=[]
+ for node in g.nodes:
+  if node.id!=0 and not occupied.has(node.id) and not g.road_gods.has(node.id) and not g.road_objects.has(node.id): roads.append(node.id)
+ return roads
+static func advance_round(g,profile:Dictionary=CYCLE_PROFILE)->void:
+ if not g.gods_enabled or g.round_number>g.round_limit: return
+ if (g.round_number-1)%maxi(1,int(profile.get("check_every_rounds",1)))!=0: return
+ var present:Dictionary={}
+ for god_id in g.road_gods.values(): present[god_id]=true
+ for p in g.players:
+  if not p.bankrupt and not p.get("god",{}).is_empty(): present[p.god.id]=true
+ var roads:Array=spawn_roads(g)
+ for god_id in CATALOG:
+  if present.has(god_id):
+   g.god_respawn_due.erase(god_id)
+   continue
+  if not g.god_respawn_due.has(god_id):
+   g.god_respawn_due[god_id]=g.round_number+maxi(1,int(profile.get("reappear_after",1)))
+   continue
+  if g.round_number<int(g.god_respawn_due[god_id]) or roads.is_empty(): continue
+  var index:int=g.rng.randi_range(0,roads.size()-1)
+  g.road_gods[roads[index]]=god_id
+  roads.remove_at(index)
+  g.god_respawn_due.erase(god_id)
+  g._log(CATALOG[god_id].name+" 重新出现在道路上（测试刷新规则）。")
 static func arrive(g,who:int)->void:
  var p:Dictionary=g.players[who]
  if g.road_gods.has(p.pos):

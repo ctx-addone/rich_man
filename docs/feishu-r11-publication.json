@@ -554,6 +554,62 @@
       "normalized_sha256": "147BB6219F40C3440596759D6045D15B855AC145AC24BAA8D33E9AB38C0DCACB",
       "source_sha256": "5AF15014B53B6462FED9993ED559ABE0E88B080145481FEDE1C030CA5CB1CFE7",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-09-report.md",
+      "title": "31 · 第九轮特殊设施与长局循环",
+      "node_token": "BtY4wPq0ZiV4ZakcpIxcpI0hnWf",
+      "document_id": "M9EDdCxfzoTJYExOYGNcyIzsn14",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/BtY4wPq0ZiV4ZakcpIxcpI0hnWf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-31.json",
+      "revision_id": 2,
+      "remote_characters": 2100,
+      "normalized_sha256": "5ED112BE5DC79030105C97D8D338E07187067BDFAF7DA36C6A39921BB904BDFC",
+      "source_sha256": "3216C9233C1535C2621284AF720AA600A2CDC3D46875D3A411ADDAEBA2AF1B25",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-09-services.md",
+      "title": "32 · 乐透与魔法屋服务流程",
+      "node_token": "X3yPwuxLsicg9Qkx14CciRCmn8d",
+      "document_id": "XVXhdQuPxoA0lRxEcazc2XVqnZf",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/X3yPwuxLsicg9Qkx14CciRCmn8d",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-32.json",
+      "revision_id": 2,
+      "remote_characters": 2762,
+      "normalized_sha256": "243A89FA5CA8CE0F65B102DBEBF37FE299005B175599C95DE3CD817DA04A6071",
+      "source_sha256": "66FC08EF88D4E47C10B8006132F506EB265E979E5D476325912E6B66078D7A74",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-09-world.md",
+      "title": "33 · 神仙循环与随机商店",
+      "node_token": "TDHQwb4OPi647ikD0uQcSiydncc",
+      "document_id": "X0avdipXion6KkxP9NscVZb7nH3",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/TDHQwb4OPi647ikD0uQcSiydncc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-33.json",
+      "revision_id": 2,
+      "remote_characters": 1709,
+      "normalized_sha256": "9C579E712C9387F3E4D24AA7323B3D682EF29DBDF108923716CAC95BBE28E40E",
+      "source_sha256": "38A7570560EAFB104D64F9F51C9ADB6C3D68BA885934C542D6D2678AFB583FD8",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-special-services.md",
+      "title": "34 · 特殊服务原作规则补证",
+      "node_token": "XlvSwYfVmi8MPpknEpFcnrfnnrd",
+      "document_id": "WvOWdiIkKoWyY8xm5u0cE0GcnAb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/XlvSwYfVmi8MPpknEpFcnrfnnrd",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-34.json",
+      "revision_id": 2,
+      "remote_characters": 4728,
+      "normalized_sha256": "4AE9F5562D0DC3900C494489852EED0E119BDAF4791AB68849C15DB19591AA09",
+      "source_sha256": "B18CA990DE8DF5E3C2601AC9D6178C7831C0D1499E10213589531BEB43841229",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -567,5 +623,6 @@
   "round5_updated_at": "2026-11-08",
   "round6_updated_at": "2026-11-08",
   "round7_updated_at": "2026-11-08",
-  "round8_updated_at": "2026-11-08"
+  "round8_updated_at": "2026-11-08",
+  "round9_updated_at": "2026-11-08"
 }

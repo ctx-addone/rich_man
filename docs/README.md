@@ -15,6 +15,7 @@
 - [第六轮神仙与角色验收](round-06-report.md)、[神仙与卡牌](round-06-gods.md)、[角色天赋](round-06-characters.md)、[补充研究](research/r11-gods-talents-cards.md)。
 - [第七轮金损防御与神仙交互](round-07-report.md)、[支付反应](round-07-money.md)、[神眷与合成](round-07-gods.md)、[本轮补证](research/r11-money-god-interactions.md)。
 - [第八轮单机托管与存读档](round-08-report.md)、[电脑策略](round-08-ai.md)、[保存与恢复](round-08-save.md)、[托管存档与特殊地格补证](research/r11-autoplay-save-events.md)。
+- [第九轮特殊设施与长局循环](round-09-report.md)、[乐透与魔法屋](round-09-services.md)、[神仙循环与随机商店](round-09-world.md)、[特殊服务补证](research/r11-special-services.md)。
 - [路线与载具模型](round-05-movement.md)、[爆炸与附身炸弹](round-05-explosives.md)、[第五轮补证](research/r11-movement-explosions.md)。
 - [原作地图证据盘点](research/r11-map-catalog.md)：16张地图、实际图像依据和待补拓扑。
 - [现有实现差距审查](research/r11-current-gap-audit.md)：22项系统差距与代码位置。

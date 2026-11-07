@@ -45,6 +45,20 @@ static func step(g) -> bool:
 						if offer.id == preferred and p.cash >= CASH_RESERVE + offer.price:
 							return g.buy_card(preferred)
 			return g.close_shop()
+		"lottery":
+			# At most one ticket per draw; use visible balances and ticket records.
+			var has_ticket: bool = false
+			for ticket in g.lottery_state.tickets:
+				if ticket.player == g.current: has_ticket = true
+			if not has_ticket and g.pending_service.get("purchases", 0) == 0 and p.cash >= CASH_RESERVE + g.Specials.TEST_PROFILE.ticket_price:
+				var numbers: Array = g.lottery_numbers()
+				if not numbers.is_empty() and g.buy_ticket(numbers[(g.current + g.round_number) % numbers.size()]): return true
+			return g.close_lottery()
+		"magic":
+			# Commit before the random condition is known; never simulate or redraw it.
+			for option in g.magic_options():
+				if option.id == "gain_cards" and g.choose_magic(option.id): return true
+			return g.close_magic()
 		"land":
 			if not g.is_sleepwalking():
 				for id in g.lots_at_node(p.pos):

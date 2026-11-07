@@ -23,6 +23,7 @@ var player_names: Array = ["玩家 1", "玩家 2", "玩家 3", "玩家 4"]
 var character_ids: Array[String] = []
 var talents_enabled: bool = true
 var gods_enabled: bool = true
+var specials_enabled: bool = true
 var turns: int = 20
 var screen: String = "menu"
 var handoff: bool = true
@@ -274,6 +275,12 @@ func character_select() -> void:
 	gods.button_pressed = gods_enabled
 	gods.toggled.connect(func(enabled): gods_enabled = enabled)
 	controls.add_child(gods)
+	var specials := CheckButton.new()
+	specials.name = "SpecialsToggle"
+	specials.text = "特殊设施"
+	specials.button_pressed = specials_enabled
+	specials.toggled.connect(func(enabled): specials_enabled = enabled)
+	controls.add_child(specials)
 	controls.add_child(button("开始对局 →", func(): capture_names(); start_game()))
 
 func ensure_characters() -> void:
@@ -289,7 +296,7 @@ func capture_names() -> void:
 func start_game() -> void:
 	game = Game.new()
 	ensure_characters()
-	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "characters":character_ids})
+	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids})
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -436,6 +443,26 @@ func refresh() -> void:
 				sidebar.add_child(button("离开银行 · 继续行程", func(): game.close_bank(); refresh()))
 			"detained":
 				sidebar.add_child(paragraph("%s\n本次无法行走或主动使用卡牌。结束回合后推进停留时间。" % status_text(p), 18))
+			"lottery":
+				sidebar.add_child(label("乐透站", 24, Color("efd18b")))
+				sidebar.add_child(paragraph("每注 %d · 第%d轮开奖\n奖池 %d · 剩余移动 %d步" % [game.Specials.TEST_PROFILE.ticket_price, game.lottery_state.draw_round, game.lottery_state.pot, game.steps_left]))
+				var numbers := OptionButton.new()
+				numbers.name = "LotteryNumber"
+				for number in game.lottery_numbers(): numbers.add_item("号码 %02d" % number, number)
+				sidebar.add_child(numbers)
+				sidebar.add_child(button("购入一注", func(): game.buy_ticket(numbers.get_selected_id()); refresh(), p.cash < game.Specials.TEST_PROFILE.ticket_price or game.pending_service.purchases >= game.Specials.TEST_PROFILE.visit_limit))
+				var tickets: Array[String] = []
+				for ticket in game.lottery_state.tickets:
+					if ticket.player == game.current: tickets.append(str(ticket.number))
+				sidebar.add_child(paragraph("本期持有：" + ("无" if tickets.is_empty() else "、".join(tickets)), 15))
+				sidebar.add_child(button("离开乐透站 · 继续行程", func(): game.close_lottery(); refresh()))
+			"magic":
+				sidebar.add_child(label("魔法屋", 24, Color("c5b6dd")))
+				sidebar.add_child(paragraph("先选择效果，再随机抽取作用条件：驾驶汽车、总资产最多或地产最多。在场且符合条件的角色都会受到影响。", 16))
+				for option in game.magic_options():
+					sidebar.add_child(button("施放 · " + option.name, func(): game.choose_magic(option.id); refresh()))
+					sidebar.add_child(paragraph(option.description, 13))
+				sidebar.add_child(button("离开魔法屋", func(): game.close_magic(); refresh()))
 			"shop":
 				sidebar.add_child(paragraph("卡牌商店 · 本次还可买%d张\n手牌满时先弃牌；离店时结算书店奖励。" % game.shop_remaining()))
 				sidebar.add_child(button("浏览商店", show_shop))
@@ -465,7 +492,14 @@ func refresh() -> void:
 		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else ([facility.id] if not facility.is_empty() else [])
 	else:
 		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
-		detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
+		detail.add_child(paragraph({"lottery":"经过时可选号购票，离开继续剩余步数。", "magic":"停留时选择魔法效果，再抽取作用条件。", "metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
+	if n.kind == "lottery":
+		detail.add_child(paragraph("第%d轮开奖 · 当前奖池 %d" % [game.lottery_state.draw_round, game.lottery_state.pot], 14))
+		if not game.lottery_state.last_draw.is_empty():
+			var draw: Dictionary = game.lottery_state.last_draw
+			detail.add_child(paragraph("上期开奖：第%d轮，号码%d" % [draw.round, draw.number], 14))
+		for ticket in game.lottery_state.tickets:
+			detail.add_child(label("%s · 号码%d" % [game.players[ticket.player].name, ticket.number], 13))
 	if game.road_objects.has(id):
 		var object_kind: String = game.road_objects[id].kind
 		detail.add_child(label("道路物件 · " + Game.CARD_NAMES.get(object_kind, object_kind), 16, Color("e9c46a")))
@@ -818,7 +852,7 @@ func dismiss() -> void:
 
 func show_help() -> void:
 	var v := modal("玩法说明")
-	v.add_child(paragraph("1. 默认一名真人与三名电脑，可在选人页改为同机热座。掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口关联同一产权。停在入口可购买、升级或向对手付租金。\n3. 经过银行时可存取款，离开后继续剩余步数。大额费用可用免费或转移卡应对。\n4. 住院、入狱等状态按提示推进；最后存活者获胜，或达到轮数上限后比较净资产。\n5. “托管”可调整各席位控制；电脑行动时可暂停或接管，真人防御仍由真人确认。\n6. “存读档”每次新建一份记录，可从主菜单或局内读取。读档后电脑先暂停，确认局势后继续。\n7. 点击建筑查看产权与入口；F1可构造资金、卡牌、地产和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
+	v.add_child(paragraph("1. 默认一名真人与三名电脑，可在选人页改为同机热座。掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口关联同一产权。停在入口可购买、升级或向对手付租金。\n3. 经过银行时可存取款，离开后继续剩余步数。大额费用可用免费或转移卡应对。\n4. 住院、入狱等状态按提示推进；最后存活者获胜，或达到轮数上限后比较净资产。\n5. “托管”可调整各席位控制；电脑行动时可暂停或接管，真人防御仍由真人确认。\n6. “存读档”每次新建一份记录，可从主菜单或局内读取。读档后电脑先暂停，确认局势后继续。\n7. 经过乐透站可购票；停在魔法屋先选效果再抽条件。商店货品在本次访问内固定，售出不补货。\n8. 点击建筑查看产权与入口；F1可构造资金、卡牌、地产和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
 
 func show_stocks() -> void:
@@ -989,6 +1023,7 @@ func load_snapshot(path: String) -> Dictionary:
 		character_ids.append(p.get("character_id", "original"))
 	talents_enabled = game.talents_enabled
 	gods_enabled = game.gods_enabled
+	specials_enabled = game.specials_enabled
 	turns = game.round_limit
 	gm_used = bool(meta.get("gm_used", false))
 	forced_dice = clampi(int(meta.get("forced_dice", 0)), 0, 6)
