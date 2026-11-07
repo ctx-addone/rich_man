@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "researched_at": "2026-11-08",
+  "reference_game": "Richman 11 / 大富翁11",
+  "edition": "Steam PC international",
+  "exact_build": null,
+  "implemented": false,
+  "confidence": {
+    "A": "官方确认的机制；未展示的公式不算已证实",
+    "B": "明确11代的同期图文攻略，重要参数待原画面复核",
+    "C": "明确11代的社区线索，待原画面核验",
+    "U": "无足够证据，不得套用其他代"
+  },
+  "sources": {
+    "steam": {"url": "https://store.steampowered.com/app/2074800/Richman_11/?l=schinese", "kind": "official", "version_scope": "international store description, exact build unspecified"},
+    "softstar": {"url": "https://www.softstar.net.cn/index.php?s=/Home/Article/detail/id/409.html", "kind": "official", "published": "2022-10-20", "version_scope": "launch"},
+    "buildings": {"url": "https://gl.ali213.net/html/2022-10/934689_21.html", "kind": "illustrated_guide", "published": "2022-10-20", "version_scope": "launch"},
+    "stocks": {"url": "https://gl.ali213.net/html/2022-11/942985.html", "kind": "guide", "published": "2022-11-02", "version_scope": "2022"},
+    "bank_wiki": {"url": "https://richman.fandom.com/zh/wiki/银行?variant=zh-sg", "kind": "community", "version_scope": "use explicit Richman 11 paragraphs only"},
+    "strategy_wiki": {"url": "https://richman.fandom.com/zh/wiki/大富翁11/策略", "kind": "community", "version_scope": "Richman 11 including post-launch content"},
+    "game_wiki": {"url": "https://richman.fandom.com/zh/wiki/大富翁11?variant=zh-tw", "kind": "community", "version_scope": "Richman 11 including post-launch content"},
+    "map_wiki": {"url": "https://richman.fandom.com/zh/wiki/錦繪時代", "kind": "community", "version_scope": "Richman 11, map added 1.0.7 according to source"},
+    "missile_wiki": {"url": "https://richman.fandom.com/zh/wiki/急速飛彈卡", "kind": "community", "version_scope": "use explicit Richman 11 section only"}
+  },
+  "facts": [
+    {"id":"E01","rule":"小地产住宅/连锁店，等级与同街产权影响租金","confidence":"A","sources":["steam"],"unknown":["等级上限","各级费用/租金","同街加成","连锁计算"]},
+    {"id":"E02","rule":"可为队友升级建筑","confidence":"A","sources":["steam"],"unknown":["触发条件","费用减免或其他限制"]},
+    {"id":"E04","rule":"小地产逐步经过与最终停留的收租触发差异未定","confidence":"U","sources":["steam"],"unknown":["完整触发矩阵"]},
+    {"id":"L01","rule":"商业中心停留收费，由转盘决定金额","confidence":"B","sources":["buildings","softstar"],"unknown":["转盘各格","概率","等级与费用"]},
+    {"id":"L02","rule":"大饭店收租并强制对手度假","confidence":"A","sources":["softstar"],"unknown":["租金","度假时长","期间允许动作"]},
+    {"id":"L03","rule":"地产公司传统减己方租金，热斗减己方爆炸损失","confidence":"B","sources":["buildings"],"unknown":["比例","叠加规则"]},
+    {"id":"L04","rule":"书店在己方离开商店或神秘人后概率赠卡","confidence":"A","sources":["softstar"],"unknown":["概率","多书店叠加"]},
+    {"id":"L04_NUM","rule":"书店赠卡1至3张，升级提高概率","confidence":"B","sources":["buildings"],"unknown":["各等级具体概率"]},
+    {"id":"L05","rule":"能源中心提高对手购卡开支，所有者停留获得收入","confidence":"A","sources":["softstar"],"unknown":["加价公式","收入公式","队友停留是否同效"]},
+    {"id":"L06","rule":"研究所可选研究卡片，升级扩大研究范围","confidence":"B","sources":["buildings"],"unknown":["卡池","时间","成本","领取条件"]},
+    {"id":"L07","rule":"改建卡可将敌方大型建筑改为无威胁公园","confidence":"A","sources":["softstar"],"unknown":["产权变化","后续重建条件"]},
+    {"id":"B01","rule":"经过银行可调整现金/存款，存款按月结息","confidence":"A","sources":["steam"],"unknown":["利率","月结时点","拒绝服务全表"]},
+    {"id":"B02","rule":"地产和购卡消耗现金，股票交易使用存款","confidence":"A","sources":["steam"],"unknown":["支付不足的清偿次序"]},
+    {"id":"B03","rule":"股票本地可用；2022攻略限定单机自由比赛","confidence":"B","sources":["steam","stocks"],"unknown":["当前版本挑战可用性","交易上限","价格更新公式"]},
+    {"id":"B04","rule":"11代恶神或银行拒绝往来事件可禁用银行","confidence":"C","sources":["bank_wiki"],"unknown":["确切状态名称","时长"]},
+    {"id":"B07","rule":"11代是否有保险系统未证实","confidence":"U","sources":[],"unknown":["系统存在性"]},
+    {"id":"B08","rule":"11代破产清偿顺序未证实；自动卖股票再卖地来源指4Fun","confidence":"U","sources":["bank_wiki"],"unknown":["存款/股票/地产支付顺序","残值","破产产权归属"]},
+    {"id":"S01","rule":"国际版传统地图有医院、监狱及离开后的道路位置","confidence":"C","sources":["map_wiki"],"unknown":["各地图出口节点","恢复行动时机"]},
+    {"id":"S02","rule":"爆炸可住院，谋划卡可入狱","confidence":"C","sources":["strategy_wiki"],"unknown":["各来源持续时间","费用","状态期限制"]},
+    {"id":"S03","rule":"医院/监狱/度假暂离者不受魔法屋影响的社区记录","confidence":"C","sources":["strategy_wiki"],"unknown":["所有效果例外"]},
+    {"id":"S05","rule":"急速飞弹卡传统模式所有对手住院3回合","confidence":"C","sources":["missile_wiki"],"unknown":["当前版本复核"],"numeric_scope_warning":"仅该卡，不代表全部住院事件"},
+    {"id":"M01","rule":"最后未破产队伍或结束时资产最高队伍获胜","confidence":"A","sources":["steam"],"unknown":["资产构成","并列","队友先破产处理"]},
+    {"id":"M03","rule":"挑战领主有简单/普通/困难，领主有天赋/资金/地产优势","confidence":"A","sources":["steam"],"unknown":["每名领主逐难度数值"]},
+    {"id":"M04","rule":"困难挑战禁合成进阶卡的社区记录","confidence":"C","sources":["game_wiki"],"unknown":["版本/领主例外"]},
+    {"id":"M05","rule":"热斗小地产替换为攻击卡格，攻击直接产生金钱损失","confidence":"A","sources":["steam"],"unknown":["攻击伤害表","全部模式例外"]}
+  ],
+  "blocked_assumptions": [
+    "所有建筑默认最高3级",
+    "租金默认按等级平方计算",
+    "现金不足自动半价变卖地产",
+    "所有角色全局每回合只能使用一张卡",
+    "所有医院/监狱持续时间固定3回合",
+    "将4Fun自动清偿、旧作保险/董事长、Monopoly保释抵押当11规则",
+    "把用户提出4×4建筑占地当11全部地图规则"
+  ]
+}
