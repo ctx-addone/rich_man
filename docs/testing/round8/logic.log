@@ -1,0 +1,13 @@
+save_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+SAVE_REPLAY actions=230 phases=["roll", "move", "land", "bank", "shop", "end"]
+SAVE_TEST failures=0
+round8_save_review_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+ROUND8_SAVE_REVIEW failures=0
+ai_test
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+AI_TEST failures=0 completed_matches=8

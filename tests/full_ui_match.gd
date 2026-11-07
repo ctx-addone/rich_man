@@ -1,10 +1,11 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
-	out_dir = "res://docs/testing/round7"
+	out_dir = "res://docs/testing/round8"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.controllers.assign(["human", "human", "human", "human"])
 	root.add_child(app)
 	await click("开始游戏")
 	await click("选择角色")

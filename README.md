@@ -1,6 +1,6 @@
 # 街区大亨 · R11玩法重建
 
-当前为 v0.7 系统验证版本，**尚未完成《大富翁11》还原**。完整目标见 [目标与完成门槛](docs/r11-target.md)，本轮事实与差距见 [第七轮验收](docs/round-07-report.md)。
+当前为 v0.8 系统验证版本，**尚未完成《大富翁11》还原**。完整目标见 [目标与完成门槛](docs/r11-target.md)，本轮事实与差距见 [第八轮验收](docs/round-08-report.md)。
 
 ## 启动
 
@@ -8,7 +8,9 @@ Windows 双击 `start_game.cmd`。脚本通过 Godot 命令行导入并启动；
 
 ## 当前可以体验
 
-- 主菜单 → 地图 → 四个角色 → 同机热座对局 → 结算与重开。
+- 主菜单 → 地图 → 四个角色 → 单机对战或同机热座 → 结算与重开。默认一名真人、三名电脑，每席可切换控制。
+- 电脑使用普通游戏命令完成用卡、行走、银行、购卡、地产、研究和防御；可暂停或随时接管。当前为原创基础策略，未复刻原作算法或挑战难度。
+- 存读档采用历史记录列表，每次保存新建文件；可恢复移动、银行和未结算防御，以及骰子/股市随机状态。主菜单和局内均可读取，读档后电脑先暂停。存档位于Godot用户数据目录的 `saves` 文件夹，损坏或不兼容记录会拒绝加载。
 - 117个道路节点、24个独立地块；15块2×2小地产、5块4×4大地产及银行、医院、监狱、商店。多入口共享同一产权。
 - 购买、升级、收租与破产；现金、存款及净资产分开显示。
 - 经过银行暂停移动，存取款后继续剩余步数。
@@ -29,7 +31,7 @@ Windows 双击 `start_game.cmd`。脚本通过 Godot 命令行导入并启动；
 
 本图是集成验证布局，**不是原作地图**。价格、5级上限、各类型租金表、商店限购3张、利息和清偿顺序仍是临时规则，集中在 `scripts/model/building_rules.gd` 的 PROFILE/RENTS。攻击距离6、异常状态计时、地雷范围、传送门移动边界也未完成原版核验。
 
-大小地产、股票、移动、连爆、神仙、角色天赋和金损反应已有可执行流程，但真实数值与全部交互仍缺；原版清偿、全部金损类别、神仙持续再生成、NPC、原版地图/设施出口/机关、热斗、组队、挑战AI和存档尚未完成。神仙时长与入场金额、角色返牌概率及购卡折扣为集中测试配置。旧版地铁/全城红绿灯留作扩展需求，不算11代已还原内容。
+大小地产、股票、移动、连爆、神仙、角色天赋、金损反应、基础AI和存档已有可执行流程，但真实数值与全部交互仍缺；原版清偿、全部金损类别、神仙持续再生成、NPC、乐透/新闻/魔法屋、原版地图/设施出口/机关、热斗、组队、挑战领主及其AI尚未完成。神仙时长与入场金额、角色返牌概率及购卡折扣为集中测试配置。旧版地铁/全城红绿灯留作扩展需求，不算11代已还原内容。
 
 ## 验证
 
@@ -53,7 +55,7 @@ Windows 双击 `start_game.cmd`。脚本通过 Godot 命令行导入并启动；
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/full_ui_match.gd
 ```
 
-第六轮测试为 `characters_test.gd`、`gods_test.gd`、`round6_review_test.gd` 和 `round6_ui_test.gd`。本轮新增 `money_test.gd`、`god_interactions_test.gd`、`round7_review_test.gd`、`round7_ui_test.gd`。验证范围与局限见 [第七轮证据](docs/testing/round7/README.md)。界面测试必须使用有图形输出的Godot，不能加headless；环境变量 `RICHMAN_TEST_OUTPUT` 可指定截图归档目录。
+此前新增测试包括 `characters_test.gd`、`gods_test.gd`、`money_test.gd`、`god_interactions_test.gd` 等。本轮新增 `ai_test.gd`、`save_test.gd`、`round8_save_review_test.gd`、`round8_ui_test.gd`、`round8_handoff_ui_test.gd`。验证范围与局限见 [第八轮证据](docs/testing/round8/README.md)。界面测试必须使用有图形输出的Godot，不能加headless；环境变量 `RICHMAN_TEST_OUTPUT` 可指定截图归档目录。
 
 ## 策划与素材
 

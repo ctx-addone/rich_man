@@ -83,6 +83,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.controllers.assign(["human", "human", "human", "human"])
 	app.talents_enabled = false
 	app.gods_enabled = false
 	root.add_child(app)

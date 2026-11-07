@@ -1,0 +1,89 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 存入现金
+PASS: button enabled: 存入现金
+PASS: bank supplies stock funds
+PASS: button exists: 股票
+PASS: button enabled: 股票
+PASS: stock quantity control exists
+PASS: button exists: 买入 · 测试谷物公司
+PASS: button enabled: 买入 · 测试谷物公司
+PASS: buy spends deposit and creates shares
+PASS: stock purchase preserves net worth
+PASS: screenshot 01-stock-purchase
+PASS: button exists: 卖出 · 测试谷物公司
+PASS: button enabled: 卖出 · 测试谷物公司
+PASS: partial sale returns deposit
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: stock window resumes bank service
+PASS: button exists: 离开银行
+PASS: button enabled: 离开银行
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 谋划卡
+PASS: button enabled: 谋划卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: attack gives defender control without changing active seat
+PASS: screenshot 02-defense-handoff
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: screenshot 03-defense-choice
+PASS: button exists: 使用 无懈卡
+PASS: button enabled: 使用 无懈卡
+PASS: defense consumes its own card and prevents imprisonment
+PASS: defense restores attacker turn with handoff
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: attacker can continue after defense
+PASS: button exists: 冬眠卡
+PASS: button enabled: 冬眠卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: button exists: 使用 同命卡
+PASS: button enabled: 使用 同命卡
+PASS: same fate applies winter status to both parties
+PASS: disabled attacker reaches end phase
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: screenshot 04-hibernation
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: winter status advances to next seat
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: skipped turn advances winter duration
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 谋划卡
+PASS: button enabled: 谋划卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: transfer presents eligible target selector
+PASS: screenshot 05-transfer-target
+PASS: button exists: 使用 转移卡
+PASS: button enabled: 使用 转移卡
+PASS: transfer switches control to original attacker
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: button exists: 使用 无懈卡
+PASS: button enabled: 使用 无懈卡
+PASS: new target may defend transferred imprisonment
+PASS: attack and both defense cards each consumed once
+R4_UI failures=0

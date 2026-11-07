@@ -22,6 +22,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.controllers.assign(["human", "human", "human", "human"])
 	app.character_ids.assign(["eleven", "original", "original", "original"])
 	root.add_child(app)
 	await click("开始游戏")

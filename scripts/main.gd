@@ -6,6 +6,8 @@ const Cards = preload("res://scripts/model/cards_catalog.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
 const DebugTools = preload("res://scripts/model/debug_tools.gd")
+const AI = preload("res://scripts/model/ai_controller.gd")
+const Saves = preload("res://scripts/model/save_game.gd")
 const COLORS = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")]
 const NAMES = ["赤橙", "青竹", "蓝星", "紫菀"]
 var game = Game.new()
@@ -31,6 +33,39 @@ var forced_dice: int = 0
 var gm_used: bool = false
 var generation: int = 0
 var reaction_ack: int = -1
+var controllers: Array[String] = ["human", "ai", "ai", "ai"]
+var ai_paused := false
+var ai_delay := 0.25
+var ai_elapsed := 0.0
+var ai_notice := ""
+var save_directory := "user://saves"
+
+func automated_seat() -> int:
+	if screen != "game" or game.players.is_empty(): return -1
+	return game.reaction_player() if game.phase == "reaction" else game.current
+
+func is_automated() -> bool:
+	var seat := automated_seat()
+	return seat >= 0 and seat < controllers.size() and controllers[seat] == "ai"
+
+func _process(delta: float) -> void:
+	if screen != "game" or popup != null or advancing or ai_paused or not is_automated():
+		ai_elapsed = 0.0
+		return
+	ai_elapsed += delta
+	if ai_elapsed < ai_delay: return
+	ai_elapsed = 0.0
+	var success: bool
+	if game.phase == "roll" and forced_dice > 0:
+		success = game.roll_dice(forced_dice)
+		forced_dice = 0
+	else: success = AI.step(game)
+	if not success:
+		ai_paused = true
+		ai_notice = "电脑未找到可执行动作，已暂停。可接管当前席位继续操作。"
+	reaction_ack = -1
+	handoff = not is_automated()
+	refresh()
 
 func _ready() -> void:
 	var font := SystemFont.new()
@@ -117,7 +152,7 @@ func menu() -> void:
 	spacer(v)
 	v.add_child(label("街区大亨", 68))
 	v.add_child(label("掷骰出发。购置地产。让每一步成为机会。", 24, Color("a7bac8")))
-	v.add_child(label("单机热座 · 四人轮流操作 · 经典地产棋盘原型", 18))
+	v.add_child(label("单机对战 · 电脑托管 / 同机热座 · 可保存与继续", 18))
 	var row := HBoxContainer.new()
 	v.add_child(row)
 	for i in range(4):
@@ -128,11 +163,14 @@ func menu() -> void:
 	start.custom_minimum_size.x = 320
 	start.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(start)
+	var resume := button("读取存档", show_saves)
+	resume.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	v.add_child(resume)
 	var help := button("玩法说明", show_help)
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.7 开发版  ·  金钱防御与神仙交互  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.8 开发版  ·  单机托管与存读档  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -171,7 +209,7 @@ func character_select() -> void:
 	ensure_characters()
 	var v := clear_page()
 	v.add_child(label("02  /  选择角色", 32))
-	v.add_child(label("四人同机热座 · 选择角色规则和占位外观 · 天赋可关闭", 18, Color("a7bac8")))
+	v.add_child(label("选择人类或电脑席位 · 角色规则和占位外观独立 · 天赋可关闭", 18, Color("a7bac8")))
 	spacer(v)
 	var row := HBoxContainer.new()
 	v.add_child(row)
@@ -187,6 +225,13 @@ func character_select() -> void:
 		input.max_length = 12
 		col.add_child(input)
 		name_inputs.append(input)
+		var controller := OptionButton.new()
+		controller.name = "ControllerChoice%d" % i
+		controller.add_item("人类 · 手动操作")
+		controller.add_item("电脑 · 自动操作")
+		controller.select(1 if controllers[i] == "ai" else 0)
+		controller.item_selected.connect(func(index): controllers[i] = "ai" if index == 1 else "human")
+		col.add_child(controller)
 		var characters := OptionButton.new()
 		characters.name = "CharacterChoice%d" % i
 		var choices: Array = Traits.ids()
@@ -249,6 +294,9 @@ func start_game() -> void:
 	selected_lot = ""
 	forced_dice = 0
 	gm_used = false
+	ai_paused = false
+	ai_notice = ""
+	ai_elapsed = 0.0
 	reaction_ack = -1
 	handoff = true
 	build_game()
@@ -258,13 +306,15 @@ func build_game() -> void:
 	var v := clear_page()
 	var header := HBoxContainer.new()
 	v.add_child(header)
-	top_title = label("", 24)
+	top_title = label("", 20)
 	top_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(top_title)
 	header.add_child(button("规则", show_help))
 	header.add_child(button("股票", show_stocks))
 	header.add_child(button("卡牌图鉴", show_card_catalog))
 	header.add_child(button("角色/神仙", show_world_catalog))
+	header.add_child(button("存读档", show_saves))
+	header.add_child(button("托管", show_control_settings))
 	header.add_child(button("GM · F1", show_gm))
 	header.add_child(button("主菜单", confirm_menu))
 	score_row = HBoxContainer.new()
@@ -307,7 +357,7 @@ func refresh() -> void:
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label(("▶ " if i == game.current else "") + p.name + (" · 破产" if p.bankrupt else ""), 18, COLORS[portraits[i]]))
 		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
-		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 天赋关" if not talents_enabled else ""), 13))
+		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 电脑" if controllers[i] == "ai" else " · 人类") + (" · 天赋关" if not talents_enabled else ""), 13))
 		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
 	top_title.text = "市民街区   /   第 %d / %d 轮%s" % [game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
 	board.selected = selected
@@ -315,7 +365,15 @@ func refresh() -> void:
 	board.queue_redraw()
 	clear_children(sidebar)
 	var p: Dictionary = game.players[game.current]
-	if game.phase == "reaction":
+	if is_automated():
+		var seat: int = automated_seat()
+		sidebar.add_child(label(("电脑应对 / " if game.phase == "reaction" else "电脑行动 / ") + game.players[seat].name, 22, COLORS[portraits[seat]]))
+		sidebar.add_child(paragraph("已暂停电脑行动。" if ai_paused else "正在自动决策，可随时暂停或接管。", 17))
+		if not ai_notice.is_empty(): sidebar.add_child(paragraph(ai_notice, 14))
+		if game.phase == "reaction": sidebar.add_child(paragraph(game.reaction_description(), 16))
+		sidebar.add_child(button("继续电脑行动" if ai_paused else "暂停电脑行动", func(): ai_paused = not ai_paused; ai_notice = ""; refresh()))
+		sidebar.add_child(button("接管当前席位", func(): controllers[seat] = "human"; handoff = true; reaction_ack = -1; refresh()))
+	elif game.phase == "reaction":
 		show_reaction_controls()
 	elif handoff:
 		sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
@@ -429,15 +487,15 @@ func refresh() -> void:
 			if lot.get("rent_until", 0) > game.round_number: detail.add_child(label("涨价 · 剩余%d轮" % (lot.rent_until - game.round_number), 14, Color("e9c46a")))
 			if lot.owner >= 0 and game.players[lot.owner].get("glory_until", 0) > game.round_number: detail.add_child(label("持有人辉煌效果生效中", 14, Color("e9c46a")))
 			if not lot.get("research", {}).is_empty(): detail.add_child(paragraph("研究：%s · %s" % [Game.CARD_NAMES.get(lot.research.card_id, lot.research.card_id), "完成待领，手牌需有空位" if lot.research.remaining == 0 else "剩余%d轮" % lot.research.remaining], 13))
-			if lot.owner == game.current and lot.building_type == "lab" and not handoff:
+			if lot.owner == game.current and lot.building_type == "lab" and not handoff and not is_automated():
 				if lot.research.is_empty(): detail.add_child(button("安排研究", func(): choose_research(lot_id), game.phase not in ["land", "roll"] or lot.level <= 0 or lot.closed_until > game.round_number))
 				elif lot.research.remaining == 0: detail.add_child(button("领取研究成果", func(): game.collect_research(lot_id); refresh(), p.cards.size() >= Game.HAND_LIMIT or game.phase not in ["land", "roll", "shop"] or lot.level <= 0 or lot.closed_until > game.round_number))
 	var log_panel := panel(sidebar)
 	log_panel.add_child(label("最近动态", 16))
 	for j in range(maxi(0, game.logs.size() - 5), game.logs.size()): log_panel.add_child(paragraph(game.logs[j], 13))
-	if not handoff and game.phase == "move" and game.available_moves().size() == 1 and not advancing:
+	if not is_automated() and not handoff and game.phase == "move" and game.available_moves().size() == 1 and not advancing:
 		auto_step()
-	elif not handoff and game.phase == "roll" and game.is_sleepwalking() and not advancing:
+	elif not is_automated() and not handoff and game.phase == "roll" and game.is_sleepwalking() and not advancing:
 		auto_sleepwalk()
 
 func vehicle_name(p: Dictionary) -> String:
@@ -473,7 +531,7 @@ func auto_step() -> void:
 		refresh()
 
 func act_move(id: int) -> void:
-	if handoff or game.phase != "move": return
+	if handoff or is_automated() or game.phase != "move": return
 	game.move_to(id)
 	refresh()
 
@@ -760,7 +818,7 @@ func dismiss() -> void:
 
 func show_help() -> void:
 	var v := modal("玩法说明")
-	v.add_child(paragraph("1. 四个席位轮流操作；掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口可以关联同一建筑及产权。\n3. 停在临街入口可购买或升级对应地产，对手地产会收租。\n4. 经过银行时可存取款，离开后继续剩余步数。\n5. 住院或入狱时暂不能行走和主动出牌，按提示结束停留回合。\n6. 最后存活者获胜，或达到轮数上限后比较净资产。\n7. 点击建筑看产权与入口；F1可以构造资金、卡牌和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
+	v.add_child(paragraph("1. 默认一名真人与三名电脑，可在选人页改为同机热座。掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口关联同一产权。停在入口可购买、升级或向对手付租金。\n3. 经过银行时可存取款，离开后继续剩余步数。大额费用可用免费或转移卡应对。\n4. 住院、入狱等状态按提示推进；最后存活者获胜，或达到轮数上限后比较净资产。\n5. “托管”可调整各席位控制；电脑行动时可暂停或接管，真人防御仍由真人确认。\n6. “存读档”每次新建一份记录，可从主菜单或局内读取。读档后电脑先暂停，确认局势后继续。\n7. 点击建筑查看产权与入口；F1可构造资金、卡牌、地产和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
 
 func show_stocks() -> void:
@@ -771,6 +829,7 @@ func show_stocks() -> void:
 		v.add_child(button("返回对局", dismiss))
 		return
 	var p: Dictionary = game.players[game.current]
+	var can_trade: bool = game.can_trade_stocks() and not is_automated()
 	v.add_child(label("%s · 存款 %d · 股票市值 %d" % [p.name, p.deposit, game.stock_value(game.current)], 18))
 	v.add_child(paragraph("使用银行存款买入，卖出所得回到存款。每轮全员行动结束后更新行情。公司、价格及波动为测试配置。", 14))
 	var content := scroll_content(v, 390)
@@ -794,17 +853,17 @@ func show_stocks() -> void:
 		var failure := paragraph("", 13)
 		var buy := button("买入 · " + quote.name, func():
 			if game.trade_stock(stock_id, int(amount.value), true): refresh(); show_stocks()
-			else: failure.text = "交易未完成，请检查存款、数量和当前阶段。", not game.can_trade_stocks() or p.deposit < quote.price)
+			else: failure.text = "交易未完成，请检查存款、数量和当前阶段。", not can_trade or p.deposit < quote.price)
 		row.add_child(buy)
 		var sell := button("卖出 · " + quote.name, func():
 			if game.trade_stock(stock_id, int(amount.value), false): refresh(); show_stocks()
-			else: failure.text = "交易未完成，请检查持仓、数量和当前阶段。", not game.can_trade_stocks() or held <= 0)
+			else: failure.text = "交易未完成，请检查持仓、数量和当前阶段。", not can_trade or held <= 0)
 		row.add_child(sell)
 		item.add_child(failure)
 		var history: Array[String] = []
 		for price in quote.history: history.append(str(price))
 		item.add_child(paragraph("近期价格：" + " → ".join(history), 12))
-	if not game.can_trade_stocks(): content.add_child(paragraph("当前阶段仅可查看行情；移动、停留状态与结算期间不能交易。", 14))
+	if not can_trade: content.add_child(paragraph("当前仅可查看行情。电脑席位需要先接管；移动、停留状态与结算期间不能交易。", 14))
 	content.add_child(label("最近交易", 18))
 	var count := 0
 	for index in range(game.stock_market.ledger.size()-1, -1, -1):
@@ -819,9 +878,129 @@ func show_stocks() -> void:
 
 func confirm_menu() -> void:
 	var v := modal("返回主菜单？")
-	v.add_child(label("当前对局不会保存。"))
+	v.add_child(label("尚未保存的对局进度不会保留。"))
+	v.add_child(button("先保存对局", show_saves))
 	v.add_child(button("继续游戏", dismiss))
 	v.add_child(button("确认离开", menu))
+
+func show_control_settings() -> void:
+	var v := modal("席位控制与托管")
+	v.add_child(paragraph("电脑会完成掷骰、用卡、购地、交易与防御。打开窗口时自动暂停行动。", 14))
+	for i in range(controllers.size()):
+		var row := HBoxContainer.new()
+		v.add_child(row)
+		row.add_child(label(game.players[i].name if screen == "game" else player_names[i], 18))
+		var choice := OptionButton.new()
+		choice.name = "LiveController%d" % i
+		choice.add_item("人类")
+		choice.add_item("电脑")
+		choice.select(1 if controllers[i] == "ai" else 0)
+		choice.item_selected.connect(func(index):
+			controllers[i] = "ai" if index == 1 else "human"
+			handoff = true
+			reaction_ack = -1)
+		row.add_child(choice)
+	v.add_child(button("恢复全部电脑行动" if ai_paused else "暂停全部电脑行动", func(): ai_paused = not ai_paused; ai_notice = ""; show_control_settings()))
+	v.add_child(button("返回对局", dismiss))
+
+func save_metadata(title_text: String) -> Dictionary:
+	return {"title":title_text,"saved_at":Time.get_datetime_string_from_system(),"portraits":portraits.duplicate(),"controllers":controllers.duplicate(),"gm_used":gm_used,"forced_dice":forced_dice,"handoff":handoff,"reaction_ack":reaction_ack,"selected":selected,"selected_lot":selected_lot,"ai_paused":ai_paused}
+
+func save_snapshot(title_text: String) -> Dictionary:
+	if screen != "game": return {"ok":false,"error":"当前没有可保存的对局。"}
+	var path := save_directory.path_join("match_%d_%d.rms" % [int(Time.get_unix_time_from_system()*1000.0), Time.get_ticks_usec()])
+	var result: Dictionary = Saves.save_to_file(game, path, save_metadata(title_text))
+	result["path"] = path
+	return result
+
+func show_saves() -> void:
+	var v := modal("保存与读取对局")
+	v.add_child(paragraph("每次保存创建一份新记录。保存包括未完成的移动和防御；读档后电脑先暂停，可查看局势再继续。", 14))
+	if screen == "game":
+		var title_input := LineEdit.new()
+		title_input.name = "SaveTitle"
+		title_input.max_length = 40
+		title_input.text = "市民街区 · 第%d轮 · %s" % [game.round_number, game.players[game.current].name]
+		v.add_child(title_input)
+		var feedback := paragraph("", 14)
+		v.add_child(feedback)
+		v.add_child(button("新建存档", func():
+			var title_text: String = title_input.text.strip_edges()
+			var result: Dictionary = save_snapshot(title_text if not title_text.is_empty() else "未命名对局")
+			if result.ok: show_saves()
+			else: feedback.text = "保存失败：" + str(result.error)))
+	var content := scroll_content(v, 310 if screen == "game" else 440)
+	var files := PackedStringArray()
+	if DirAccess.dir_exists_absolute(save_directory): files = DirAccess.get_files_at(save_directory)
+	files.sort()
+	files.reverse()
+	var count := 0
+	for file_name in files:
+		if not file_name.ends_with(".rms"): continue
+		count += 1
+		var path: String = save_directory.path_join(file_name)
+		var info: Dictionary = Saves.peek_file(path)
+		var item := panel(content)
+		if not info.get("ok", false):
+			item.add_child(paragraph("无法读取 · " + file_name + "\n" + str(info.get("error", "存档损坏")), 13))
+			continue
+		var meta: Dictionary = info.get("metadata", {})
+		item.add_child(label(str(meta.get("title", "未命名对局")), 18))
+		item.add_child(label(str(meta.get("saved_at", "")), 13))
+		item.add_child(button("读取 · " + str(meta.get("title", "未命名对局")), func(): confirm_load(path)))
+	if count == 0: content.add_child(label("还没有存档。开始对局后可随时保存。", 16))
+	v.add_child(button("返回", dismiss))
+
+func confirm_load(path: String) -> void:
+	var v := modal("读取这份对局？")
+	v.add_child(paragraph("当前未保存的进度将被替换。读取失败时会保留当前对局。", 16))
+	var feedback := paragraph("", 14)
+	v.add_child(feedback)
+	v.add_child(button("确认读取", func():
+		var result: Dictionary = load_snapshot(path)
+		if not result.ok: feedback.text = "读取失败：" + str(result.error)))
+	v.add_child(button("返回存档列表", show_saves))
+
+func load_snapshot(path: String) -> Dictionary:
+	var result: Dictionary = Saves.load_from_file(path)
+	if not result.get("ok", false): return result
+	var loaded = result.game
+	var meta: Dictionary = result.get("metadata", {})
+	var portrait_data: Variant = meta.get("portraits", [0,1,2,3])
+	var controller_data: Variant = meta.get("controllers", ["human","human","human","human"])
+	if not portrait_data is Array or not controller_data is Array:
+		return {"ok":false,"error":"席位或外观信息类型无效。"}
+	var loaded_portraits: Array = portrait_data
+	var loaded_controllers: Array = controller_data
+	if loaded.players.size() != 4 or loaded_portraits.size() != 4 or loaded_controllers.size() != 4:
+		return {"ok":false,"error":"席位或外观信息不完整。"}
+	for i in range(4):
+		if typeof(loaded_portraits[i]) != TYPE_INT or loaded_portraits[i] < 0 or loaded_portraits[i] > 3 or loaded_controllers[i] not in ["human", "ai"]:
+			return {"ok":false,"error":"席位控制或外观数据无效。"}
+	if typeof(meta.get("forced_dice", 0)) != TYPE_INT or typeof(meta.get("gm_used", false)) != TYPE_BOOL:
+		return {"ok":false,"error":"测试标记或骰子信息无效。"}
+	game = loaded
+	portraits = loaded_portraits.duplicate()
+	controllers.assign(loaded_controllers)
+	player_names.clear()
+	character_ids.clear()
+	for p in game.players:
+		player_names.append(p.name)
+		character_ids.append(p.get("character_id", "original"))
+	talents_enabled = game.talents_enabled
+	gods_enabled = game.gods_enabled
+	turns = game.round_limit
+	gm_used = bool(meta.get("gm_used", false))
+	forced_dice = clampi(int(meta.get("forced_dice", 0)), 0, 6)
+	selected = -1
+	selected_lot = ""
+	reaction_ack = -1
+	handoff = true
+	ai_paused = true
+	ai_elapsed = 0.0
+	ai_notice = "读档完成，电脑已暂停。"
+	build_game()
+	return {"ok":true}
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:

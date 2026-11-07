@@ -498,6 +498,62 @@
       "normalized_sha256": "A8320486252149BE0D04038F0D1231F51C9F0AFE49EB405EBC830C6F0FE259F8",
       "source_sha256": "6A2B5E85FF1187EE9DD2FD504751F59C4EFDC31618C739D12AEBED2467832789",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-08-report.md",
+      "title": "27 · 第八轮单机托管与存读档",
+      "node_token": "IgewwohEliANrdkxAJ4cE1Iknre",
+      "document_id": "GKSBdFPMDoOY0ixh6ZqcfKRXnHh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/IgewwohEliANrdkxAJ4cE1Iknre",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-27.json",
+      "revision_id": 2,
+      "remote_characters": 1655,
+      "normalized_sha256": "64E79BEBCC38B86769257C0B5B0A7F39828460F02E9546A66D861C726C0CCFB1",
+      "source_sha256": "F044A69AD8C390CD02742CC64C1AB7E5D276633AF9708B561D2E092BC1EF5229",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-08-ai.md",
+      "title": "28 · 单机电脑与自动托管",
+      "node_token": "Ta5Gwy9qui8CfikcCQKcm9CNnpe",
+      "document_id": "RET3dK9MeoyS1CxPZzic3WlJn8b",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Ta5Gwy9qui8CfikcCQKcm9CNnpe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-28.json",
+      "revision_id": 2,
+      "remote_characters": 1137,
+      "normalized_sha256": "B907053760C4B3970775688C3CE855691D63D149DBC5119B89920F997B72FFC3",
+      "source_sha256": "2A31AC8729C971D67F464BDA92DA557E338F4CBB623E5E7599A030CF68A5DF12",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-08-save.md",
+      "title": "29 · 安全存档与精确恢复",
+      "node_token": "NoIFwiPlNiDeXFkYg1EcxZwgnwh",
+      "document_id": "VIiedmPSJoasX7xe30fc7uThnah",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/NoIFwiPlNiDeXFkYg1EcxZwgnwh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-29.json",
+      "revision_id": 2,
+      "remote_characters": 1697,
+      "normalized_sha256": "A435296FC1CB074B276A12AD897CCA32C04D8D57A6F3B3BA12A5FD0B68543589",
+      "source_sha256": "385E658C14E9605B6D45B0EB4C2792D7BAE64FC8938EEFC74832120E59890617",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-autoplay-save-events.md",
+      "title": "30 · 托管存档与特殊地格补证",
+      "node_token": "WYpkwVJGDixITnkoebjczuE8nDd",
+      "document_id": "ESn1di9JyoTbKnxof2gck3Qynse",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/WYpkwVJGDixITnkoebjczuE8nDd",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-30.json",
+      "revision_id": 2,
+      "remote_characters": 2673,
+      "normalized_sha256": "147BB6219F40C3440596759D6045D15B855AC145AC24BAA8D33E9AB38C0DCACB",
+      "source_sha256": "5AF15014B53B6462FED9993ED559ABE0E88B080145481FEDE1C030CA5CB1CFE7",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -510,5 +566,6 @@
   "round4_updated_at": "2026-11-08",
   "round5_updated_at": "2026-11-08",
   "round6_updated_at": "2026-11-08",
-  "round7_updated_at": "2026-11-08"
+  "round7_updated_at": "2026-11-08",
+  "round8_updated_at": "2026-11-08"
 }
