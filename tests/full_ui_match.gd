@@ -1,6 +1,7 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
+	out_dir = "res://docs/testing/round4"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
@@ -44,6 +45,9 @@ func run() -> void:
 				await click("离开银行")
 				bank_used = true
 			"shop": await click("离开商店")
+			"reaction":
+				if find_button(app, "我来应对") != null: await click("我来应对")
+				else: await click("承受效果")
 			"end", "detained", "metro": await click("结束回合")
 			_:
 				check(false, "unsupported phase: " + app.game.phase)

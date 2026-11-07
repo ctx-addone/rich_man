@@ -168,6 +168,7 @@ func _initialize()->void:
 					if choices.is_empty(): break
 					g.move_to(choices[g.rng.randi_range(0,choices.size()-1)])
 				"shop": g.close_shop()
+				"reaction": g.resolve_reaction()
 				"bank": g.bank_transfer(int(g.players[g.current].cash/2)); g.close_bank()
 				"land":
 					if not g.buy_property(): g.upgrade_property()

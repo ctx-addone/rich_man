@@ -16,7 +16,7 @@ func equip(g, card: String) -> void:
 	g.players[g.current].cards = [card]
 
 func _initialize() -> void:
-	check(Catalog.ALL.size() == 48 and Catalog.NAMES.size() == 17, "48 evidence entries but only 17 executable cards")
+	check(Catalog.ALL.size() == 48 and Catalog.NAMES.size() == 22, "48 evidence entries and 22 implemented provisional cards")
 	for id in Catalog.ALL:
 		check(Catalog.ALL[id].implemented == Catalog.NAMES.has(id), "Catalogue status matches executable pool")
 	var g = fresh()

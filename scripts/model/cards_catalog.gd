@@ -3,6 +3,11 @@ extends RefCounted
 
 # Evidence catalogue; implemented means a testable provisional effect, not original-game fidelity.
 const NAMES = {
+  "same_fate": "同命卡",
+  "transfer": "转移卡",
+  "immune": "无懈卡",
+  "missile": "飞弹卡",
+  "hibernate": "冬眠卡",
   "rebuild": "改建卡",
   "close_street": "停业卡",
   "bulldozer": "工程车卡",
@@ -22,6 +27,11 @@ const NAMES = {
   "disaster": "灾祸卡"
 }
 const DESCRIPTIONS = {
+  "same_fate": "反应谋划/冬眠时自己仍受效果，施卡者同受；无递归反击，规则provisional。",
+  "transfer": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则provisional。",
+  "immune": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则provisional。",
+  "missile": "选道路使同格角色住院1次行动，临街建筑降1层；无连爆/热斗，范围为provisional。",
+  "hibernate": "指定对手冬眠2次行动；计时及目标资格为provisional。",
   "rebuild": "选择附近一块地产及新建筑类型，保留等级并清除旧研究。 范围、计时及边界为测试规则。",
   "close_street": "所选地产整街停业5轮。 范围、计时及边界为测试规则。",
   "bulldozer": "选择附近一块地产降低1级。 范围、计时及边界为测试规则。",
@@ -41,6 +51,11 @@ const DESCRIPTIONS = {
   "disaster": "其他玩家全部建筑降低4级，最低0级。 范围、计时及边界为测试规则。"
 }
 const TARGETS = {
+  "same_fate": "reaction",
+  "transfer": "reaction",
+  "immune": "reaction",
+  "missile": "road",
+  "hibernate": "player",
   "rebuild": "lot",
   "close_street": "lot",
   "bulldozer": "lot",
@@ -208,13 +223,13 @@ const ALL = {
     "name": "冬眠卡",
     "description": "指定角色冬眠 2 天",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "不是旧作全体冬眠；状态刷新/叠加",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "指定对手冬眠2次行动；计时及目标资格为provisional。"
   },
   "roadblock": {
     "number": 13,
@@ -260,13 +275,13 @@ const ALL = {
     "name": "飞弹卡",
     "description": "指定地点；传统住院 1 天、范围降 1 层并连爆；热斗扣现金并连爆",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "范围、热斗金额",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "选道路使同格角色住院1次行动，临街建筑降1层；无连爆/热斗，范围为provisional。"
   },
   "invite_god": {
     "number": 17,
@@ -377,39 +392,39 @@ const ALL = {
     "name": "同命卡",
     "description": "反击梦游、冬眠、谋划，使施卡者同受效果",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "是否要主动选择、状态消耗顺序",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "反应谋划/冬眠时自己仍受效果，施卡者同受；无递归反击，规则provisional。"
   },
   "transfer": {
     "number": 26,
     "name": "转移卡",
     "description": "入狱、住院或达到阈值的金钱损失可转嫁",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "金额阈值、目标选择、同次多类损失处理",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则provisional。"
   },
   "immune": {
     "number": 27,
     "name": "无懈卡",
     "description": "免除一次入狱或住院",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "同一爆炸中的建筑损害仍否发生",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则provisional。"
   },
   "banana": {
     "number": 28,

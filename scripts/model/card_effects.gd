@@ -15,13 +15,15 @@ static func targets(game, card_id: String) -> Array:
 		"player":
 			for i in range(game.players.size()):
 				var p: Dictionary = game.players[i]
-				if i == game.current or p.bankrupt or not p.status.is_empty(): continue
+				if i == game.current or p.bankrupt: continue
+				# A sleeping road character can still be imprisoned, but cannot defend.
+				if not p.status.is_empty() and not (card_id == "scheme" and p.status.get("kind", "") == "hibernate"): continue
 				if game._distance(actor.pos, p.pos) > TEST_RANGE: continue
 				if card_id == "steal" and (p.cards.is_empty() or actor.cards.size() >= 8): continue
 				result.append(i)
 		"road":
 			for node in game.nodes:
-				if not game.road_objects.has(node.id) and game._distance(actor.pos,node.id) <= TEST_RANGE: result.append(node.id)
+				if (card_id=="missile" or not game.road_objects.has(node.id)) and game._distance(actor.pos,node.id) <= TEST_RANGE: result.append(node.id)
 		"lot":
 			for id in game.lots:
 				var lot: Dictionary = game.lots[id]
@@ -41,7 +43,8 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 	var actor: Dictionary = game.players[game.current]
 	match card_id:
 		"dice": game.controlled_dice = value
-		"scheme": return game.send_to_facility(target,"prison",2)
+		"scheme", "hibernate": return game.Combat.begin(game,card_id,game.current,[target],"prison" if card_id=="scheme" else "hibernate",2)
+		"missile": return game.Combat.explode(game,target,1,"missile",game.current,false)
 		"mine", "roadblock", "portal": game.road_objects[target] = {"kind":card_id,"owner":game.current}
 		"audit":
 			var amount: int = int(game.players[target].cash * 15 / 100)

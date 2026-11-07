@@ -1,7 +1,9 @@
 class_name RichGame
 extends RefCounted
 
+const Combat = preload("res://scripts/model/combat_rules.gd")
 const Buildings = preload("res://scripts/model/building_rules.gd")
+const Market = preload("res://scripts/model/stock_market.gd")
 const HAND_LIMIT = 8
 const BoardModel = preload("res://scripts/model/board_model.gd")
 const CardsCatalog = preload("res://scripts/model/cards_catalog.gd")
@@ -11,6 +13,7 @@ const CARD_DESCRIPTIONS = CardsCatalog.DESCRIPTIONS
 const CARD_TARGETS = CardsCatalog.TARGETS
 const TEST_CARD_RANGE = 6
 var board_model = BoardModel.new()
+var stock_market = Market.new()
 var lots: Dictionary = {}
 var nodes: Array[Dictionary] = []
 var players: Array[Dictionary] = []
@@ -30,10 +33,13 @@ var active_lot_id := ""
 var road_objects: Dictionary = {}
 var bank_visited: Array[String] = []
 var shop_purchases: int = 0
+var pending_attack: Dictionary = {}
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
+	stock_market.setup(seed_value)
 	if seed_value == 0: rng.randomize()
 	else: rng.seed = seed_value
+	pending_attack.clear()
 	players.clear()
 	logs.clear()
 	winners.clear()
@@ -51,7 +57,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	active_lot_id = ""
 	_build_map()
 	for n in names:
-		players.append({"name":str(n), "cash":10000, "deposit":0, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{}})
+		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{}})
 	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
 
 func _build_map() -> void:
@@ -160,6 +166,7 @@ func move_to(node_id: int) -> bool:
 	steps_left-=1
 	if node_id==0: p.cash+=1000; _log("经过起点获得1000（测试规则）。")
 	if road_objects.has(node_id):
+		var object_owner:int=road_objects[node_id].get("owner",-1)
 		var object_kind:String=road_objects[node_id].kind
 		road_objects.erase(node_id)
 		if object_kind=="portal":
@@ -171,19 +178,21 @@ func move_to(node_id: int) -> bool:
 			steps_left=0
 			# Arrival still resolves pass services before the final landing.
 		else:
-			for id in lots_at_node(node_id):
-				if lots[id].kind!="facility": lots[id].level=maxi(0,lots[id].level-1)
-			send_to_facility(current,"hospital",2)
-			_log("踩中地雷，住院2次行动；临街建筑降低1层（爆炸范围待核验）。")
+			Combat.explode(self,node_id,2,"mine",object_owner,true)
+			Combat.advance(self)
 			return true
+	_continue_arrival()
+	return true
+
+func _continue_arrival() -> void:
+	var node_id:int=players[current].pos
 	for id in board_model.lots_for_event(str(node_id),"pass"):
 		if lots[id].building_type=="bank" and not bank_visited.has(id):
 			bank_visited.append(id)
 			phase="bank"
 			_log("经过银行，可调整现金与存款；剩余%d步。"%steps_left)
-			return true
+			return
 	_check_movement()
-	return true
 
 func _check_movement() -> void:
 	if steps_left<=0: _land()
@@ -314,6 +323,7 @@ func collect_research(lot_id:String)->bool:
 	lot.research={}
 	return true
 func give_card(player_id:int,card_id:String)->bool:
+	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].bankrupt or not CARD_NAMES.has(card_id): return false
 	if players[player_id].cards.size()>=HAND_LIMIT:
 		_log("手牌已满，无法领取"+CARD_NAMES[card_id])
@@ -357,6 +367,8 @@ func send_on_vacation(player_id:int,lot_id:String)->void:
 	p.status={"kind":"vacation","remaining":Buildings.PROFILE.hotel_turns,"return_pos":p.pos,"return_previous":p.previous,"lot_id":lot_id}
 	if player_id==current: steps_left=0; phase="end"
 func _tick_economy()->void:
+	# Final settlement uses the last playable day's quotes, not an unplayed day.
+	if round_number <= round_limit: stock_market.advance(round_number)
 	if (round_number-1)%int(Buildings.PROFILE.month_days)==0:
 		for p in players:
 			if not p.bankrupt:
@@ -383,14 +395,16 @@ func _distance(from: int, to: int) -> int:
 func card_targets(card_id:String)->Array:
 	return CardEffects.targets(self,card_id)
 func use_card(card_id:String,target:Variant=-1,value:int=0)->bool:
-	if phase!="roll" or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
+	if phase!="roll" or not players[current].status.is_empty() or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
 	if not CardEffects.apply(self,card_id,target,value): return false
 	players[current].cards.erase(card_id)
 	card_used=true
 	_log("%s 使用%s。"%[players[current].name,CARD_NAMES[card_id]])
+	if not pending_attack.is_empty(): Combat.advance(self)
 	return true
 
-func send_to_facility(player_id: int, kind: String, days: int) -> bool:
+func send_to_facility(player_id: int, kind: String, days: int, combat_internal: bool = false) -> bool:
+	if phase=="reaction" and not combat_internal: return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or kind not in ["hospital","prison"] or days<1: return false
 	var p: Dictionary=players[player_id]
 	if p.bankrupt or facility_lot(kind).is_empty(): return false
@@ -405,6 +419,7 @@ func send_to_facility(player_id: int, kind: String, days: int) -> bool:
 	return true
 
 func gm_release(player_id: int) -> bool:
+	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].status.is_empty(): return false
 	var p: Dictionary=players[player_id]
 	p.pos=p.status.return_pos
@@ -438,7 +453,10 @@ func end_turn() -> bool:
 
 func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
 	var p: Dictionary=players[player_id]
-	# Provisional debt policy: cash -> deposit -> half-price liquidation. NOT verified R11.
+	# Provisional debt policy: cash -> deposit -> stocks -> half-price property liquidation.
+	# Neither stock liquidation priority nor property discount is verified R11.
+	var stock_shortfall: int = maxi(0, amount-p.cash-p.deposit)
+	if stock_shortfall > 0: stock_market.liquidate(p, stock_shortfall, round_number)
 	var withdrawal: int=mini(p.deposit,maxi(0,amount-p.cash))
 	p.deposit-=withdrawal
 	p.cash+=withdrawal
@@ -461,10 +479,23 @@ func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
 		_check_winner()
 
 func net_worth(player_id: int) -> int:
-	var total: int=players[player_id].cash+players[player_id].deposit
+	var total: int=players[player_id].cash+players[player_id].deposit+stock_value(player_id)
 	for lot in lots.values():
 		if lot.owner==player_id: total+=lot_value(lot.id)
 	return total
+
+func stock_value(player_id: int) -> int:
+	if player_id < 0 or player_id >= players.size(): return 0
+	return stock_market.value(players[player_id])
+
+func can_trade_stocks() -> bool:
+	return not players.is_empty() and phase in ["roll", "bank", "land", "end", "shop"] and not players[current].bankrupt and players[current].status.is_empty()
+
+func trade_stock(stock_id: String, quantity: Variant, buying: bool) -> bool:
+	if not can_trade_stocks(): return false
+	var success: bool = stock_market.buy(players[current], stock_id, quantity, round_number) if buying else stock_market.sell(players[current], stock_id, quantity, round_number)
+	if success: _log("%s %s%s %d份。" % [players[current].name, "买入" if buying else "卖出", stock_market.quotes[stock_id].name, quantity])
+	return success
 
 func _check_winner() -> void:
 	var alive:=0
@@ -473,6 +504,7 @@ func _check_winner() -> void:
 	if alive<=1: finish_game()
 
 func finish_game() -> void:
+	pending_attack.clear()
 	phase="finished"
 	winners.clear()
 	var highest: int=-1
@@ -484,11 +516,13 @@ func finish_game() -> void:
 	_log("比赛结束，按未破产角色净资产结算。")
 
 func gm_cash(player_id: int, delta: int) -> bool:
+	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].bankrupt: return false
 	players[player_id].cash=maxi(0,players[player_id].cash+delta)
 	return true
 
 func gm_teleport(player_id: int, node_id: int) -> bool:
+	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or node_id<0 or node_id>=nodes.size() or players[player_id].bankrupt or not players[player_id].status.is_empty(): return false
 	players[player_id].pos=node_id
 	players[player_id].previous=-1
@@ -504,9 +538,26 @@ func gm_teleport(player_id: int, node_id: int) -> bool:
 	return true
 
 func gm_give_card(player_id: int, card_id: String) -> bool:
+	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or not CARD_NAMES.has(card_id) or players[player_id].bankrupt: return false
 	return give_card(player_id,card_id)
 
 func _log(message: String) -> void:
 	logs.append(message)
 	if logs.size()>150: logs.pop_front()
+
+func reaction_player() -> int:
+	return int(pending_attack.get("target",-1)) if phase=="reaction" else -1
+
+func reaction_description() -> String:
+	if reaction_player()<0: return ""
+	return "%s：%s，持续%d次行动（计时规则待核验）。" % [CARD_NAMES.get(pending_attack.source,pending_attack.source), {"hospital":"住院","prison":"入狱","hibernate":"冬眠"}.get(pending_attack.kind,pending_attack.kind),pending_attack.days]
+
+func reaction_options() -> Array[String]:
+	return Combat.options(self)
+
+func reaction_targets(card_id:String) -> Array[int]:
+	return Combat.targets(self,card_id)
+
+func resolve_reaction(card_id:String="",target:int=-1) -> bool:
+	return Combat.resolve(self,card_id,target)

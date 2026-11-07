@@ -204,6 +204,10 @@ func _draw_players() -> void:
 		draw_circle(pos, badge_radius + 1, Color.WHITE)
 		draw_circle(pos, badge_radius, _player_color(i))
 		draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, badge_radius * 0.5), str(i + 1), HORIZONTAL_ALIGNMENT_CENTER, badge_radius * 2, clampi(int(badge_radius * 1.5), 9, 14), Color.WHITE)
+		if p.get("status", {}).get("kind", "") == "hibernate":
+			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, -badge_radius - 4), "Zz", HORIZONTAL_ALIGNMENT_CENTER, badge_radius * 2 + 8, 14, Color("c6dcff"))
+		if game.phase == "reaction" and game.reaction_player() == i:
+			draw_arc(pos, badge_radius + 6, 0, TAU, 24, Color("f28a79"), 3, true)
 
 func _tile_style(color: Color, radius: int = 5) -> StyleBoxFlat:
 	var result := StyleBoxFlat.new()

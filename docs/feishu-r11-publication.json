@@ -274,6 +274,62 @@
       "remote_characters": 3331,
       "source_sha256": "FE42E82251C3B4F27B2CBCD08B326ED0F30D31221CB7F479B2A43F40405034E1",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-04-report.md",
+      "title": "11 · 第四轮股票与攻防验收",
+      "node_token": "GsQTwL6DfiXzljk1nS4c1kFRnoK",
+      "document_id": "H9j6d1vpHob1bCxwEkUcd4pHnUr",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/GsQTwL6DfiXzljk1nS4c1kFRnoK",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-11.json",
+      "revision_id": 2,
+      "remote_characters": 1871,
+      "normalized_sha256": "C3C47D0E7A55AEEACD3F95372179EE4934FFF409B1B96E87FDA8AE5827C9F9CA",
+      "source_sha256": "A7837E3B0CD0D6E2153D455B7FD244059CC428814D725823BADE3392E35C0B4A",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-04-stocks.md",
+      "title": "12 · 股票模型与边界",
+      "node_token": "ML5Qw2RYZiQwwskNvHAcLkTJnrg",
+      "document_id": "BtgndMh9po7bz3xWnpOcHv1jnFc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/ML5Qw2RYZiQwwskNvHAcLkTJnrg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-12.json",
+      "revision_id": 4,
+      "remote_characters": 1414,
+      "normalized_sha256": "7096E639D804550BCF8F49B73298C649AD90680366BF92C7F953A5B2EDB09830",
+      "source_sha256": "9F68DFCE00C5CBC1D9DD93B4AAC7F0669E9DBD213196C9F1D255AA68A9EEF580",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-04-combat.md",
+      "title": "13 · 攻击与防御模型",
+      "node_token": "Y5V9wuPehi7nR2kMOsMcL94Tnge",
+      "document_id": "Z3aodzU5po3ORmxRHlUclF9AnMe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Y5V9wuPehi7nR2kMOsMcL94Tnge",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-13.json",
+      "revision_id": 2,
+      "remote_characters": 1042,
+      "normalized_sha256": "F9FF37BF2A25BB2E334B689F94D957354E063B5DFE628699DF82A08EB0441DE2",
+      "source_sha256": "ADD96613DA063187B8C07C3C5CCA355F3F16BB5632140B2B44415DF1D5FCE16D",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-reactions-stocks.md",
+      "title": "14 · 股票与反应卡补证",
+      "node_token": "OamQwRb2diNKlfkqAF4ccsXGnAh",
+      "document_id": "LW3CdqjdZopvDJxj548cFlNNnQc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/OamQwRb2diNKlfkqAF4ccsXGnAh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-14.json",
+      "revision_id": 2,
+      "remote_characters": 5200,
+      "normalized_sha256": "BD251D4592010F13508A0E2A196D5D126D5F0D700C3B1D9CFE6825BCCEC7269B",
+      "source_sha256": "62A57590EDFEDD264D5285788D0E32205879B9FC23EE90586E2EE80CBA1C6A49",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -282,5 +338,6 @@
   "publication_link_mapping": {
     "round-02-report.md": "https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg"
   },
-  "round3_updated_at": "2026-11-08"
+  "round3_updated_at": "2026-11-08",
+  "round4_updated_at": "2026-11-08"
 }

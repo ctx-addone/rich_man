@@ -24,6 +24,7 @@ var selected_lot: String = ""
 var forced_dice: int = 0
 var gm_used: bool = false
 var generation: int = 0
+var reaction_ack: int = -1
 
 func _ready() -> void:
 	var font := SystemFont.new()
@@ -125,7 +126,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.3 开发版  ·  建筑与卡牌系统  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.4 开发版  ·  股票与攻防结算  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -212,6 +213,7 @@ func start_game() -> void:
 	selected_lot = ""
 	forced_dice = 0
 	gm_used = false
+	reaction_ack = -1
 	handoff = true
 	build_game()
 
@@ -224,6 +226,7 @@ func build_game() -> void:
 	top_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(top_title)
 	header.add_child(button("规则", show_help))
+	header.add_child(button("股票", show_stocks))
 	header.add_child(button("卡牌图鉴", show_card_catalog))
 	header.add_child(button("GM · F1", show_gm))
 	header.add_child(button("主菜单", confirm_menu))
@@ -274,14 +277,17 @@ func refresh() -> void:
 	board.queue_redraw()
 	clear_children(sidebar)
 	var p: Dictionary = game.players[game.current]
-	sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
-	if handoff:
-		sidebar.add_child(paragraph("请将操作交给 %s。确认后查看手牌并开始本回合。" % p.name, 20))
-		sidebar.add_child(button("我已就位 · 开始回合", func(): handoff = false; refresh()))
+	if game.phase == "reaction":
+		show_reaction_controls()
+	elif handoff:
+		sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
+		sidebar.add_child(paragraph("请将操作交给 %s。确认后继续当前行动。" % p.name, 20))
+		sidebar.add_child(button("我已就位 · " + ("开始回合" if game.phase == "roll" else "继续行动"), func(): handoff = false; refresh()))
 	else:
+		sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
 		sidebar.add_child(label("骰子  %s    剩余步数  %d" % ["—" if game.last_roll == 0 else str(game.last_roll), game.steps_left], 20))
 		if not p.status.is_empty() and game.phase != "detained":
-			sidebar.add_child(paragraph("当前%s。本次行程已结束，后续回合在设施中停留。" % status_text(p), 16))
+			sidebar.add_child(paragraph("当前%s。本次行程已结束，后续回合按提示推进状态。" % status_text(p), 16))
 		match game.phase:
 			"roll": sidebar.add_child(button("掷骰子" + ("  [GM: %d]" % forced_dice if forced_dice > 0 else ""), roll))
 			"move":
@@ -328,7 +334,8 @@ func refresh() -> void:
 			var card: String = p.cards[card_index]
 			var row := HBoxContainer.new()
 			hand.add_child(row)
-			var b := button(Game.CARD_NAMES[card], func(): play_card(card), game.phase != "roll")
+			var reactive: bool = Game.CARD_TARGETS.get(card, "") == "reaction"
+			var b := button(Game.CARD_NAMES[card] + (" · 被动应对" if reactive else ""), func(): play_card(card), game.phase != "roll" or reactive)
 			b.tooltip_text = Game.CARD_DESCRIPTIONS[card]
 			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(b)
@@ -338,9 +345,10 @@ func refresh() -> void:
 	var detail := panel(sidebar)
 	var detail_lots: Array = [selected_lot] if game.lots.has(selected_lot) else game.lots_at_node(id)
 	if not p.status.is_empty() and selected < 0 and selected_lot.is_empty():
-		detail.add_child(label("当前停留场所", 18))
+		detail.add_child(label("当前状态与位置", 18))
 		detail.add_child(paragraph("离开后返回：%s" % game.nodes[p.status.return_pos].name, 14))
-		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else [game.facility_lot(p.status.kind).id]
+		var facility: Dictionary = game.facility_lot(p.status.kind)
+		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else ([facility.id] if not facility.is_empty() else [])
 	else:
 		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
 		detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
@@ -404,7 +412,36 @@ func on_lot(id: String) -> void:
 
 func status_text(p: Dictionary) -> String:
 	if p.status.is_empty(): return ""
-	return "%s %d回合" % [{"hospital":"住院", "prison":"入狱", "vacation":"度假"}.get(p.status.kind, "停留"), p.status.remaining]
+	return "%s %d回合" % [{"hospital":"住院", "prison":"入狱", "vacation":"度假", "hibernate":"冬眠"}.get(p.status.kind, "停留"), p.status.remaining]
+
+func show_reaction_controls() -> void:
+	var responder: int = game.reaction_player()
+	if responder < 0: return
+	var p: Dictionary = game.players[responder]
+	sidebar.add_child(label("防御应对  /  " + p.name, 22, COLORS[portraits[responder]]))
+	if reaction_ack != responder:
+		sidebar.add_child(paragraph("请把操作交给 %s，确认后选择防御方式。当前行动者仍是 %s。" % [p.name, game.players[game.current].name], 18))
+		sidebar.add_child(button("我来应对 · " + p.name, func(): reaction_ack = responder; refresh()))
+		return
+	sidebar.add_child(paragraph(game.reaction_description(), 17))
+	sidebar.add_child(paragraph("只在确认后消耗防御卡。人物免疫或转移不会撤销已发生的建筑损害。", 14))
+	for card_id in game.reaction_options():
+		if card_id == "transfer":
+			var choices: Array = game.reaction_targets(card_id)
+			var target := OptionButton.new()
+			target.name = "ReactionTarget"
+			for player_id in choices: target.add_item(game.players[player_id].name)
+			sidebar.add_child(target)
+			sidebar.add_child(button("使用 " + Game.CARD_NAMES[card_id], func(): respond(card_id, choices[target.selected]), choices.is_empty()))
+		else:
+			sidebar.add_child(button("使用 " + Game.CARD_NAMES[card_id], func(): respond(card_id)))
+	sidebar.add_child(button("承受效果 · 不使用防御卡", func(): respond()))
+
+func respond(card_id: String = "", target: int = -1) -> void:
+	if game.resolve_reaction(card_id, target):
+		reaction_ack = -1
+		if game.phase != "reaction": handoff = true
+	refresh()
 
 func scroll_content(parent: Node, height: int = 440) -> VBoxContainer:
 	var scroll := ScrollContainer.new()
@@ -518,7 +555,7 @@ func results() -> void:
 	var winner_names: Array = []
 	for id in game.winners: winner_names.append(game.players[id].name)
 	v.add_child(label("获胜：" + " / ".join(winner_names), 28, Color("e9c46a")))
-	v.add_child(label("净资产 = 现金 + 存款 + 地价 + 建筑投资成本" + ("  ·  本局使用了GM" if gm_used else ""), 16))
+	v.add_child(label("净资产 = 现金 + 存款 + 股票市值 + 地价 + 建筑投资成本" + ("  ·  本局使用了GM" if gm_used else ""), 16))
 	var ranking := [0,1,2,3]
 	ranking.sort_custom(func(a,b): return game.net_worth(a) > game.net_worth(b))
 	for i in ranking:
@@ -556,6 +593,60 @@ func show_help() -> void:
 	var v := modal("玩法说明")
 	v.add_child(paragraph("1. 四个席位轮流操作；掷骰前选择卡牌，路口选择出口。\n2. 道路与建筑独立，多个入口可以关联同一建筑及产权。\n3. 停在临街入口可购买或升级对应地产，对手地产会收租。\n4. 经过银行时可存取款，离开后继续剩余步数。\n5. 住院或入狱时暂不能行走和主动出牌，按提示结束停留回合。\n6. 最后存活者获胜，或达到轮数上限后比较净资产。\n7. 点击建筑看产权与入口；F1可以构造资金、卡牌和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
+
+func show_stocks() -> void:
+	if screen != "game": return
+	var v := modal("股票市场")
+	if handoff or game.phase == "reaction":
+		v.add_child(paragraph("请先完成席位交接或当前防御结算，再打开交易界面。"))
+		v.add_child(button("返回对局", dismiss))
+		return
+	var p: Dictionary = game.players[game.current]
+	v.add_child(label("%s · 存款 %d · 股票市值 %d" % [p.name, p.deposit, game.stock_value(game.current)], 18))
+	v.add_child(paragraph("使用银行存款买入，卖出所得回到存款。每轮全员行动结束后更新行情。公司、价格及波动为测试配置。", 14))
+	var content := scroll_content(v, 390)
+	for stock_id in game.stock_market.quotes:
+		var quote: Dictionary = game.stock_market.quotes[stock_id]
+		var item := panel(content)
+		var held: int = p.stocks.get(stock_id, 0)
+		item.add_child(label("%s · %d / 份 · 变化 %+d" % [quote.name, quote.price, quote.price - quote.previous], 18, Color("e9c46a")))
+		item.add_child(label("持仓 %d 份 · 市值 %d" % [held, held * quote.price], 14))
+		var row := HBoxContainer.new()
+		item.add_child(row)
+		var amount := SpinBox.new()
+		amount.name = "StockQuantity_" + stock_id
+		amount.min_value = 1
+		amount.max_value = maxi(1, maxi(held, int(p.deposit / quote.price)))
+		amount.step = 1
+		amount.value = 1
+		amount.prefix = "份数 "
+		amount.custom_minimum_size.x = 180
+		row.add_child(amount)
+		var failure := paragraph("", 13)
+		var buy := button("买入 · " + quote.name, func():
+			if game.trade_stock(stock_id, int(amount.value), true): refresh(); show_stocks()
+			else: failure.text = "交易未完成，请检查存款、数量和当前阶段。", not game.can_trade_stocks() or p.deposit < quote.price)
+		row.add_child(buy)
+		var sell := button("卖出 · " + quote.name, func():
+			if game.trade_stock(stock_id, int(amount.value), false): refresh(); show_stocks()
+			else: failure.text = "交易未完成，请检查持仓、数量和当前阶段。", not game.can_trade_stocks() or held <= 0)
+		row.add_child(sell)
+		item.add_child(failure)
+		var history: Array[String] = []
+		for price in quote.history: history.append(str(price))
+		item.add_child(paragraph("近期价格：" + " → ".join(history), 12))
+	if not game.can_trade_stocks(): content.add_child(paragraph("当前阶段仅可查看行情；移动、停留状态与结算期间不能交易。", 14))
+	content.add_child(label("最近交易", 18))
+	var count := 0
+	for index in range(game.stock_market.ledger.size()-1, -1, -1):
+		var trade: Dictionary = game.stock_market.ledger[index]
+		if trade.get("player_id", -1) != game.current: continue
+		var action: String = {"buy":"买入", "sell":"卖出", "liquidate":"偿债卖出"}.get(trade.side, trade.side)
+		content.add_child(paragraph("第%d轮 · %s %s %d份 · 单价%d · 合计%d" % [trade.round, action, game.stock_market.quotes[trade.stock_id].name, trade.quantity, trade.price, trade.amount], 12))
+		count += 1
+		if count >= 5: break
+	if count == 0: content.add_child(label("暂无交易", 14))
+	v.add_child(button("返回对局", dismiss))
 
 func confirm_menu() -> void:
 	var v := modal("返回主菜单？")
