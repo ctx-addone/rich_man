@@ -5,9 +5,9 @@ const Board = preload("res://scripts/model/board_model.gd")
 const DEFAULT_MAP_ID := "integration_city"
 const REGISTRY = {
 	"integration_city":{"id":"integration_city","name":"集成验证城","description":"117道路、24地产；用于系统验证，非原版地图。","playable":true,"source_status":"prototype","path":"res://data/maps/integration_city.json"},
-	"knight_manor":{"id":"knight_manor","name":"骑士庄园（研究中）","description":"102节点候选描图已建立，产权、设施和通行规则仍在核验。","playable":false,"source_status":"traced_geometry_pending_validation","path":"res://data/maps/knight_manor.evidence.json"}
+	"knight_manor":{"id":"knight_manor","name":"骑士庄园（玩法验证版）","description":"102道路、58小地产、4大地产；几何来自描图，价格与未核规则使用测试配置。","playable":true,"source_status":"traced_geometry_test_rules","path":"res://data/maps/knight_manor.json"}
 }
-const ROAD_KINDS = ["road","start","event","lottery","magic"]
+const ROAD_KINDS = ["road","start","event","lottery","magic","cash","unresolved","news","minigame"]
 const BUILDINGS = ["vacant","house","chain","mall","hotel","estate","bookstore","energy","lab","park"]
 
 static func entries(include_unplayable:bool=false)->Array[Dictionary]:
@@ -47,6 +47,9 @@ static func prepare(data:Variant)->Dictionary:
 		metadata[key]=data[key]
 	metadata.size=[int(data.size[0]),int(data.size[1])]
 	for key in ["schema_version","start_road","start_bonus"]: metadata[key]=int(metadata[key])
+	if data.has("spawn_roads"):
+		metadata.spawn_roads=[]
+		for road in data.spawn_roads: metadata.spawn_roads.append(int(road))
 	return {"ok":true,"errors":[],"layout":{"roads":data.roads.duplicate(true),"lots":data.lots.duplicate(true)},"metadata":metadata}
 
 static func _integer(value:Variant)->bool:
@@ -61,12 +64,18 @@ static func validate(data:Variant)->Array[String]:
 	if data.get("playable")!=true or not data.get("playable") is bool: errors.append("研究证据不可作为可玩地图。")
 	if not Board._integer_array(data.get("size"),2) or data.size[0]<=0 or data.size[1]<=0:
 		errors.append("地图尺寸必须为两个正整数。")
-	if not _integer(data.get("start_road")) or data.start_road<0: errors.append("起点编号无效。")
+	if not _integer(data.get("start_road")) or data.start_road< -1: errors.append("起点编号无效。")
 	if not _integer(data.get("start_bonus")) or data.start_bonus<0: errors.append("起点奖励必须为非负整数。")
 	if not data.get("roads") is Array or data.roads.is_empty(): errors.append("地图缺少道路数组。")
 	if not data.get("lots") is Array: errors.append("地图缺少地产数组。")
 	if not errors.is_empty(): return errors
 	if data.start_road>=data.roads.size(): errors.append("起点超出道路范围。")
+	if data.start_road==-1 and data.start_bonus!=0: errors.append("无起点地图不能配置起点奖励。")
+	if data.has("spawn_roads"):
+		if not data.spawn_roads is Array or data.spawn_roads.is_empty(): errors.append("出生道路必须为非空数组。")
+		else:
+			for road in data.spawn_roads:
+				if not _integer(road) or road<0 or road>=data.roads.size(): errors.append("出生道路编号无效。")
 	for index in range(data.roads.size()):
 		var road:Variant=data.roads[index]
 		if not road is Dictionary: errors.append("道路必须是对象。");continue
@@ -74,6 +83,8 @@ static func validate(data:Variant)->Array[String]:
 		if road.get("kind") not in ROAD_KINDS: errors.append("不支持的道路类型。")
 		if not road.get("name") is String or road.name.is_empty(): errors.append("道路缺少名称。")
 		if not road.get("signal",false) is bool: errors.append("道路signal必须为布尔值。")
+		if road.has("cash_amount") and (road.get("kind")!="cash" or not _integer(road.cash_amount)): errors.append("现金金额必须属于现金道路且为整数。")
+		if road.get("kind")=="cash" and not road.has("cash_amount"): errors.append("现金道路缺少cash_amount。")
 		if Board._integer_array(road.get("cell"),2):
 			if road.cell[0]<0 or road.cell[1]<0 or road.cell[0]>=data.size[0] or road.cell[1]>=data.size[1]: errors.append("道路超出地图尺寸。")
 		if not road.get("exits") is Array or road.exits.is_empty(): errors.append("道路至少需要一个出口。")
@@ -109,9 +120,10 @@ static func validate(data:Variant)->Array[String]:
 	var board=Board.new()
 	errors.append_array(board.load_layout(data))
 	if not errors.is_empty(): return errors
-	# A selectable layout must support movement from and back to its start.
+	# Connectivity is independent of whether the map has a reward/start tile.
+	var anchor:int=maxi(0,int(data.start_road))
 	for reverse in [false,true]:
-		var seen:Dictionary={str(int(data.start_road)):true}
+		var seen:Dictionary={str(anchor):true}
 		var queue:Array=seen.keys()
 		while not queue.is_empty():
 			var at:String=queue.pop_front()

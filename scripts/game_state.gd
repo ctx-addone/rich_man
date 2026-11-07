@@ -118,8 +118,9 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	card_used = false
 	active_lot_id = ""
 	_build_map(prepared)
+	var spawns:Array=map_metadata.get("spawn_roads",[maxi(0,start_road)])
 	for n in names:
-		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":start_road, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
+		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":int(spawns[players.size()%spawns.size()]), "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
 	var characters: Array = options.get("characters",[])
 	for i in range(players.size()):
 		players[i].character_id = str(characters[i]) if i<characters.size() else ""
@@ -146,6 +147,10 @@ func _build_map(prepared:Dictionary={}) -> void:
 		var neighbors:Array=[]
 		for road in spec.exits: neighbors.append(int(road))
 		nodes.append({"id":int(spec.id),"pos":Vector2(spec.cell[0],spec.cell[1]),"kind":kind,"name":title,"neighbors":neighbors,"signal":spec.get("signal",false)})
+		# Keep optional static map evidence/amounts without changing legacy node shape.
+		var extras:Dictionary=spec.duplicate(true)
+		for key in ["id","cell","exits","kind","name","signal","special_override","pos","neighbors"]: extras.erase(key)
+		nodes.back().merge(extras)
 	var errors:Array=board_model.load_layout(prepared.layout)
 	assert(errors.is_empty(),str(errors))
 	lots=board_model.lots
@@ -370,6 +375,16 @@ func _continue_land() -> void:
 			p.cash+=int(Buildings.PROFILE.energy_income)*lot.level
 			_log("能源中心发放收益%d。"%(int(Buildings.PROFILE.energy_income)*lot.level))
 	landing_pending=false
+	if nodes[p.pos].kind=="cash":
+		var amount:int=int(nodes[p.pos].cash_amount)
+		_log("现金道路结算%+d（落点结算测试规则）。"%amount)
+		if amount>=0: p.cash+=amount
+		else:
+			Money.begin(self,current,-amount,-1,"cash_tile")
+			Combat.advance(self)
+		return
+	if nodes[p.pos].kind in ["unresolved","news","minigame"]:
+		_log("此道路功能尚待核验，本验证版不产生效果。")
 	if nodes[p.pos].kind=="magic" and Specials.enter(self,"magic"): return
 	if nodes[p.pos].kind=="event" and Gods.id(self,current)!="fierce":
 		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
@@ -581,7 +596,7 @@ func gm_release(player_id: int) -> bool:
 	p.status={}
 	Traits.on_release(self,player_id,released_kind)
 	if player_id==current and phase=="detained": phase="roll"
-	_log(p.name+" 返回原路线。")
+	_log("%s 返回道路：%s。" % [p.name, nodes[p.pos].name])
 	return true
 
 func end_turn() -> bool:

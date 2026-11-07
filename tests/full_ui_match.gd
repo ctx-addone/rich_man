@@ -5,6 +5,8 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	var test_map:String = OS.get_environment("RICHMAN_TEST_MAP")
+	if not test_map.is_empty(): app.map_id = test_map
 	app.controllers.assign(["human", "human", "human", "human"])
 	var team_match:bool=OS.get_environment("RICHMAN_TEST_TEAMS")=="2v2"
 	if team_match: app.teams.assign([0,1,0,1])

@@ -213,7 +213,7 @@ func map_select() -> void:
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
-	v.add_child(paragraph("本图用于验证多入口建筑、银行与特殊场所，不是原版地图。骑士庄园仍在逐格核对，暂不可选。当前经济参数及部分状态规则仍在核验。", 16))
+	v.add_child(paragraph(sample.map_metadata.description + "\n滚轮缩放 · 按住右键拖动。当前经济参数及部分状态规则仍在核验。", 16))
 	var row := HBoxContainer.new()
 	v.add_child(row)
 	row.add_child(button("← 返回", menu))
@@ -367,7 +367,13 @@ func build_game() -> void:
 	board.tile_clicked.connect(on_tile)
 	board.lot_clicked.connect(on_lot)
 	board_col.add_child(board)
-	board_col.add_child(label("金框：可走出口  ·  圆点：玩家  ·  建筑边色：产权  ·  点击建筑查看入口与详情", 13, Color("9cb4c4")))
+	var view_controls := HBoxContainer.new()
+	board_col.add_child(view_controls)
+	view_controls.add_child(button("−", func(): board.zoom_at(0.8, board.size / 2)))
+	view_controls.add_child(button("＋", func(): board.zoom_at(1.25, board.size / 2)))
+	view_controls.add_child(button("全图", func(): board.reset_view()))
+	view_controls.add_child(button("定位当前角色", func(): board.focus_player()))
+	view_controls.add_child(label("滚轮缩放 · 右键拖动 · 点击建筑查看详情", 13, Color("9cb4c4")))
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size.x = 355
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

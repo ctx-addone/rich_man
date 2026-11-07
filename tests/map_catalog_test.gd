@@ -16,8 +16,9 @@ func enter_road(g,road:int)->void:
 	g.bank_visited.clear();g.service_visited.clear();g.pending_service.clear()
 	g._continue_arrival()
 func _init()->void:
-	check(Maps.entries().size()==1 and Maps.entries(true).size()==2,"only complete prototype selectable; evidence remains listed separately")
-	check(not Maps.load_map("knight_manor").ok and not Maps.load_map("../integration_city").ok,"unplayable evidence and unregistered path rejected")
+	check(Maps.entries().size()==2 and Maps.entries(true).size()==2,"integration and traced geometry test maps selectable")
+	check(Maps.load_map("knight_manor").ok and not Maps.load_map("../integration_city").ok,"traced runtime map accepted and unregistered path rejected")
+	check(not Maps.prepare(JSON.parse_string(FileAccess.get_file_as_string("res://data/maps/knight_manor.evidence.json"))).ok,"research evidence itself remains unplayable")
 	check(Maps.load_map("integration_city").ok,"registered layout validates")
 	var no_facilities:Dictionary=data()
 	for lot in no_facilities.lots:
@@ -33,7 +34,7 @@ func _init()->void:
 		check(g.map_id==Maps.DEFAULT_MAP_ID and g.start_road==0 and g.start_bonus==1000 and g.players[0].pos==g.start_road,"default map state and spawn preserved")
 		g.players[0].cash=7777;g.lots.small_1_6.owner=1
 		var before:Dictionary={"players":g.players.duplicate(true),"lots":g.lots.duplicate(true),"nodes":g.nodes.duplicate(true),"rng":g.rng.state,"map":g.map_metadata.duplicate(true),"phase":g.phase}
-		for invalid in ["not_registered","knight_manor",7]:
+		for invalid in ["not_registered","knight_manor.evidence",7]:
 			check(not g.setup(["X","Y"],321,1,{"map_id":invalid}),"invalid map refuses setup")
 			check(g.players==before.players and g.lots==before.lots and g.nodes==before.nodes and g.rng.state==before.rng and g.map_metadata==before.map and g.phase==before.phase,"rejected setup preserves current match atomically")
 	var broken:Dictionary=data()

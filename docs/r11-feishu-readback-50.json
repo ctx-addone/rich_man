@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>50 · 多地图出生与现金路格规则</title>\n\n# 第十三轮：骑士庄园地图运行时\n\n本轮把已独立复核的102道路描图接入可玩入口。几何与游戏规则分开：地图名标为“玩法验证版”，地产价格、租金、街道分组、双入口收费与出生位置仍采用显式测试配置；并不宣称原作地图规则全部还原。描图来源与纠错见 [独立地图审计](https://dcncd5jl63xs.feishu.cn/wiki/Y1c9wmHThil1pek4VIIcbO9Tndb)。\n\n## 地图入口与兼容性\n\n`RichGame.setup(names, seed, rounds, {\"map_id\":\"knight_manor\"})` 加载新的可玩JSON。`integration_city` 仍为缺省地图；旧117道路、24地产、起点奖励及无可选字段时的元数据结构保持不变。`knight_manor.evidence.json` 与 `knight_manor.trace.json` 仍是研究文件，不能直接当作可玩布局传给校验器。\n\n未注册地图、无效布局在setup清理当前对局前失败，返回false，不部分改写当前游戏。传统可玩图仍必须含医院、监狱。拓扑检查仍要求全部道路在有向意义下互通。\n\n## 无START地图与出生位置\n\n`start_road=-1` 表示没有起点奖励格，此时 `start_bonus` 必须为0，全部道路都不能标成 `kind=start`。格网坐标原点不代表起点；无START地图的连通性检查以道路0作为遍历锚点，不赋予它任何奖励。\n\n可选地图字段 `spawn_roads: Array[int]` 是非空的道路编号数组，每项必须落在道路范围内。按席位循环分配出生位置，不随机抽取、不消耗RNG。缺省为 `[max(0,start_road)]`。目前没有证据证明骑士庄园原作的完整初始化站位规则，因此地图中的四处出生点明确标为测试配置。\n\n此字段仅存在于 `map_metadata`，不新增游戏顶层状态。旧地图未声明该字段时，不向旧metadata注入默认字段。\n\n## 道路静态字段\n\n现有道路字段 `id/cell/exits/kind/name/signal/special_override` 沿用。道路上其余静态字段会深拷贝到运行时node，例如 `cash_amount`、描图坐标、来源标记。运行时结构字段 `pos/neighbors` 保持由坐标和出口推导，不能被额外字段覆盖。旧道路没有额外字段时节点结构保持不变。\n\n新增支持的道路种类：\n\n| kind | 当前行为 |\n|-|-|\n| cash | 必须声明有符号整数 `cash_amount`；最终落点结算一次 |\n| unresolved | 显示尚待核验的日志，无资金、卡牌或随机效果 |\n| news | 新闻占位，当前无实际新闻效果 |\n| minigame | 小游戏占位，当前不伪装成随机奖金 |\n\n`cash_amount` 不允许布尔、小数、字符串或null，也不允许放在其他kind道路上。0为合法无金额效果。彩票、魔法屋沿现有服务接口，银行/商店仍由道路外设施地产的frontage和trigger_events驱动。\n\n## 现金格测试规则及续行\n\n本轮暂定“仅最终停留结算”，经过不结算；金额直接取格面数字，不自动应用物价或角色倍率。这些是可测的测试规则，尚非原作触发时机和公式结论。梦游或凶神不会额外屏蔽此类现金结算，本轮同样没有把这认定为原版资格规则。\n\n现金结算发生在地产落点队列完成、`landing_pending` 清false之后。正数直接进入当前玩家现金；负数生成现有Money事件，`source=cash_tile`、`kind=money`、收款人及攻击者均为-1。沿用既有防御、现金/存款/股票/地产偿付与破产流程；现金格能使用哪些防御牌、自动偿付顺序仍属于测试配置。\n\n防御等待期间不会保留未完成落点队列；恢复到land后，再调用 `_continue_land` 不会重开债务或重复奖励。GM重新传送到同一格视为新的落点，会再次结算，便于测试。医院/监狱释放仅重新定位，不调用落地现金结算。\n\n## 地产与设施\n\n数据应含58块小地产、4块大地产、7个设施地产（3银行、2商店、医院、监狱），共69个地产对象。大地产的两个frontage共享同一个lot_id和产权账本；两格均能触发购买/收费属于本轮测试配置，不能由几何邻接直接推定为原版规则。\n\n固定释放出口继续使用设施地产的 `exit_road` / `exit_previous`。医院与监狱道路格包含在102道路内，独立出口复用其相邻道路，不额外增格。没有固定出口字段的旧地图仍返回入院/入狱前位置。\n\n## 验证\n\n`tests/map_runtime_test.gd` 覆盖无START及出生校验、非法金额、静态字段携带、现金经过/落点差异、单次结算、防御与破产续行，以及三种未实现道路不修改资金/卡牌/RNG；另检查骑士庄园102道路/69地产和四席出生，并运行两局15轮组队AI比赛。\n\n`tests/map_catalog_test.gd` 继续核对旧地图完整运行时二进制指纹，确认可玩注册表新增地图，同时研究证据文件仍被拒绝。独立审查与存档续局由对应第十三轮测试覆盖。\n\n本轮执行结果：`map_runtime_test`、`map_catalog_test`、`services_test`、`movement_test`、`money_test`、`core_test` 全部0失败。其中新增骑士庄园两局15轮组队AI完成，既有服务三局35轮与核心50局闭环通过。Godot通过命令行运行，日志写工作区绝对路径；环境证书读取警告不影响上述离线测试退出码。",
+      "document_id": "IEhmdxrB0obhnzxHB0HcFfBDnJd",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

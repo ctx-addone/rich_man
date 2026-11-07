@@ -11,14 +11,14 @@ func run()->void:
 	var maps:OptionButton=app.find_child("MapChoice",true,false)
 	check(maps!=null and maps.item_count==2,"map registry shown in selection")
 	check(maps.get_item_metadata(0)=="integration_city" and not maps.is_item_disabled(0),"validated map selectable")
-	check(maps.get_item_metadata(1)=="knight_manor" and maps.is_item_disabled(1),"research-only map disabled")
+	check(maps.get_item_metadata(1)=="knight_manor" and not maps.is_item_disabled(1),"validated knight layout selectable")
 	await capture("01-map-selection")
 	await click("选择角色")
 	await click("开始对局")
 	await click("我已就位")
 	check(app.game.map_id=="integration_city" and app.top_title.text.begins_with(app.game.map_metadata.name),"selected map title comes from metadata")
 	var old_game=app.game
-	app.map_id="knight_manor"
+	app.map_id="not_registered"
 	app.start_game()
 	check(app.game==old_game and app.screen=="game","invalid start preserves current live game")
 	app.map_id="integration_city"

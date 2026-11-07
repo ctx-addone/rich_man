@@ -15,9 +15,31 @@ var cell: float = 28.0
 var step: float = 34.0
 var origin := Vector2.ZERO
 var textures: Dictionary = {}
+var zoom_factor: float = 1.0
+var pan_offset := Vector2.ZERO
+var dragging: bool = false
+
+func reset_view() -> void:
+	zoom_factor = 1.0
+	pan_offset = Vector2.ZERO
+	queue_redraw()
+
+func zoom_at(factor: float, anchor: Vector2) -> void:
+	var next: float = clampf(zoom_factor * factor, 1.0, 4.0)
+	pan_offset = (pan_offset + size / 2 - anchor) * (next / zoom_factor) + anchor - size / 2
+	zoom_factor = next
+	if is_equal_approx(zoom_factor, 1.0): pan_offset = Vector2.ZERO
+	queue_redraw()
+
+func focus_player() -> void:
+	if game == null or game.players.is_empty(): return
+	_layout()
+	pan_offset += size / 2 - points[game.players[game.current].pos]
+	queue_redraw()
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	clip_contents = true
 	resized.connect(queue_redraw)
 	for level in range(4):
 		var path := "res://assets/buildings/level_%d.svg" % level
@@ -37,9 +59,9 @@ func _layout() -> void:
 		low = low.min(Vector2(f.position) - Vector2.ONE * 0.5)
 		high = high.max(Vector2(f.end) - Vector2.ONE * 0.5)
 	var extent: Vector2 = high - low
-	step = maxf(1, minf((size.x - 44) / extent.x, (size.y - 44) / extent.y))
+	step = maxf(1, minf((size.x - 44) / extent.x, (size.y - 44) / extent.y)) * zoom_factor
 	cell = step * 0.82
-	origin = (size - extent * step) / 2 - low * step
+	origin = (size - extent * step) / 2 - low * step + pan_offset
 	points.clear()
 	for n in game.nodes: points.append(origin + n.pos * step)
 	lot_rects.clear()
@@ -48,7 +70,7 @@ func _layout() -> void:
 		lot_rects[lot.id] = Rect2(origin + (Vector2(f.position) - Vector2.ONE * 0.5) * step, Vector2(f.size) * step).grow(-step * 0.12)
 
 func _draw() -> void:
-	if game == null or game.nodes.is_empty(): return
+	if game == null or game.nodes.is_empty() or size.x <= 44 or size.y <= 44: return
 	_layout()
 	draw_style_box(_tile_style(Color("112c32"), 16), Rect2(Vector2.ZERO, size))
 	var active_lots: Array = []
@@ -78,6 +100,10 @@ func _draw() -> void:
 		elif n.kind == "lottery": fill = Color("f1ce72")
 		elif n.kind == "magic": fill = Color("b99be3")
 		elif n.kind == "metro": fill = Color("91d3dc")
+		elif n.kind == "cash": fill = Color("a7d2a0") if n.get("cash_amount", 0) > 0 else Color("e1a39a")
+		elif n.kind == "unresolved": fill = Color("ddc486")
+		elif n.kind == "news": fill = Color("dda3ad")
+		elif n.kind == "minigame": fill = Color("a6b4de")
 		draw_style_box(_tile_style(fill, 3), box)
 		if active_roads.has(n.id): draw_rect(box.grow(1), Color("73e6d0"), false, 2)
 		if selected == n.id: draw_rect(box.grow(2), Color.WHITE, false, 2)
@@ -88,8 +114,13 @@ func _draw() -> void:
 		elif n.kind == "lottery": caption = "彩"
 		elif n.kind == "magic": caption = "魔"
 		elif n.kind == "metro": caption = "M"
+		elif n.kind == "cash": caption = "+" if n.get("cash_amount", 0) > 0 else "−"
+		elif n.kind == "unresolved": caption = "?"
+		elif n.kind == "news": caption = "!"
+		elif n.kind == "minigame": caption = "游"
 		var font_size: int = clampi(int(cell * 0.43), 9, 14)
-		draw_string(font, pos + Vector2(-cell / 2, font_size * 0.35), caption, HORIZONTAL_ALIGNMENT_CENTER, cell, font_size, Color("27434a"))
+		if cell >= 13 or n.kind != "road":
+			draw_string(font, pos + Vector2(-cell / 2, font_size * 0.35), caption, HORIZONTAL_ALIGNMENT_CENTER, cell, maxi(1, mini(font_size, int(cell))), Color("27434a"))
 		if n.get("signal", false):
 			draw_circle(pos + Vector2(cell * 0.24, -cell * 0.24), 3, Color("f06560") if game.traffic_phase else Color("35b982"))
 		if game.road_objects.has(n.id):
@@ -126,7 +157,9 @@ func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
 	draw_rect(box.grow(-1), accent.darkened(0.25), false, 1)
 	if highlighted: draw_rect(box.grow(2), Color("73e6d0"), false, 3)
 	if lot.get("closed_until", 0) > game.round_number: draw_rect(box.grow(-3), Color("de7d73"), false, 3)
-	if lot.kind == "small":
+	if box.size.x < 54 or box.size.y < 54:
+		_draw_compact_lot(lot, box, accent)
+	elif lot.kind == "small":
 		_draw_small_lot(lot, box, accent)
 	else:
 		var font := get_theme_default_font()
@@ -159,6 +192,17 @@ func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
 		var p: Vector2 = origin + Vector2(game.board_model.roads[road_id].cell) * step
 		var gate := p.clamp(box.position, box.end)
 		draw_line(gate, gate.move_toward(p, step * 0.17), Color("73e6d0") if highlighted else accent, 3, true)
+
+func _draw_compact_lot(lot: Dictionary, box: Rect2, accent: Color) -> void:
+	var width: float = minf(box.size.x, box.size.y) * 0.55
+	if lot.kind == "facility":
+		_draw_facility(lot.building_type, box.get_center(), width, accent)
+	else:
+		var centre: Vector2 = box.get_center()
+		draw_rect(Rect2(centre - Vector2.ONE * width / 2, Vector2.ONE * width), accent.darkened(0.15))
+		if width >= 13:
+			var caption: String = str(lot.level) if lot.owner >= 0 else "地"
+			draw_string(get_theme_default_font(), centre + Vector2(-width / 2, 4), caption, HORIZONTAL_ALIGNMENT_CENTER, width, 11, Color("eaf3ed"))
 
 func _draw_small_lot(lot: Dictionary, box: Rect2, accent: Color) -> void:
 	# Short coordinate labels match the full name in the sidebar. Never truncate prices.
@@ -247,6 +291,32 @@ func god_color(id: String) -> Color:
 	return Color("ef9c9c") if id in ["poor", "misfortune", "devil", "confused", "fierce"] else Color("e9d383")
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index in [MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
+			dragging = event.pressed
+			accept_event()
+			return
+		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+			zoom_at(1.25 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 0.8, event.position)
+			accept_event()
+			return
+	if event is InputEventMouseMotion:
+		if dragging and (event.button_mask & (MOUSE_BUTTON_MASK_RIGHT | MOUSE_BUTTON_MASK_MIDDLE)) != 0:
+			pan_offset += event.relative
+			queue_redraw()
+			accept_event()
+			return
+		dragging = false
+		tooltip_text = ""
+		for id in lot_rects:
+			if lot_rects[id].has_point(event.position):
+				var lot: Dictionary = game.lots[id]
+				tooltip_text = "%s · %s" % [lot.name, "公共设施" if lot.kind == "facility" else ("待购 %d" % lot.price if lot.owner < 0 else "%s · %d级" % [game.players[lot.owner].name, lot.level])]
+				return
+		for n in game.nodes:
+			if event.position.distance_to(points[n.id]) < maxf(6, cell / 2):
+				tooltip_text = "%02d · %s" % [n.id, n.name]
+				return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		for i in range(points.size()):
 			if Rect2(points[i] - Vector2.ONE * cell / 2, Vector2.ONE * cell).has_point(event.position):

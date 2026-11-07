@@ -1,0 +1,5483 @@
+{
+  "schema_version": 1,
+  "id": "knight_manor",
+  "name": "骑士庄园",
+  "description": "102道路、58小地产、4共享双入口大地产；测试价格/租金/街道分组/出生与释放出口，新闻及小游戏待还原。",
+  "playable": true,
+  "source_status": "B-traced-geometry_TEST-R13-economy-frontage-and-facility-rules",
+  "size": [
+    97,
+    89
+  ],
+  "start_road": -1,
+  "start_bonus": 0,
+  "spawn_roads": [
+    2,
+    45,
+    90,
+    44
+  ],
+  "roads": [
+    {
+      "id": "0",
+      "trace_id": "n_00_m02",
+      "trace_coord": [
+        0,
+        -2
+      ],
+      "cell": [
+        8,
+        8
+      ],
+      "exits": [
+        "1"
+      ],
+      "kind": "road",
+      "name": "监狱门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "1",
+      "trace_id": "n_00_m01",
+      "trace_coord": [
+        0,
+        -1
+      ],
+      "cell": [
+        8,
+        12
+      ],
+      "exits": [
+        "2",
+        "0"
+      ],
+      "kind": "cash",
+      "name": "现金 +2000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "cash_amount": 2000
+    },
+    {
+      "id": "2",
+      "trace_id": "n_00_00",
+      "trace_coord": [
+        0,
+        0
+      ],
+      "cell": [
+        8,
+        16
+      ],
+      "exits": [
+        "3",
+        "1",
+        "8"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "3",
+      "trace_id": "n_00_01",
+      "trace_coord": [
+        0,
+        1
+      ],
+      "cell": [
+        8,
+        20
+      ],
+      "exits": [
+        "2",
+        "4"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "4",
+      "trace_id": "n_00_02",
+      "trace_coord": [
+        0,
+        2
+      ],
+      "cell": [
+        8,
+        24
+      ],
+      "exits": [
+        "3",
+        "5"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "5",
+      "trace_id": "n_00_03",
+      "trace_coord": [
+        0,
+        3
+      ],
+      "cell": [
+        8,
+        28
+      ],
+      "exits": [
+        "4",
+        "6"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "6",
+      "trace_id": "n_00_04",
+      "trace_coord": [
+        0,
+        4
+      ],
+      "cell": [
+        8,
+        32
+      ],
+      "exits": [
+        "5",
+        "9"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "7",
+      "trace_id": "n_00_08",
+      "trace_coord": [
+        0,
+        8
+      ],
+      "cell": [
+        8,
+        48
+      ],
+      "exits": [
+        "10"
+      ],
+      "kind": "road",
+      "name": "医院门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "8",
+      "trace_id": "n_01_00",
+      "trace_coord": [
+        1,
+        0
+      ],
+      "cell": [
+        12,
+        16
+      ],
+      "exits": [
+        "2",
+        "11"
+      ],
+      "kind": "magic",
+      "name": "魔法屋",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "9",
+      "trace_id": "n_01_04",
+      "trace_coord": [
+        1,
+        4
+      ],
+      "cell": [
+        12,
+        32
+      ],
+      "exits": [
+        "6",
+        "12"
+      ],
+      "kind": "road",
+      "name": "商店门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "10",
+      "trace_id": "n_01_08",
+      "trace_coord": [
+        1,
+        8
+      ],
+      "cell": [
+        12,
+        48
+      ],
+      "exits": [
+        "7",
+        "16"
+      ],
+      "kind": "cash",
+      "name": "现金 +2000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "cash_amount": 2000
+    },
+    {
+      "id": "11",
+      "trace_id": "n_02_00",
+      "trace_coord": [
+        2,
+        0
+      ],
+      "cell": [
+        16,
+        16
+      ],
+      "exits": [
+        "8",
+        "17"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "12",
+      "trace_id": "n_02_04",
+      "trace_coord": [
+        2,
+        4
+      ],
+      "cell": [
+        16,
+        32
+      ],
+      "exits": [
+        "9",
+        "13"
+      ],
+      "kind": "cash",
+      "name": "现金 -2000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ],
+      "cash_amount": -2000
+    },
+    {
+      "id": "13",
+      "trace_id": "n_02_05",
+      "trace_coord": [
+        2,
+        5
+      ],
+      "cell": [
+        16,
+        36
+      ],
+      "exits": [
+        "12",
+        "14"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "14",
+      "trace_id": "n_02_06",
+      "trace_coord": [
+        2,
+        6
+      ],
+      "cell": [
+        16,
+        40
+      ],
+      "exits": [
+        "13",
+        "15"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "15",
+      "trace_id": "n_02_07",
+      "trace_coord": [
+        2,
+        7
+      ],
+      "cell": [
+        16,
+        44
+      ],
+      "exits": [
+        "14",
+        "16"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "16",
+      "trace_id": "n_02_08",
+      "trace_coord": [
+        2,
+        8
+      ],
+      "cell": [
+        16,
+        48
+      ],
+      "exits": [
+        "10",
+        "15",
+        "18"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "17",
+      "trace_id": "n_03_00",
+      "trace_coord": [
+        3,
+        0
+      ],
+      "cell": [
+        20,
+        16
+      ],
+      "exits": [
+        "11",
+        "19"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "18",
+      "trace_id": "n_03_08",
+      "trace_coord": [
+        3,
+        8
+      ],
+      "cell": [
+        20,
+        48
+      ],
+      "exits": [
+        "16",
+        "20"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "19",
+      "trace_id": "n_04_00",
+      "trace_coord": [
+        4,
+        0
+      ],
+      "cell": [
+        24,
+        16
+      ],
+      "exits": [
+        "17",
+        "21"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "20",
+      "trace_id": "n_04_08",
+      "trace_coord": [
+        4,
+        8
+      ],
+      "cell": [
+        24,
+        48
+      ],
+      "exits": [
+        "18",
+        "22"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "21",
+      "trace_id": "n_05_00",
+      "trace_coord": [
+        5,
+        0
+      ],
+      "cell": [
+        28,
+        16
+      ],
+      "exits": [
+        "19",
+        "25"
+      ],
+      "kind": "road",
+      "name": "银行门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "22",
+      "trace_id": "n_05_08",
+      "trace_coord": [
+        5,
+        8
+      ],
+      "cell": [
+        28,
+        48
+      ],
+      "exits": [
+        "20",
+        "23"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "23",
+      "trace_id": "n_05_09",
+      "trace_coord": [
+        5,
+        9
+      ],
+      "cell": [
+        28,
+        52
+      ],
+      "exits": [
+        "22",
+        "24"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "24",
+      "trace_id": "n_05_10",
+      "trace_coord": [
+        5,
+        10
+      ],
+      "cell": [
+        28,
+        56
+      ],
+      "exits": [
+        "23",
+        "26"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-130",
+        "K5-135"
+      ]
+    },
+    {
+      "id": "25",
+      "trace_id": "n_06_00",
+      "trace_coord": [
+        6,
+        0
+      ],
+      "cell": [
+        32,
+        16
+      ],
+      "exits": [
+        "21",
+        "27"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "26",
+      "trace_id": "n_06_10",
+      "trace_coord": [
+        6,
+        10
+      ],
+      "cell": [
+        32,
+        56
+      ],
+      "exits": [
+        "24",
+        "28"
+      ],
+      "kind": "news",
+      "name": "新闻格（内容待还原）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "27",
+      "trace_id": "n_07_00",
+      "trace_coord": [
+        7,
+        0
+      ],
+      "cell": [
+        36,
+        16
+      ],
+      "exits": [
+        "25",
+        "29"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "28",
+      "trace_id": "n_07_10",
+      "trace_coord": [
+        7,
+        10
+      ],
+      "cell": [
+        36,
+        56
+      ],
+      "exits": [
+        "26",
+        "30"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "29",
+      "trace_id": "n_08_00",
+      "trace_coord": [
+        8,
+        0
+      ],
+      "cell": [
+        40,
+        16
+      ],
+      "exits": [
+        "27",
+        "31"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "30",
+      "trace_id": "n_08_10",
+      "trace_coord": [
+        8,
+        10
+      ],
+      "cell": [
+        40,
+        56
+      ],
+      "exits": [
+        "28",
+        "32"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "31",
+      "trace_id": "n_09_00",
+      "trace_coord": [
+        9,
+        0
+      ],
+      "cell": [
+        44,
+        16
+      ],
+      "exits": [
+        "29",
+        "33"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "32",
+      "trace_id": "n_09_10",
+      "trace_coord": [
+        9,
+        10
+      ],
+      "cell": [
+        44,
+        56
+      ],
+      "exits": [
+        "30",
+        "34"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "33",
+      "trace_id": "n_10_00",
+      "trace_coord": [
+        10,
+        0
+      ],
+      "cell": [
+        48,
+        16
+      ],
+      "exits": [
+        "31",
+        "35"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "34",
+      "trace_id": "n_10_10",
+      "trace_coord": [
+        10,
+        10
+      ],
+      "cell": [
+        48,
+        56
+      ],
+      "exits": [
+        "32",
+        "37"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "35",
+      "trace_id": "n_11_00",
+      "trace_coord": [
+        11,
+        0
+      ],
+      "cell": [
+        52,
+        16
+      ],
+      "exits": [
+        "33",
+        "47"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "36",
+      "trace_id": "n_11_09",
+      "trace_coord": [
+        11,
+        9
+      ],
+      "cell": [
+        52,
+        52
+      ],
+      "exits": [
+        "37",
+        "53"
+      ],
+      "kind": "cash",
+      "name": "现金 -5000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "cash_amount": -5000
+    },
+    {
+      "id": "37",
+      "trace_id": "n_11_10",
+      "trace_coord": [
+        11,
+        10
+      ],
+      "cell": [
+        52,
+        56
+      ],
+      "exits": [
+        "34",
+        "36",
+        "38"
+      ],
+      "kind": "unresolved",
+      "name": "黄色图标（待核实）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "38",
+      "trace_id": "n_11_11",
+      "trace_coord": [
+        11,
+        11
+      ],
+      "cell": [
+        52,
+        60
+      ],
+      "exits": [
+        "37",
+        "39"
+      ],
+      "kind": "road",
+      "name": "银行门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "39",
+      "trace_id": "n_11_12",
+      "trace_coord": [
+        11,
+        12
+      ],
+      "cell": [
+        52,
+        64
+      ],
+      "exits": [
+        "38",
+        "40"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "40",
+      "trace_id": "n_11_13",
+      "trace_coord": [
+        11,
+        13
+      ],
+      "cell": [
+        52,
+        68
+      ],
+      "exits": [
+        "39",
+        "41"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "41",
+      "trace_id": "n_11_14",
+      "trace_coord": [
+        11,
+        14
+      ],
+      "cell": [
+        52,
+        72
+      ],
+      "exits": [
+        "40",
+        "42"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "42",
+      "trace_id": "n_11_15",
+      "trace_coord": [
+        11,
+        15
+      ],
+      "cell": [
+        52,
+        76
+      ],
+      "exits": [
+        "41",
+        "43"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "43",
+      "trace_id": "n_11_16",
+      "trace_coord": [
+        11,
+        16
+      ],
+      "cell": [
+        52,
+        80
+      ],
+      "exits": [
+        "42",
+        "44"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "44",
+      "trace_id": "n_11_17",
+      "trace_coord": [
+        11,
+        17
+      ],
+      "cell": [
+        52,
+        84
+      ],
+      "exits": [
+        "43",
+        "54"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "45",
+      "trace_id": "n_12_m02",
+      "trace_coord": [
+        12,
+        -2
+      ],
+      "cell": [
+        56,
+        8
+      ],
+      "exits": [
+        "46",
+        "55"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "46",
+      "trace_id": "n_12_m01",
+      "trace_coord": [
+        12,
+        -1
+      ],
+      "cell": [
+        56,
+        12
+      ],
+      "exits": [
+        "47",
+        "45"
+      ],
+      "kind": "news",
+      "name": "新闻格（内容待还原）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "47",
+      "trace_id": "n_12_00",
+      "trace_coord": [
+        12,
+        0
+      ],
+      "cell": [
+        56,
+        16
+      ],
+      "exits": [
+        "35",
+        "48",
+        "46"
+      ],
+      "kind": "unresolved",
+      "name": "黄色图标（待核实）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "48",
+      "trace_id": "n_12_01",
+      "trace_coord": [
+        12,
+        1
+      ],
+      "cell": [
+        56,
+        20
+      ],
+      "exits": [
+        "47",
+        "49"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "49",
+      "trace_id": "n_12_02",
+      "trace_coord": [
+        12,
+        2
+      ],
+      "cell": [
+        56,
+        24
+      ],
+      "exits": [
+        "48",
+        "50"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "50",
+      "trace_id": "n_12_03",
+      "trace_coord": [
+        12,
+        3
+      ],
+      "cell": [
+        56,
+        28
+      ],
+      "exits": [
+        "49",
+        "56"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "51",
+      "trace_id": "n_12_07",
+      "trace_coord": [
+        12,
+        7
+      ],
+      "cell": [
+        56,
+        44
+      ],
+      "exits": [
+        "52",
+        "60"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "52",
+      "trace_id": "n_12_08",
+      "trace_coord": [
+        12,
+        8
+      ],
+      "cell": [
+        56,
+        48
+      ],
+      "exits": [
+        "51",
+        "53"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "53",
+      "trace_id": "n_12_09",
+      "trace_coord": [
+        12,
+        9
+      ],
+      "cell": [
+        56,
+        52
+      ],
+      "exits": [
+        "36",
+        "52"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "54",
+      "trace_id": "n_12_17",
+      "trace_coord": [
+        12,
+        17
+      ],
+      "cell": [
+        56,
+        84
+      ],
+      "exits": [
+        "44",
+        "61"
+      ],
+      "kind": "cash",
+      "name": "现金 +2000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "cash_amount": 2000
+    },
+    {
+      "id": "55",
+      "trace_id": "n_13_m02",
+      "trace_coord": [
+        13,
+        -2
+      ],
+      "cell": [
+        60,
+        8
+      ],
+      "exits": [
+        "45",
+        "62"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "56",
+      "trace_id": "n_13_03",
+      "trace_coord": [
+        13,
+        3
+      ],
+      "cell": [
+        60,
+        28
+      ],
+      "exits": [
+        "50",
+        "57"
+      ],
+      "kind": "lottery",
+      "name": "乐透",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "57",
+      "trace_id": "n_13_04",
+      "trace_coord": [
+        13,
+        4
+      ],
+      "cell": [
+        60,
+        32
+      ],
+      "exits": [
+        "56",
+        "58"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "58",
+      "trace_id": "n_13_05",
+      "trace_coord": [
+        13,
+        5
+      ],
+      "cell": [
+        60,
+        36
+      ],
+      "exits": [
+        "57",
+        "59"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "59",
+      "trace_id": "n_13_06",
+      "trace_coord": [
+        13,
+        6
+      ],
+      "cell": [
+        60,
+        40
+      ],
+      "exits": [
+        "58",
+        "60"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "60",
+      "trace_id": "n_13_07",
+      "trace_coord": [
+        13,
+        7
+      ],
+      "cell": [
+        60,
+        44
+      ],
+      "exits": [
+        "51",
+        "59",
+        "63"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "61",
+      "trace_id": "n_13_17",
+      "trace_coord": [
+        13,
+        17
+      ],
+      "cell": [
+        60,
+        84
+      ],
+      "exits": [
+        "54",
+        "64"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "62",
+      "trace_id": "n_14_m02",
+      "trace_coord": [
+        14,
+        -2
+      ],
+      "cell": [
+        64,
+        8
+      ],
+      "exits": [
+        "55",
+        "65"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "63",
+      "trace_id": "n_14_07",
+      "trace_coord": [
+        14,
+        7
+      ],
+      "cell": [
+        64,
+        44
+      ],
+      "exits": [
+        "60",
+        "66"
+      ],
+      "kind": "minigame",
+      "name": "小游戏（内容待还原）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "64",
+      "trace_id": "n_14_17",
+      "trace_coord": [
+        14,
+        17
+      ],
+      "cell": [
+        64,
+        84
+      ],
+      "exits": [
+        "61",
+        "67"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "65",
+      "trace_id": "n_15_m02",
+      "trace_coord": [
+        15,
+        -2
+      ],
+      "cell": [
+        68,
+        8
+      ],
+      "exits": [
+        "62",
+        "68"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "66",
+      "trace_id": "n_15_07",
+      "trace_coord": [
+        15,
+        7
+      ],
+      "cell": [
+        68,
+        44
+      ],
+      "exits": [
+        "63",
+        "69"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "67",
+      "trace_id": "n_15_17",
+      "trace_coord": [
+        15,
+        17
+      ],
+      "cell": [
+        68,
+        84
+      ],
+      "exits": [
+        "64",
+        "70"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "68",
+      "trace_id": "n_16_m02",
+      "trace_coord": [
+        16,
+        -2
+      ],
+      "cell": [
+        72,
+        8
+      ],
+      "exits": [
+        "65",
+        "71"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "69",
+      "trace_id": "n_16_07",
+      "trace_coord": [
+        16,
+        7
+      ],
+      "cell": [
+        72,
+        44
+      ],
+      "exits": [
+        "66",
+        "72"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "70",
+      "trace_id": "n_16_17",
+      "trace_coord": [
+        16,
+        17
+      ],
+      "cell": [
+        72,
+        84
+      ],
+      "exits": [
+        "67",
+        "73"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "71",
+      "trace_id": "n_17_m02",
+      "trace_coord": [
+        17,
+        -2
+      ],
+      "cell": [
+        76,
+        8
+      ],
+      "exits": [
+        "68",
+        "74"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "72",
+      "trace_id": "n_17_07",
+      "trace_coord": [
+        17,
+        7
+      ],
+      "cell": [
+        76,
+        44
+      ],
+      "exits": [
+        "69",
+        "75"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "73",
+      "trace_id": "n_17_17",
+      "trace_coord": [
+        17,
+        17
+      ],
+      "cell": [
+        76,
+        84
+      ],
+      "exits": [
+        "70",
+        "76"
+      ],
+      "kind": "cash",
+      "name": "现金 +5000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ],
+      "cash_amount": 5000
+    },
+    {
+      "id": "74",
+      "trace_id": "n_18_m02",
+      "trace_coord": [
+        18,
+        -2
+      ],
+      "cell": [
+        80,
+        8
+      ],
+      "exits": [
+        "71",
+        "77"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "75",
+      "trace_id": "n_18_07",
+      "trace_coord": [
+        18,
+        7
+      ],
+      "cell": [
+        80,
+        44
+      ],
+      "exits": [
+        "72",
+        "78"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "76",
+      "trace_id": "n_18_17",
+      "trace_coord": [
+        18,
+        17
+      ],
+      "cell": [
+        80,
+        84
+      ],
+      "exits": [
+        "73",
+        "84"
+      ],
+      "kind": "magic",
+      "name": "魔法屋",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "77",
+      "trace_id": "n_19_m02",
+      "trace_coord": [
+        19,
+        -2
+      ],
+      "cell": [
+        84,
+        8
+      ],
+      "exits": [
+        "74",
+        "85"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "78",
+      "trace_id": "n_19_07",
+      "trace_coord": [
+        19,
+        7
+      ],
+      "cell": [
+        84,
+        44
+      ],
+      "exits": [
+        "75",
+        "90"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "79",
+      "trace_id": "n_19_12",
+      "trace_coord": [
+        19,
+        12
+      ],
+      "cell": [
+        84,
+        64
+      ],
+      "exits": [
+        "80",
+        "95"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-90",
+        "K5-150"
+      ]
+    },
+    {
+      "id": "80",
+      "trace_id": "n_19_13",
+      "trace_coord": [
+        19,
+        13
+      ],
+      "cell": [
+        84,
+        68
+      ],
+      "exits": [
+        "79",
+        "81"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "81",
+      "trace_id": "n_19_14",
+      "trace_coord": [
+        19,
+        14
+      ],
+      "cell": [
+        84,
+        72
+      ],
+      "exits": [
+        "80",
+        "82"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "82",
+      "trace_id": "n_19_15",
+      "trace_coord": [
+        19,
+        15
+      ],
+      "cell": [
+        84,
+        76
+      ],
+      "exits": [
+        "81",
+        "83"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "83",
+      "trace_id": "n_19_16",
+      "trace_coord": [
+        19,
+        16
+      ],
+      "cell": [
+        84,
+        80
+      ],
+      "exits": [
+        "82",
+        "84"
+      ],
+      "kind": "news",
+      "name": "新闻格（内容待还原）",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "84",
+      "trace_id": "n_19_17",
+      "trace_coord": [
+        19,
+        17
+      ],
+      "cell": [
+        84,
+        84
+      ],
+      "exits": [
+        "76",
+        "83"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-105",
+        "K5-110"
+      ]
+    },
+    {
+      "id": "85",
+      "trace_id": "n_20_m02",
+      "trace_coord": [
+        20,
+        -2
+      ],
+      "cell": [
+        88,
+        8
+      ],
+      "exits": [
+        "77",
+        "86"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "86",
+      "trace_id": "n_20_m01",
+      "trace_coord": [
+        20,
+        -1
+      ],
+      "cell": [
+        88,
+        12
+      ],
+      "exits": [
+        "87",
+        "85"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "87",
+      "trace_id": "n_20_00",
+      "trace_coord": [
+        20,
+        0
+      ],
+      "cell": [
+        88,
+        16
+      ],
+      "exits": [
+        "88",
+        "86"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "88",
+      "trace_id": "n_20_01",
+      "trace_coord": [
+        20,
+        1
+      ],
+      "cell": [
+        88,
+        20
+      ],
+      "exits": [
+        "87",
+        "89"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "89",
+      "trace_id": "n_20_02",
+      "trace_coord": [
+        20,
+        2
+      ],
+      "cell": [
+        88,
+        24
+      ],
+      "exits": [
+        "88",
+        "96"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "90",
+      "trace_id": "n_20_07",
+      "trace_coord": [
+        20,
+        7
+      ],
+      "cell": [
+        88,
+        44
+      ],
+      "exits": [
+        "78",
+        "91",
+        "101"
+      ],
+      "kind": "road",
+      "name": "商店门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "91",
+      "trace_id": "n_20_08",
+      "trace_coord": [
+        20,
+        8
+      ],
+      "cell": [
+        88,
+        48
+      ],
+      "exits": [
+        "90",
+        "92"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "92",
+      "trace_id": "n_20_09",
+      "trace_coord": [
+        20,
+        9
+      ],
+      "cell": [
+        88,
+        52
+      ],
+      "exits": [
+        "91",
+        "93"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "93",
+      "trace_id": "n_20_10",
+      "trace_coord": [
+        20,
+        10
+      ],
+      "cell": [
+        88,
+        56
+      ],
+      "exits": [
+        "92",
+        "94"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "94",
+      "trace_id": "n_20_11",
+      "trace_coord": [
+        20,
+        11
+      ],
+      "cell": [
+        88,
+        60
+      ],
+      "exits": [
+        "93",
+        "95"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "95",
+      "trace_id": "n_20_12",
+      "trace_coord": [
+        20,
+        12
+      ],
+      "cell": [
+        88,
+        64
+      ],
+      "exits": [
+        "79",
+        "94"
+      ],
+      "kind": "lottery",
+      "name": "乐透",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K5-90",
+        "K5-150"
+      ]
+    },
+    {
+      "id": "96",
+      "trace_id": "n_21_02",
+      "trace_coord": [
+        21,
+        2
+      ],
+      "cell": [
+        92,
+        24
+      ],
+      "exits": [
+        "89",
+        "97"
+      ],
+      "kind": "road",
+      "name": "银行门前",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "97",
+      "trace_id": "n_21_03",
+      "trace_coord": [
+        21,
+        3
+      ],
+      "cell": [
+        92,
+        28
+      ],
+      "exits": [
+        "96",
+        "98"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "98",
+      "trace_id": "n_21_04",
+      "trace_coord": [
+        21,
+        4
+      ],
+      "cell": [
+        92,
+        32
+      ],
+      "exits": [
+        "97",
+        "99"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "99",
+      "trace_id": "n_21_05",
+      "trace_coord": [
+        21,
+        5
+      ],
+      "cell": [
+        92,
+        36
+      ],
+      "exits": [
+        "98",
+        "100"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "100",
+      "trace_id": "n_21_06",
+      "trace_coord": [
+        21,
+        6
+      ],
+      "cell": [
+        92,
+        40
+      ],
+      "exits": [
+        "99",
+        "101"
+      ],
+      "kind": "road",
+      "name": "道路",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ]
+    },
+    {
+      "id": "101",
+      "trace_id": "n_21_07",
+      "trace_coord": [
+        21,
+        7
+      ],
+      "cell": [
+        92,
+        44
+      ],
+      "exits": [
+        "90",
+        "100"
+      ],
+      "kind": "cash",
+      "name": "现金 +2000",
+      "signal": false,
+      "event_ids": [],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "cash_amount": 2000
+    }
+  ],
+  "lots": [
+    {
+      "id": "p_001",
+      "name": "住宅地块 001",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        5,
+        19,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "3"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-01",
+      "trace_property_id": "p_001",
+      "trace_frontage": [
+        [
+          0,
+          1
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_002",
+      "name": "住宅地块 002",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        5,
+        23,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "4"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-01",
+      "trace_property_id": "p_002",
+      "trace_frontage": [
+        [
+          0,
+          2
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_003",
+      "name": "住宅地块 003",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        5,
+        27,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "5"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-01",
+      "trace_property_id": "p_003",
+      "trace_frontage": [
+        [
+          0,
+          3
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_004",
+      "name": "住宅地块 004",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        15,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "11"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-02",
+      "trace_property_id": "p_004",
+      "trace_frontage": [
+        [
+          2,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_005",
+      "name": "住宅地块 005",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        19,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "17"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-02",
+      "trace_property_id": "p_005",
+      "trace_frontage": [
+        [
+          3,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_006",
+      "name": "住宅地块 006",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        23,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "19"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-02",
+      "trace_property_id": "p_006",
+      "trace_frontage": [
+        [
+          4,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_007",
+      "name": "住宅地块 007",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        43,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "31"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-03",
+      "trace_property_id": "p_007",
+      "trace_frontage": [
+        [
+          9,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_008",
+      "name": "住宅地块 008",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        47,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "33"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-03",
+      "trace_property_id": "p_008",
+      "trace_frontage": [
+        [
+          10,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_009",
+      "name": "住宅地块 009",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        13,
+        35,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "13"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-04",
+      "trace_property_id": "p_009",
+      "trace_frontage": [
+        [
+          2,
+          5
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_010",
+      "name": "住宅地块 010",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        13,
+        39,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "14"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-04",
+      "trace_property_id": "p_010",
+      "trace_frontage": [
+        [
+          2,
+          6
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_011",
+      "name": "住宅地块 011",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        13,
+        43,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "15"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-04",
+      "trace_property_id": "p_011",
+      "trace_frontage": [
+        [
+          2,
+          7
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_012",
+      "name": "住宅地块 012",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        19,
+        45,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "18"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-05",
+      "trace_property_id": "p_012",
+      "trace_frontage": [
+        [
+          3,
+          8
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_013",
+      "name": "住宅地块 013",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        23,
+        45,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "20"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-05",
+      "trace_property_id": "p_013",
+      "trace_frontage": [
+        [
+          4,
+          8
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_014",
+      "name": "住宅地块 014",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        27,
+        45,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "22"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-05",
+      "trace_property_id": "p_014",
+      "trace_frontage": [
+        [
+          5,
+          8
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_015",
+      "name": "住宅地块 015",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        25,
+        51,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "23"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-06",
+      "trace_property_id": "p_015",
+      "trace_frontage": [
+        [
+          5,
+          9
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_016",
+      "name": "住宅地块 016",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        25,
+        55,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "24"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-06",
+      "trace_property_id": "p_016",
+      "trace_frontage": [
+        [
+          5,
+          10
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_017",
+      "name": "住宅地块 017",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        35,
+        53,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "28"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-07",
+      "trace_property_id": "p_017",
+      "trace_frontage": [
+        [
+          7,
+          10
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_018",
+      "name": "住宅地块 018",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        39,
+        53,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "30"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-07",
+      "trace_property_id": "p_018",
+      "trace_frontage": [
+        [
+          8,
+          10
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_019",
+      "name": "住宅地块 019",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        43,
+        53,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "32"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-07",
+      "trace_property_id": "p_019",
+      "trace_frontage": [
+        [
+          9,
+          10
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_020",
+      "name": "住宅地块 020",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        63,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "39"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-08",
+      "trace_property_id": "p_020",
+      "trace_frontage": [
+        [
+          11,
+          12
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_021",
+      "name": "住宅地块 021",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        67,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "40"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-08",
+      "trace_property_id": "p_021",
+      "trace_frontage": [
+        [
+          11,
+          13
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_022",
+      "name": "住宅地块 022",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        71,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "41"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-08",
+      "trace_property_id": "p_022",
+      "trace_frontage": [
+        [
+          11,
+          14
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_023",
+      "name": "住宅地块 023",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        75,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "42"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-08",
+      "trace_property_id": "p_023",
+      "trace_frontage": [
+        [
+          11,
+          15
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_024",
+      "name": "住宅地块 024",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        79,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "43"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-08",
+      "trace_property_id": "p_024",
+      "trace_frontage": [
+        [
+          11,
+          16
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_025",
+      "name": "住宅地块 025",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        59,
+        81,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "61"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-09",
+      "trace_property_id": "p_025",
+      "trace_frontage": [
+        [
+          13,
+          17
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_026",
+      "name": "住宅地块 026",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        63,
+        81,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "64"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-09",
+      "trace_property_id": "p_026",
+      "trace_frontage": [
+        [
+          14,
+          17
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_027",
+      "name": "住宅地块 027",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        67,
+        81,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "67"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-09",
+      "trace_property_id": "p_027",
+      "trace_frontage": [
+        [
+          15,
+          17
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_028",
+      "name": "住宅地块 028",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        71,
+        81,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "70"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-09",
+      "trace_property_id": "p_028",
+      "trace_frontage": [
+        [
+          16,
+          17
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_029",
+      "name": "住宅地块 029",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        81,
+        67,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "80"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-10",
+      "trace_property_id": "p_029",
+      "trace_frontage": [
+        [
+          19,
+          13
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_030",
+      "name": "住宅地块 030",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        81,
+        63,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "79"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-10",
+      "trace_property_id": "p_030",
+      "trace_frontage": [
+        [
+          19,
+          12
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_031",
+      "name": "住宅地块 031",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        47,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "91"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-11",
+      "trace_property_id": "p_031",
+      "trace_frontage": [
+        [
+          20,
+          8
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_032",
+      "name": "住宅地块 032",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        51,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "92"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-11",
+      "trace_property_id": "p_032",
+      "trace_frontage": [
+        [
+          20,
+          9
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_033",
+      "name": "住宅地块 033",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        55,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "93"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-11",
+      "trace_property_id": "p_033",
+      "trace_frontage": [
+        [
+          20,
+          10
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_034",
+      "name": "住宅地块 034",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        59,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "94"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-11",
+      "trace_property_id": "p_034",
+      "trace_frontage": [
+        [
+          20,
+          11
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_035",
+      "name": "住宅地块 035",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        89,
+        27,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "97"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-12",
+      "trace_property_id": "p_035",
+      "trace_frontage": [
+        [
+          21,
+          3
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_036",
+      "name": "住宅地块 036",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        89,
+        31,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "98"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-12",
+      "trace_property_id": "p_036",
+      "trace_frontage": [
+        [
+          21,
+          4
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_037",
+      "name": "住宅地块 037",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        89,
+        35,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "99"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-12",
+      "trace_property_id": "p_037",
+      "trace_frontage": [
+        [
+          21,
+          5
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_038",
+      "name": "住宅地块 038",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        89,
+        39,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "100"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-12",
+      "trace_property_id": "p_038",
+      "trace_frontage": [
+        [
+          21,
+          6
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_039",
+      "name": "住宅地块 039",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        11,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "86"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-13",
+      "trace_property_id": "p_039",
+      "trace_frontage": [
+        [
+          20,
+          -1
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_040",
+      "name": "住宅地块 040",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        85,
+        23,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "89"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-14",
+      "trace_property_id": "p_040",
+      "trace_frontage": [
+        [
+          20,
+          2
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_041",
+      "name": "住宅地块 041",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        55,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "45"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-15",
+      "trace_property_id": "p_041",
+      "trace_frontage": [
+        [
+          12,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_042",
+      "name": "住宅地块 042",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        59,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "55"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-15",
+      "trace_property_id": "p_042",
+      "trace_frontage": [
+        [
+          13,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_043",
+      "name": "住宅地块 043",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        63,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "62"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-15",
+      "trace_property_id": "p_043",
+      "trace_frontage": [
+        [
+          14,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_044",
+      "name": "住宅地块 044",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        67,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "65"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-15",
+      "trace_property_id": "p_044",
+      "trace_frontage": [
+        [
+          15,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_045",
+      "name": "住宅地块 045",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        75,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "71"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-16",
+      "trace_property_id": "p_045",
+      "trace_frontage": [
+        [
+          17,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_046",
+      "name": "住宅地块 046",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        79,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "74"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-16",
+      "trace_property_id": "p_046",
+      "trace_frontage": [
+        [
+          18,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_047",
+      "name": "住宅地块 047",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        83,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "77"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-16",
+      "trace_property_id": "p_047",
+      "trace_frontage": [
+        [
+          19,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_048",
+      "name": "住宅地块 048",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        87,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "85"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-16",
+      "trace_property_id": "p_048",
+      "trace_frontage": [
+        [
+          20,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_049",
+      "name": "住宅地块 049",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        53,
+        19,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "48"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-17",
+      "trace_property_id": "p_049",
+      "trace_frontage": [
+        [
+          12,
+          1
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_050",
+      "name": "住宅地块 050",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        53,
+        23,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "49"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-17",
+      "trace_property_id": "p_050",
+      "trace_frontage": [
+        [
+          12,
+          2
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_051",
+      "name": "住宅地块 051",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        53,
+        27,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "50"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-17",
+      "trace_property_id": "p_051",
+      "trace_frontage": [
+        [
+          12,
+          3
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_052",
+      "name": "住宅地块 052",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        57,
+        31,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "57"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-18",
+      "trace_property_id": "p_052",
+      "trace_frontage": [
+        [
+          13,
+          4
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_053",
+      "name": "住宅地块 053",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        57,
+        35,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "58"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-18",
+      "trace_property_id": "p_053",
+      "trace_frontage": [
+        [
+          13,
+          5
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_054",
+      "name": "住宅地块 054",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        57,
+        39,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "59"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-18",
+      "trace_property_id": "p_054",
+      "trace_frontage": [
+        [
+          13,
+          6
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_055",
+      "name": "住宅地块 055",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        67,
+        41,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "66"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-19",
+      "trace_property_id": "p_055",
+      "trace_frontage": [
+        [
+          15,
+          7
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_056",
+      "name": "住宅地块 056",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        71,
+        41,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "69"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-19",
+      "trace_property_id": "p_056",
+      "trace_frontage": [
+        [
+          16,
+          7
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_057",
+      "name": "住宅地块 057",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        75,
+        41,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "72"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-19",
+      "trace_property_id": "p_057",
+      "trace_frontage": [
+        [
+          17,
+          7
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_058",
+      "name": "住宅地块 058",
+      "kind": "small",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        79,
+        41,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "75"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 2400,
+      "rent": 360,
+      "street_id": "TEST-R13-street-19",
+      "trace_property_id": "p_058",
+      "trace_frontage": [
+        [
+          18,
+          7
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "single frontage"
+    },
+    {
+      "id": "p_059",
+      "name": "大型地块 059",
+      "kind": "large",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        35,
+        12,
+        7,
+        4
+      ],
+      "frontage_nodes": [
+        "27",
+        "29"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 12000,
+      "rent": 1800,
+      "street_id": "TEST-R13-large-p_059",
+      "trace_property_id": "p_059",
+      "trace_frontage": [
+        [
+          7,
+          0
+        ],
+        [
+          8,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "TEST-R13: both entrances share one title and stop trigger; original trigger equivalence U"
+    },
+    {
+      "id": "p_060",
+      "name": "大型地块 060",
+      "kind": "large",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        52,
+        43,
+        4,
+        7
+      ],
+      "frontage_nodes": [
+        "51",
+        "52"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 12000,
+      "rent": 1800,
+      "street_id": "TEST-R13-large-p_060",
+      "trace_property_id": "p_060",
+      "trace_frontage": [
+        [
+          12,
+          7
+        ],
+        [
+          12,
+          8
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "TEST-R13: both entrances share one title and stop trigger; original trigger equivalence U"
+    },
+    {
+      "id": "p_061",
+      "name": "大型地块 061",
+      "kind": "large",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        80,
+        71,
+        4,
+        7
+      ],
+      "frontage_nodes": [
+        "81",
+        "82"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 12000,
+      "rent": 1800,
+      "street_id": "TEST-R13-large-p_061",
+      "trace_property_id": "p_061",
+      "trace_frontage": [
+        [
+          19,
+          14
+        ],
+        [
+          19,
+          15
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "TEST-R13: both entrances share one title and stop trigger; original trigger equivalence U"
+    },
+    {
+      "id": "p_062",
+      "name": "大型地块 062",
+      "kind": "large",
+      "building_type": "vacant",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        84,
+        15,
+        4,
+        7
+      ],
+      "frontage_nodes": [
+        "87",
+        "88"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-PROPERTY",
+      "price": 12000,
+      "rent": 1800,
+      "street_id": "TEST-R13-large-p_062",
+      "trace_property_id": "p_062",
+      "trace_frontage": [
+        [
+          20,
+          0
+        ],
+        [
+          20,
+          1
+        ]
+      ],
+      "plot_side": "-a",
+      "side_evidence": [
+        "K1",
+        "K2"
+      ],
+      "source_refs": [
+        "K1",
+        "K2"
+      ],
+      "entrance_profile": "TEST-R13: both entrances share one title and stop trigger; original trigger equivalence U"
+    },
+    {
+      "id": "facility_bank_north",
+      "kind": "facility",
+      "building_type": "bank",
+      "name": "北侧银行",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        27,
+        13,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "21"
+      ],
+      "trigger_events": [
+        "pass",
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-bank_north",
+      "trace_frontage": [
+        [
+          5,
+          0
+        ]
+      ],
+      "plot_side": "-b",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ]
+    },
+    {
+      "id": "facility_bank_west",
+      "kind": "facility",
+      "building_type": "bank",
+      "name": "西侧银行",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        49,
+        59,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "38"
+      ],
+      "trigger_events": [
+        "pass",
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-bank_west",
+      "trace_frontage": [
+        [
+          11,
+          11
+        ]
+      ],
+      "plot_side": "-a",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ]
+    },
+    {
+      "id": "facility_bank_east",
+      "kind": "facility",
+      "building_type": "bank",
+      "name": "东侧银行",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        93,
+        23,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "96"
+      ],
+      "trigger_events": [
+        "pass",
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-bank_east",
+      "trace_frontage": [
+        [
+          21,
+          2
+        ]
+      ],
+      "plot_side": "+a",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ]
+    },
+    {
+      "id": "facility_shop_north",
+      "kind": "facility",
+      "building_type": "shop",
+      "name": "北侧商店",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        11,
+        29,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "9"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-shop_north",
+      "trace_frontage": [
+        [
+          1,
+          4
+        ]
+      ],
+      "plot_side": "-b",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ]
+    },
+    {
+      "id": "facility_shop_south",
+      "kind": "facility",
+      "building_type": "shop",
+      "name": "南侧商店",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        86,
+        41,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "90"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-shop_south",
+      "trace_frontage": [
+        [
+          20,
+          7
+        ]
+      ],
+      "plot_side": "-b_shift",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ]
+    },
+    {
+      "id": "facility_hospital",
+      "kind": "facility",
+      "building_type": "hospital",
+      "name": "医院",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        5,
+        47,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "7"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-hospital",
+      "trace_frontage": [
+        [
+          0,
+          8
+        ]
+      ],
+      "plot_side": "-a",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ],
+      "exit_road": 10,
+      "exit_previous": 7,
+      "exit_profile": "TEST-R13: release onto adjacent cash tile facing away from terminal; original release tile U"
+    },
+    {
+      "id": "facility_prison",
+      "kind": "facility",
+      "building_type": "prison",
+      "name": "监狱",
+      "owner": -1,
+      "level": 0,
+      "footprint": [
+        7,
+        5,
+        3,
+        3
+      ],
+      "frontage_nodes": [
+        "0"
+      ],
+      "trigger_events": [
+        "stop"
+      ],
+      "rule_id": "TEST-R13-FACILITY",
+      "price": 0,
+      "rent": 0,
+      "street_id": "TEST-R13-facility-prison",
+      "trace_frontage": [
+        [
+          0,
+          -2
+        ]
+      ],
+      "plot_side": "-b",
+      "footprint_profile": "TEST-R13 roadside representation; road-node position follows source",
+      "source_refs": [
+        "K1",
+        "K2",
+        "R11-FACILITIES"
+      ],
+      "exit_road": 1,
+      "exit_previous": 0,
+      "exit_profile": "TEST-R13: release onto adjacent cash tile facing away from terminal; original release tile U"
+    }
+  ],
+  "trace_source": "res://data/maps/knight_manor.trace.json",
+  "trace_sha256": "5e8c1f2ce50005ad09531b428795b52f3f857ad62fe23e5eff2e16842e13c9d2",
+  "coordinate_profile": {
+    "scale": 4,
+    "offset": [
+      8,
+      16
+    ],
+    "road_nodes_added": 0,
+    "footprints": "test drawing rectangles; observed original side, integer side-adjacent frontage"
+  },
+  "test_profile": {
+    "id": "TEST-R13",
+    "small_price": 2400,
+    "large_price": 12000,
+    "small_base_rent": 360,
+    "large_base_rent": 1800,
+    "street_groups": "19 contiguous visible small-lot runs; original chain grouping U",
+    "large_multi_frontage": "two road nodes share one lot owner/level/building and both trigger stop, per user direction; original equivalence U",
+    "spawns": "four fixed test positions, not verified original spawn rules",
+    "facility_release": "fixed neighboring road facing outward; original release tile U",
+    "cash_trigger": "TEST-R13: settle printed amount only on stop, no pass reward or inflation multiplication; source trigger rule U",
+    "unimplemented": [
+      "original news catalog",
+      "original minigames",
+      "yellow glyph function",
+      "original directional choice rules"
+    ]
+  },
+  "sources": {
+    "K1": {
+      "url": "https://img1.gamersky.com/image2022/10/20221013_xdj_187_1/14360.jpg",
+      "size": [
+        1029,
+        705
+      ],
+      "label": "2022-10-21 guide minimap"
+    },
+    "K2": {
+      "url": "https://imgheybox.max-c.com/web/bbs/2022/11/21/189e6597a2de007e8887761a642843ed/thumb.jpeg",
+      "size": [
+        1726,
+        970
+      ],
+      "label": "2022-11-22 review minimap"
+    },
+    "K3": {
+      "url": "https://imgheybox.max-c.com/web/bbs/2022/11/21/d4d189d36231e4091df2be9a9f8e95e1/thumb.jpeg",
+      "label": "2022 tutorial, right boundary"
+    },
+    "K5-90": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=90",
+      "time_seconds": 90,
+      "label": "four-corner road texture is purchasable land"
+    },
+    "K5-105": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=105",
+      "time_seconds": 105,
+      "label": "bottom corner overview"
+    },
+    "K5-110": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=110",
+      "time_seconds": 110,
+      "label": "bottom corner closeup"
+    },
+    "K5-130": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=130",
+      "time_seconds": 130,
+      "label": "hospital-prison northwest road"
+    },
+    "K5-135": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=135",
+      "time_seconds": 135,
+      "label": "northwest shop elbow"
+    },
+    "K5-150": {
+      "url": "https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=150",
+      "time_seconds": 150,
+      "label": "south edge and service bends"
+    },
+    "R11-FACILITIES": {
+      "local_document": "docs/research/r11-facility-exits.md",
+      "scope": "facility identity candidates; footprint size and release point remain test profile"
+    }
+  }
+}

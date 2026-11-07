@@ -792,6 +792,62 @@
       "normalized_sha256": "F8A61653762718E196A0CB252CC157A7DB4B654846D8620556675485382BD244",
       "source_sha256": "DDE2BAEEDDBE72AC9BFC8EA8336461236149A3AF617AA5595F745B8C90981997",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-13-report.md",
+      "title": "48 · 骑士庄园可玩化与地图操作验收",
+      "node_token": "Hzbbwk2iMi7eFWkTDnlcXcgZnve",
+      "document_id": "MHYWd8WZ1ob6zpxIv9VcEPoMnFe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Hzbbwk2iMi7eFWkTDnlcXcgZnve",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-48.json",
+      "revision_id": 2,
+      "remote_characters": 1328,
+      "normalized_sha256": "B52558048CE0779AD8559979BFEDFA21F698F88A972E1B881202A56842B005D5",
+      "source_sha256": "133B131C86EBF06CD817F3DE2B23B371F8B85CD9FB02E840FC724FC7238228A9",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-13-map.md",
+      "title": "49 · 骑士庄园道路地产与设施配置",
+      "node_token": "ZvMJwgo0giymPrkPA4OcqeXLntg",
+      "document_id": "GkeqdS5mqoMHzexp3M5cZmywnQf",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/ZvMJwgo0giymPrkPA4OcqeXLntg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-49.json",
+      "revision_id": 2,
+      "remote_characters": 3302,
+      "normalized_sha256": "12684F9B774AD2A650352B95DD85EBE7731A386E063DAB0D9BE2E2FB69AAD464",
+      "source_sha256": "58762CEF7700B92E142A0D65197D1AB138AC5362BF21D45A9577C8AA552CA097",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-13-map-runtime.md",
+      "title": "50 · 多地图出生与现金路格规则",
+      "node_token": "WPkJw0gB7iTVRcknVU3cbvBxnuW",
+      "document_id": "IEhmdxrB0obhnzxHB0HcFfBDnJd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/WPkJw0gB7iTVRcknVU3cbvBxnuW",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-50.json",
+      "revision_id": 2,
+      "remote_characters": 2446,
+      "normalized_sha256": "AC15FF85BCE605F8E8228CC1698463E6442FDE10278BE1E30281235DEF69E8A8",
+      "source_sha256": "E7AD2536BC2D89A3DB4FD5B765CAD2650D8B4A5368645D9F573CD8E17A79CD71",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r13-map-review.md",
+      "title": "51 · 骑士庄园独立审查与证据边界",
+      "node_token": "HtoTw5Sb6ib5V8k7clAcucusncc",
+      "document_id": "OtHNdv00yobJNExHE74claAZnC9",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/HtoTw5Sb6ib5V8k7clAcucusncc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-51.json",
+      "revision_id": 2,
+      "remote_characters": 2977,
+      "normalized_sha256": "0EFE2DC76AC4C65F8756618103651FF0F4C192BF43917ECBE9E01712BCECAFEB",
+      "source_sha256": "392954B83AEF747A4D6632840E931F9C22F8866BF3A3FC0FB1EB269D57466CA1",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -809,5 +865,6 @@
   "round9_updated_at": "2026-11-08",
   "round10_updated_at": "2026-11-08",
   "round11_updated_at": "2026-11-08",
-  "round12_updated_at": "2026-11-08"
+  "round12_updated_at": "2026-11-08",
+  "round13_updated_at": "2026-11-08"
 }

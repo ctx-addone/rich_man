@@ -1,0 +1,43 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: knight selectable
+PASS: screenshot 01-knight-preview
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: selected knight world created
+PASS: screenshot 02-knight-overview
+PASS: button exists: ＋
+PASS: button enabled: ＋
+PASS: button exists: ＋
+PASS: button enabled: ＋
+PASS: button exists: ＋
+PASS: button enabled: ＋
+PASS: button exists: ＋
+PASS: button enabled: ＋
+PASS: button exists: 定位当前角色
+PASS: button enabled: 定位当前角色
+PASS: zoom controls magnify dense map
+PASS: focus centers current player
+PASS: camera does not alter simulation or random state
+PASS: screenshot 03-knight-zoom
+PASS: right drag pans board through viewport
+PASS: button exists: 全图
+PASS: button enabled: 全图
+VIEW_RESET zoom=1.0 pan=(0.0, 0.0)
+PASS: overview resets view
+PASS: property can be selected at overview scale
+PASS: knight world saves
+PASS: load restores knight map and static metadata
+PASS: natural knight match completes without GM
+PASS: screenshot 04-knight-results
+PASS: button exists: 相同设置
+PASS: button enabled: 相同设置
+PASS: rematch retains knight map
+ROUND13_UI failures=0 frames=552
