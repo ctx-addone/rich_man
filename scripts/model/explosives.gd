@@ -68,6 +68,7 @@ static func arrive(g,who:int)->bool:
 	if object.kind=="timebomb":
 		if not p.get("bomb",{}).is_empty(): return false
 		g.road_objects.erase(p.pos)
+		p.god={}
 		p.bomb={"remaining":30,"owner":object.get("owner",-1)}
 		g._log(p.name+" 附上定时炸弹：30个实际道路步。")
 		return false
@@ -87,6 +88,7 @@ static func after_step(g,who:int)->bool:
 	for i in range(g.players.size()):
 		var other:Dictionary=g.players[i]
 		if i!=who and on_road(other) and other.pos==p.pos and other.get("bomb",{}).is_empty():
+			other.god={}
 			other.bomb=p.bomb
 			p.bomb={}
 			g._log("定时炸弹由%s传给%s。"%[p.name,other.name])

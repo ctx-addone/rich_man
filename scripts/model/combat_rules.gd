@@ -39,6 +39,7 @@ static func options(g) -> Array[String]:
 
 static func apply_hit(g, who:int) -> void:
 	var a:Dictionary=g.pending_attack
+	if g.Traits.target_immune(g,a.attacker,who,a.source): return
 	if a.kind in ["hibernate","sleepwalk"]:
 		var p:Dictionary=g.players[who]
 		p.turtle_turns=0

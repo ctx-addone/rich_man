@@ -386,6 +386,62 @@
       "normalized_sha256": "1612501E2B570CFB1BA1C51AF1C0DD7353659715A05C92E223819BE60C7A12D3",
       "source_sha256": "4B3AA31ECBC078A789BFFEF08926D7C119C3E550B7A7F64299B0B4E119F25972",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-06-report.md",
+      "title": "19 · 第六轮神仙与角色验收",
+      "node_token": "VyjuwKFaniFwXVk0r3ocscUZnUb",
+      "document_id": "YPGEddddDogJ6gxrOafcj0Ewn2v",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/VyjuwKFaniFwXVk0r3ocscUZnUb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-19.json",
+      "revision_id": 2,
+      "remote_characters": 1232,
+      "normalized_sha256": "F5CB069672E2ECBBEB26114B4A7CA71F6929A3DB586C88B91DB8588B28C226EE",
+      "source_sha256": "B775C6145A50D3DBED4089CFA95B959B0A43111BBED7727C032BDFB5513BB91C",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-06-gods.md",
+      "title": "20 · 神仙与剩余主动卡",
+      "node_token": "PgYmwQzyLiHO5YkLHyicyJsqnNh",
+      "document_id": "NqFddByZ2oTgZUxBoz1c1Ztunwb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/PgYmwQzyLiHO5YkLHyicyJsqnNh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-20.json",
+      "revision_id": 2,
+      "remote_characters": 1229,
+      "normalized_sha256": "0D630C2A7EC872FCA088DB7EE3B5D3C8839CA1720A6376F3005FF16155EDFB69",
+      "source_sha256": "D94201B4F0338CDADA517A60900419FAF54615FC9DEF88AF0CF9184BBFD51621",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-06-characters.md",
+      "title": "21 · 角色天赋模型",
+      "node_token": "EwkMwoNCuit3BlkZBXkc0kLRnbc",
+      "document_id": "M4xUdo7V3oVsicxi3lmch1zUn3g",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/EwkMwoNCuit3BlkZBXkc0kLRnbc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-21.json",
+      "revision_id": 2,
+      "remote_characters": 2530,
+      "normalized_sha256": "5FAB2F0D83F7281F9CD65CEBF0BD3BB2C152707294263E6D0F35DD2FFCB9EB46",
+      "source_sha256": "40E245DF637BD68B9D3E849238573537B5CF513C4714AAC69B8BDF01EFA7D1C6",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-gods-talents-cards.md",
+      "title": "22 · 神仙角色与卡牌补证",
+      "node_token": "Bf33wWpb4i4hhSkh8RQcVbn0nBh",
+      "document_id": "FZvOdRRjnoArf0xJbaccKt5Anzb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Bf33wWpb4i4hhSkh8RQcVbn0nBh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-22.json",
+      "revision_id": 2,
+      "remote_characters": 4375,
+      "normalized_sha256": "0915159B5CC5D0FA449A54E4EBFEFCD53734EB1AEA9A97A5442DD98EAC13BF7B",
+      "source_sha256": "A910F3245B4750AC1D8D544C88EA303B3663193636414CDE511DC8F86849CC92",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -396,5 +452,6 @@
   },
   "round3_updated_at": "2026-11-08",
   "round4_updated_at": "2026-11-08",
-  "round5_updated_at": "2026-11-08"
+  "round5_updated_at": "2026-11-08",
+  "round6_updated_at": "2026-11-08"
 }

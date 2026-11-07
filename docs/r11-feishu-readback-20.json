@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>20 · 神仙与剩余主动卡</title>\n\n# 第6轮：传统模式神仙与持牌接入\n\n实现10神仙道路生成、经过附身、到期、替换；神仙和定时炸弹共享槽，莎拉免疫坏神仍清旧槽。入场现金、卡片、免租/加倍、福神己地产升级、衰神禁止加盖、天使/恶魔经过升降、土地公取得对手地产、糊涂转向与耗牌失败、武神普通范围+3、凶神抑制已建模银行和机会事件。每次移动同建筑神仙经过效果去重。天赋hooks由character_traits模块提供。\n\n`setup(names,seed,rounds,options)` 使用 `gods_enabled,talents_enabled,characters`。旧三参数保持中性测试兼容；实际UI显式启用。`road_gods` 是道路int→神仙id；玩家 `god={id,remaining}` 或空字典。`gm_god(player,id)`、`gm_spawn_god(road,id)`，空id清除。Gods.CATALOG提供name/description。\n\n请神取最近地面神；送神可选自己，清神/炸弹；绿化清全场道具、地面及附身神/炸弹（11社区C证据）。神眷target类型god，目标为地面神仙road ID，定向邀请，已附身别人神仙暂未作为目标。新增购地、当前位置房屋与附近己方至少1级住宅/连锁店换屋（保留土地归属）、怪兽整街降级、魔术平均剩余牌。\n\n五配方通过give_card自动合成；craft_recipes提供{id,input,output,count,available}，craft_card仍支持手动处理测试/旧存量。五请神→神眷、涨价→辉煌、怪兽→灾祸、停业→窘困、飞弹→急速弹。绿化第六配方虽新增C来源，本轮未接。研究池顺序纠正为portal/super_dice/trap/teleport/quantum。\n\n真实非法命令不耗牌；合法糊涂失败返回true且耗牌。消费先于效果与天赋收益，避免满手时吞奖励。拾取满手仍按原暂定规则拒绝。免费卡仍未实现；热斗及未建模NPC不宣称实现。\n\n数值边界：Gods.PROFILE集中基础时长、入场金额、糊涂概率；均测试值。神仙退场不重新落地图、天数按行动结束扣减、范围以图距离、购地估价/换屋边界/魔术奇数分配均测试约定。凶神名单只有目前研究确认且已有模型的银行/事件，不宣称全名单。B级神眷图文“随你邀请”与同期C定向请神相符，旧研究“随机重分配”误读已纠正。魔术按分发张数计数，防自动合成改变张数分配；衰神空手不触发意外失牌天赋。完整来源见research第6轮新增研究文档及r11-cards-characters.md。\n\n验证：gods_test涵盖十神生成、天赋时长/奖励、炸弹双向替换、免疫替换、建筑去重、租金、绿化、非法命令保牌、自动合成及到期；核心50局回归与combat通过。完整UI集成由主任务验证。",
+      "document_id": "NqFddByZ2oTgZUxBoz1c1Ztunwb",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

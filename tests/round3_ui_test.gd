@@ -4,6 +4,8 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.talents_enabled = false
+	app.gods_enabled = false
 	root.add_child(app)
 	await click("开始游戏")
 	await click("选择角色")

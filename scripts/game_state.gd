@@ -7,7 +7,13 @@ const Movement = preload("res://scripts/model/movement_rules.gd")
 const Combat = preload("res://scripts/model/combat_rules.gd")
 const Buildings = preload("res://scripts/model/building_rules.gd")
 const Market = preload("res://scripts/model/stock_market.gd")
+const Gods = preload("res://scripts/model/god_rules.gd")
+const Traits = preload("res://scripts/model/character_traits.gd")
 const HAND_LIMIT = 8
+var gods_enabled := false
+var talents_enabled := false
+var road_gods: Dictionary = {}
+var god_pass_seen: Dictionary = {}
 const BoardModel = preload("res://scripts/model/board_model.gd")
 const CardsCatalog = preload("res://scripts/model/cards_catalog.gd")
 const CardEffects = preload("res://scripts/model/card_effects.gd")
@@ -44,7 +50,11 @@ var bank_visited: Array[String] = []
 var shop_purchases: int = 0
 var pending_attack: Dictionary = {}
 
-func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
+func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> void:
+	gods_enabled = options.get("gods_enabled",false)
+	talents_enabled = options.get("talents_enabled",false)
+	road_gods.clear()
+	god_pass_seen.clear()
 	stock_market.setup(seed_value)
 	if seed_value == 0: rng.randomize()
 	else: rng.seed = seed_value
@@ -73,6 +83,11 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	_build_map()
 	for n in names:
 		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
+	var characters: Array = options.get("characters",[])
+	for i in range(players.size()):
+		players[i].character_id = str(characters[i]) if i<characters.size() else ""
+		players[i].god = {}
+	if gods_enabled: Gods.spawn(self)
 	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
 
 func _build_map() -> void:
@@ -200,6 +215,7 @@ func roll_dice(forced: int = 0) -> bool:
 	steps_left=last_roll
 	active_lot_id=""
 	bank_visited.clear()
+	god_pass_seen.clear()
 	cached_next=-1
 	p.choose_junction=nodes[p.pos].neighbors.size()>2
 	if p.has("next_direction"): forced_next=p.next_direction
@@ -260,13 +276,16 @@ func _resume_road_arrival() -> bool:
 			Combat.explode(self,node_id,2,"mine",object_owner,true)
 			Combat.advance(self)
 			return true
+	Gods.arrive(self,current)
+	if Gods.id(self,current)=="confused" and rng.randf()<Gods.PROFILE.confused_reverse: Movement.reverse(self,current)
 	_continue_arrival()
 	return true
 
 func _continue_arrival() -> void:
+	Gods.pass_lots(self)
 	var node_id:int=players[current].pos
 	for id in board_model.lots_for_event(str(node_id),"pass"):
-		if lots[id].building_type=="bank" and not bank_visited.has(id) and not is_sleepwalking():
+		if lots[id].building_type=="bank" and not bank_visited.has(id) and not is_sleepwalking() and Gods.id(self,current)!="fierce":
 			bank_visited.append(id)
 			phase="bank"
 			_log("经过银行，可调整现金与存款；剩余%d步。"%steps_left)
@@ -306,6 +325,7 @@ func _land() -> void:
 				if not continuing_shop: shop_purchases=0
 			continue
 		active_lot_id=id
+		Gods.stop_lot(self,lot)
 		if lot.owner>=0 and lot.owner!=current:
 			var cost: int=rent_preview(id,current)
 			if lot.building_type=="mall":
@@ -321,7 +341,7 @@ func _land() -> void:
 		elif lot.owner==current and lot.building_type=="energy" and lot.closed_until<=round_number:
 			p.cash+=int(Buildings.PROFILE.energy_income)*lot.level
 			_log("能源中心发放收益%d。"%(int(Buildings.PROFILE.energy_income)*lot.level))
-	if nodes[p.pos].kind=="event":
+	if nodes[p.pos].kind=="event" and Gods.id(self,current)!="fierce":
 		if rng.randi_range(0,1)==0: p.cash+=500; _log("机会奖励500。")
 		else:
 			var card: String=CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)]
@@ -364,6 +384,7 @@ func buy_property(lot_id:String="",building_type:String="")->bool:
 func upgrade_property(lot_id:String="")->bool:
 	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
 	var lot:=_selected_lot(lot_id)
+	if Gods.id(self,current)=="misfortune": return false
 	if lot.is_empty() or lot.kind=="facility" or lot.building_type=="vacant" or lot.owner!=current or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
 	players[current].cash-=upgrade_cost(lot.id)
 	lot.level+=1
@@ -383,7 +404,7 @@ func research_options(lot_id:String)->Array[String]:
 	var result:Array[String]=[]
 	if not lots.has(lot_id): return result
 	# Verified research pool remains incomplete; only currently playable cards offered.
-	var pool:Array=["portal","trap","super_dice","teleport","quantum"]
+	var pool:Array=["portal","super_dice","trap","teleport","quantum"]
 	for i in range(mini(lots[lot_id].level,pool.size())): result.append(pool[i])
 	return result
 func start_research(lot_id:String,card_id:String)->bool:
@@ -408,6 +429,7 @@ func give_card(player_id:int,card_id:String)->bool:
 		_log("手牌已满，无法领取"+CARD_NAMES[card_id])
 		return false
 	players[player_id].cards.append(card_id)
+	_auto_craft(player_id)
 	return true
 func discard_card(index:int)->bool:
 	if is_sleepwalking() or phase not in ["roll","land","shop"] or index<0 or index>=players[current].cards.size(): return false
@@ -420,7 +442,7 @@ func shop_offers()->Array[Dictionary]:
 		if lot.owner>=0 and lot.owner!=current and lot.building_type=="energy" and lot.closed_until<=round_number: markup+=lot.level*Buildings.PROFILE.energy_markup
 	for id in CARD_NAMES:
 		if id in ["portal","trap","super_dice","teleport","quantum","glory","misery","disaster","rapid_missile"]: continue
-		offers.append({"id":id,"name":CARD_NAMES[id],"price":int(Buildings.PROFILE.card_price*(1.0+markup))})
+		offers.append({"id":id,"name":CARD_NAMES[id],"price":int(Buildings.PROFILE.card_price*(1.0+markup)*Traits.shop_price_multiplier(self,current))})
 	return offers
 func shop_remaining()->int:
 	return maxi(0,int(Buildings.PROFILE.shop_purchase_limit)-shop_purchases) if phase=="shop" else 0
@@ -436,6 +458,7 @@ func buy_card(card_id:String)->bool:
 func close_shop()->bool:
 	if phase!="shop": return false
 	phase="end"
+	Traits.on_shop_exit(self,current)
 	for lot in lots.values():
 		if lot.owner==current and lot.building_type=="bookstore" and lot.level>0 and lot.closed_until<=round_number:
 			if rng.randf()<minf(1.0,lot.level*Buildings.PROFILE.bookstore_chance_per_level):
@@ -475,8 +498,18 @@ func card_targets(card_id:String)->Array:
 	return CardEffects.targets(self,card_id)
 func use_card(card_id:String,target:Variant=-1,value:int=0)->bool:
 	if phase!="roll" or not players[current].status.is_empty() or not CARD_NAMES.has(card_id) or not players[current].cards.has(card_id): return false
-	if not CardEffects.apply(self,card_id,target,value): return false
-	players[current].cards.erase(card_id)
+	if not CardEffects.valid_command(self,card_id,target,value): return false
+	var index:int=players[current].cards.find(card_id)
+	players[current].cards.remove_at(index)
+	if Gods.id(self,current)=="confused" and rng.randf()<Gods.PROFILE.confused_failure:
+		card_used=true
+		_log("糊涂神：卡片失败，已消耗。")
+		return true
+	if not CardEffects.apply(self,card_id,target,value):
+		players[current].cards.insert(index,card_id)
+		return false
+	Traits.on_card_used(self,current,card_id)
+	if target is int and CardsCatalog.TARGETS.get(card_id,"") in ["player","player_road"]: Traits.on_card_targeted(self,current,target,card_id)
 	card_used=true
 	_log("%s 使用%s。"%[players[current].name,CARD_NAMES[card_id]])
 	if not pending_attack.is_empty(): Combat.advance(self)
@@ -505,7 +538,9 @@ func gm_release(player_id: int) -> bool:
 	if p.status.get("kind","")!="sleepwalk":
 		p.pos=p.status.return_pos
 		p.previous=p.status.return_previous
+	var released_kind:String=p.status.get("kind","")
 	p.status={}
+	Traits.on_release(self,player_id,released_kind)
 	if player_id==current and phase=="detained": phase="roll"
 	_log(p.name+" 返回原路线。")
 	return true
@@ -513,6 +548,7 @@ func gm_release(player_id: int) -> bool:
 func end_turn() -> bool:
 	if phase not in ["land","end","detained"]: return false
 	if phase=="detained" or is_sleepwalking(): players[current].status.remaining=maxi(0,players[current].status.remaining-1)
+	Gods.tick(self,current)
 	_check_winner()
 	if phase=="finished": return true
 	for ignored in range(players.size()):
@@ -643,6 +679,7 @@ func gm_vehicle(player_id: int, kind: String) -> bool:
 
 func gm_bomb(player_id: int, remaining: int) -> bool:
 	if phase in ["finished", "reaction"] or player_id < 0 or player_id >= players.size() or players[player_id].bankrupt or remaining < 0 or remaining > 30: return false
+	if remaining>0: players[player_id].god={}
 	players[player_id].bomb = {"remaining":remaining, "owner":-1} if remaining > 0 else {}
 	return true
 
@@ -673,3 +710,35 @@ func teleport_destinations(_player_id:int)->Array[int]:
 
 func controlled_routes(card_id:String)->Array[Dictionary]:
 	return RoutePlanner.routes(self,card_id)
+
+func random_card()->String:
+	return CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)]
+func gm_god(player_id:int,god_id:String)->bool:
+	if phase in ["reaction","finished"] or player_id<0 or player_id>=players.size(): return false
+	if god_id=="": players[player_id].god={}; return true
+	return Gods.attach(self,player_id,god_id)
+func gm_spawn_god(road:int,god_id:String)->bool:
+	if phase in ["reaction","finished"] or road<0 or road>=nodes.size(): return false
+	if god_id=="": road_gods.erase(road); return true
+	if not Gods.CATALOG.has(god_id): return false
+	road_gods[road]=god_id
+	return true
+func craft_recipes()->Array:
+	var result:Array=[]
+	for pair in [["invite_god","god_bless"],["raise_rent","glory"],["monster","disaster"],["close_street","misery"],["missile","rapid_missile"]]:
+		result.append({"id":pair[1],"input":pair[0],"output":pair[1],"count":5,"available":not players.is_empty() and players[current].cards.count(pair[0])>=5})
+	return result
+func craft_card(recipe_id:String)->bool:
+	if phase!="roll" or not players[current].status.is_empty(): return false
+	for recipe in craft_recipes():
+		if recipe.id==recipe_id and recipe.available:
+			for ignored in range(5): players[current].cards.erase(recipe.input)
+			return give_card(current,recipe.output)
+	return false
+
+func _auto_craft(who:int)->void:
+	for recipe in craft_recipes():
+		if players[who].cards.count(recipe.input)>=5:
+			for ignored in range(5): players[who].cards.erase(recipe.input)
+			players[who].cards.append(recipe.output)
+			_log(players[who].name+" 自动合成"+CARD_NAMES[recipe.output])

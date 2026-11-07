@@ -28,4 +28,9 @@ static func rent(game,lot:Dictionary,payer:int=-1)->int:
 		amount*=1.0-minf(discount,0.8)
 	if lot.get("rent_until",0)>game.round_number: amount*=2
 	if game.players[lot.owner].get("glory_until",0)>game.round_number: amount*=2
+	amount*=game.Traits.attack_rent_multiplier(game,lot.owner)
+	if payer>=0:
+		amount*=game.Traits.receive_rent_multiplier(game,payer)
+		if game.Gods.id(game,payer)=="wealth": amount=0
+		elif game.Gods.id(game,payer)=="poor": amount*=2
 	return maxi(0,int(amount))

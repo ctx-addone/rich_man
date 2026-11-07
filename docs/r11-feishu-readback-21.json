@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>21 · 角色天赋模型</title>\n\n# 第6轮：16位角色天赋与原创选项\n\n日期：2026-11-08。模块：`scripts/model/character_traits.gd`。角色规则与四种原创几何外观分开，不复用原作立绘、语音。17项可选：16位来源角色加 `original` 无天赋。独立全局 `talents_enabled` 开关关闭时全部乘数、范围、免疫、奖励、折扣恢复无天赋行为。\n\n## 数据与接口\n\n玩家字段 `character_id`；附身神仙字段 `god={id,remaining}`，空字典表示无神。`CATALOG` 每项提供 name、description、unknowns、source、implemented。`ids()`、`display_name(id)`、`description(id)`供选人界面读取；description含未核验信息。\n\n角色ID依次为 original、sun_xiaomei、atu、qian、shalong、jin_beibei、nintaro、qian_ge、sarah、wumi、miyamoto、danny、tangtang、john、wu_meila、ludwig、eleven。\n\n所有接口为静态方法，玩家参数均为索引，`character(p)`单独接受玩家字典。规则接口：enabled、attack_rent_multiplier、receive_rent_multiplier、card_range、target_immune、deity_immune、deity_duration、shop_price_multiplier、shop_purchase_private、npc_immune。事件接口：on_deity_attached、on_card_used、on_card_targeted、on_shop_exit、on_release、on_card_lost。\n\n- 卡片消费成功后调用 on_card_used 一次；目标已合法选择时调用 on_card_targeted 一次。非法操作不触发。\n- 商店结束交互时调用 on_shop_exit 一次；重复打开查看不算多次离店。\n- on_release 只有 prison 才触发乌咪，hospital不触发。\n- on_card_lost 每次意外失牌事件调用一次，仅接收 steal / magic_house / misfortune 原因；主动用卡消耗不触发。路德维希回合内不触发。无team只奖励自己，有非空且非-1的相同team才奖励该队存活成员，不会奖励所有玩家。\n- 所有赠卡调用核心 give_card，统一满手拒绝策略；随机卡调用核心 random_card。团队模式、随机池与满手行为均未得到原版实机核验。\n- 糖糖秘密买牌要求界面和公共日志都不显示购买项；普通商店按钮价格调用折扣接口。神秘人系统未实现，不能宣称它的隐牌已接。\n\n## 原作证据与当前边界\n\n原有逐角色出处及摘要见 `docs/research/r11-cards-characters.md`，本模块保留每项URL。`implemented`表示本模块已提供当前传统模式需要的规则hook，不是原版实机核验或最终系统验收。partial明确用于以下缺口：小美/阿土伯热斗伤害、钱夫人乞丐与狗NPC、千哥/约翰乔/舞美拉未知概率、糖糖未知折扣、路德维希完整团队模式、十一免费卡未实现。\n\n孙小美收租1.2、阿土伯支付0.8；其他已知持续增量、卡片奖励与范围倍数来自游侠各角色页。武神/凶神ID为martial/fierce。莎拉免疫poor、misfortune、confused、fierce，不免疫devil。金贝贝仅自身回合外且施卡者为对手时阻止送神。乌咪全图转向仍保留其他目标资格。\n\n未知数值集中在 `TEST_PROFILE`，全部为开发测试值，不是原作参数：千哥互换概率0.35、约翰乔返还0.30、舞美拉返还0.30、糖糖支付价格0.70。使用核心有种子的rng可复现。没有把“有概率”伪造为原版50%。所有天赋都依赖未核验的基础神仙时长与卡片范围，不能据修正值反推原版基础值。\n\n补充研究线索（C级，未当作正式数值）：[2024贴吧攻略](https://tieba.baidu.com/p/8995417048)称糖糖三折，与本轮测试七折不同；[糖糖百科](https://richman.fandom.com/zh/wiki/糖糖)称商店与神秘人隐牌、仅商店折扣。[莎拉公主百科](https://richman.fandom.com/zh/wiki/莎拉公主)称免疫坏神仍清除旧神/炸弹，已通知核心在免疫判断前处理替换。3DM“小美武神翻倍”与游侠“+10天”存在来源冲突，继续使用既定游侠基线并保留待核验状态。\n\n## 自动验证\n\n`tests/characters_test.gd`使用独立FakeGame验证目录17项、全部角色可执行hook、免疫精确集合、回合资格、乌咪出狱/出院区别、路德维希无队伍/同队/不同队边界、重复seed概率结果、概率成功与失败两路、满手不溢出、全角色禁用开关。\n\nGodot 4.6.2命令：\n\n```powershell\n& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script res://tests/characters_test.gd --log-file ./characters-test.log\n```\n\n结果：`CHARACTERS_TEST failures=0`，退出码0。沙箱默认日志位置导致首次启动signal11，显式日志落在项目内后正常；根证书读取警告不影响本地规则测试。此测试不声称验证尚未实现的免费卡/NPC/热斗，也不代替核心事件接线和界面隐私验收。",
+      "document_id": "M4xUdo7V3oVsicxi3lmch1zUn3g",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

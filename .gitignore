@@ -3,3 +3,6 @@ build/
 *.tmp
 docs/research/evidence/*.jpg
 docs/research/evidence/*.png
+docs/research/evidence/*.import
+docs/testing/**/*.import
+*-test.log

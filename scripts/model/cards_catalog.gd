@@ -3,6 +3,14 @@ extends RefCounted
 
 # implemented means executable provisional rules, not verified original fidelity.
 const NAMES = {
+  "god_bless": "神眷卡",
+  "green": "绿化卡",
+  "send_god": "送神卡",
+  "invite_god": "请神卡",
+  "magic": "魔术卡",
+  "monster": "怪兽卡",
+  "swap_house": "换屋卡",
+  "buy_land": "购地卡",
   "same_fate": "同命卡",
   "transfer": "转移卡",
   "immune": "无懈卡",
@@ -44,6 +52,14 @@ const NAMES = {
   "explosive": "炸药卡"
 }
 const DESCRIPTIONS = {
+  "god_bless": "指定场上地面神仙附身；附身他人的神仙目标尚未接入。",
+  "green": "清全场道具、神仙，包括附身神仙与炸弹（11代社区证据）。",
+  "send_god": "移除周围角色或自己的神仙/定时炸弹。",
+  "invite_god": "最近地面神仙附身；平距按地图顺序，测试规则。",
+  "magic": "与附近角色平均剩余手牌，随机分配，奇数留目标；时序为测试规则。",
+  "monster": "指定街道建筑降低1级。",
+  "swap_house": "交换当前位置房屋与附近己方至少1级住宅或连锁店，土地所有权不变；交换等级研究为测试规则。",
+  "buy_land": "市价强购附近对手地产，建筑保留；价格及资格为测试规则。",
   "same_fate": "反应谋划/冬眠/梦游时自己仍受效果，施卡者同受；无递归反击，规则待核验。",
   "transfer": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则待核验。",
   "immune": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则待核验。",
@@ -85,6 +101,14 @@ const DESCRIPTIONS = {
   "explosive": "触碰或被连爆引爆，测试半径1内住院8次行动，毁车；当前不损坏建筑，也不继续传播。未实现热斗，范围与时序待核验。"
 }
 const TARGETS = {
+  "god_bless": "god",
+  "green": "none",
+  "send_god": "player",
+  "invite_god": "none",
+  "magic": "player",
+  "monster": "lot",
+  "swap_house": "lot_pair",
+  "buy_land": "lot",
   "same_fate": "reaction",
   "transfer": "reaction",
   "immune": "reaction",
@@ -131,26 +155,26 @@ const ALL = {
     "name": "购地卡",
     "description": "按市价强购，包含地上房产",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "范围、付款与受款方、大型地产限制",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "市价强购附近对手地产，建筑保留；价格及资格为测试规则。"
   },
   "swap_house": {
     "number": 2,
     "name": "换屋卡",
     "description": "交换房屋",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "两个目标资格、土地所有权是否不变",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "交换当前位置房屋与附近己方至少1级住宅或连锁店，土地所有权不变；交换等级研究为测试规则。"
   },
   "rebuild": {
     "number": 3,
@@ -196,13 +220,13 @@ const ALL = {
     "name": "怪兽卡",
     "description": "指定街道房屋降 1 层",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "街道内不同所有者均受影响与否",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "指定街道建筑降低1级。"
   },
   "dice": {
     "number": 7,
@@ -339,26 +363,26 @@ const ALL = {
     "name": "请神卡",
     "description": "请离自己最近的神仙",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "最近的图距离定义、平距处理",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "最近地面神仙附身；平距按地图顺序，测试规则。"
   },
   "send_god": {
     "number": 18,
     "name": "送神卡",
     "description": "移除周围角色的神仙或定时炸弹",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "移除后的地图落点",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "移除周围角色或自己的神仙/定时炸弹。"
   },
   "free": {
     "number": 19,
@@ -651,13 +675,13 @@ const ALL = {
     "name": "魔术卡",
     "description": "与周围指定角色平均手牌",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "奇数、随机分配、合成触发时机",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "与附近角色平均剩余手牌，随机分配，奇数留目标；时序为测试规则。"
   },
   "rapid_missile": {
     "number": 42,
@@ -703,13 +727,13 @@ const ALL = {
     "name": "绿化卡",
     "description": "清全场道具与神仙",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "附身神仙/炸弹与地图机关是否清除",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "清全场道具、神仙，包括附身神仙与炸弹（11代社区证据）。"
   },
   "disaster": {
     "number": 46,
@@ -727,15 +751,15 @@ const ALL = {
   "god_bless": {
     "number": 47,
     "name": "神眷卡",
-    "description": "场上神仙随机重新分配",
+    "description": "在场神仙随你邀请（定向请神）",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "附身神仙是否参与、分配目标集合",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "指定场上地面神仙附身；附身他人的神仙目标尚未接入。"
   },
   "activate": {
     "number": 48,

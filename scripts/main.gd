@@ -3,6 +3,8 @@ extends Control
 const Game = preload("res://scripts/game_state.gd")
 const Board = preload("res://scripts/board_view.gd")
 const Cards = preload("res://scripts/model/cards_catalog.gd")
+const Traits = preload("res://scripts/model/character_traits.gd")
+const Gods = preload("res://scripts/model/god_rules.gd")
 const COLORS = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")]
 const NAMES = ["赤橙", "青竹", "蓝星", "紫菀"]
 var game = Game.new()
@@ -15,6 +17,9 @@ var popup: Control
 var portraits: Array = [0, 1, 2, 3]
 var name_inputs: Array[LineEdit] = []
 var player_names: Array = ["玩家 1", "玩家 2", "玩家 3", "玩家 4"]
+var character_ids: Array[String] = []
+var talents_enabled: bool = true
+var gods_enabled: bool = true
 var turns: int = 20
 var screen: String = "menu"
 var handoff: bool = true
@@ -126,7 +131,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.5 开发版  ·  载具、移动与爆炸连锁  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.6 开发版  ·  神仙与角色天赋  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -162,9 +167,10 @@ func map_select() -> void:
 
 func character_select() -> void:
 	screen = "characters"
+	ensure_characters()
 	var v := clear_page()
 	v.add_child(label("02  /  选择角色", 32))
-	v.add_child(label("固定四个真人席位 · 可由一人扮演全部角色 · 外观不同，能力相同", 18, Color("a7bac8")))
+	v.add_child(label("四人同机热座 · 选择角色规则和占位外观 · 天赋可关闭", 18, Color("a7bac8")))
 	spacer(v)
 	var row := HBoxContainer.new()
 	v.add_child(row)
@@ -173,13 +179,25 @@ func character_select() -> void:
 		var col := panel(row)
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label("席位 %d" % (i + 1), 18, COLORS[portraits[i]]))
-		col.add_child(portrait(portraits[i], Vector2(180, 210)))
-		col.add_child(label(NAMES[portraits[i]] + " · 无技能", 22))
+		col.add_child(portrait(portraits[i], Vector2(140, 140)))
+		col.add_child(label(NAMES[portraits[i]] + " · 占位外观", 16))
 		var input := LineEdit.new()
 		input.text = player_names[i]
 		input.max_length = 12
 		col.add_child(input)
 		name_inputs.append(input)
+		var characters := OptionButton.new()
+		characters.name = "CharacterChoice%d" % i
+		var choices: Array = Traits.ids()
+		for id in choices: characters.add_item(Traits.display_name(id))
+		characters.select(choices.find(character_ids[i]))
+		col.add_child(characters)
+		var talent := paragraph(Traits.description(character_ids[i]), 13)
+		talent.custom_minimum_size.y = 100
+		col.add_child(talent)
+		characters.item_selected.connect(func(index):
+			character_ids[i] = choices[index]
+			talent.text = Traits.description(character_ids[i]))
 		col.add_child(button("更换外观 ↻", func():
 			capture_names()
 			var next: int = (portraits[i] + 1) % 4
@@ -198,7 +216,23 @@ func character_select() -> void:
 	rounds.select([10,20,30].find(turns))
 	rounds.item_selected.connect(func(index): turns = rounds.get_item_id(index))
 	controls.add_child(rounds)
+	var talents := CheckButton.new()
+	talents.name = "TalentsToggle"
+	talents.text = "角色天赋"
+	talents.button_pressed = talents_enabled
+	talents.toggled.connect(func(enabled): talents_enabled = enabled)
+	controls.add_child(talents)
+	var gods := CheckButton.new()
+	gods.name = "GodsToggle"
+	gods.text = "道路神仙"
+	gods.button_pressed = gods_enabled
+	gods.toggled.connect(func(enabled): gods_enabled = enabled)
+	controls.add_child(gods)
 	controls.add_child(button("开始对局 →", func(): capture_names(); start_game()))
+
+func ensure_characters() -> void:
+	if character_ids.size() != 4:
+		character_ids.assign(["sun_xiaomei", "atu", "qian", "shalong"])
 
 func capture_names() -> void:
 	for i in range(name_inputs.size()):
@@ -208,7 +242,8 @@ func capture_names() -> void:
 
 func start_game() -> void:
 	game = Game.new()
-	game.setup(player_names, 0, turns)
+	ensure_characters()
+	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "characters":character_ids})
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -228,6 +263,7 @@ func build_game() -> void:
 	header.add_child(button("规则", show_help))
 	header.add_child(button("股票", show_stocks))
 	header.add_child(button("卡牌图鉴", show_card_catalog))
+	header.add_child(button("角色/神仙", show_world_catalog))
 	header.add_child(button("GM · F1", show_gm))
 	header.add_child(button("主菜单", confirm_menu))
 	score_row = HBoxContainer.new()
@@ -270,6 +306,7 @@ func refresh() -> void:
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label(("▶ " if i == game.current else "") + p.name + (" · 破产" if p.bankrupt else ""), 18, COLORS[portraits[i]]))
 		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
+		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 天赋关" if not talents_enabled else ""), 13))
 		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
 	top_title.text = "市民街区   /   第 %d / %d 轮%s" % [game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
 	board.selected = selected
@@ -293,6 +330,9 @@ func refresh() -> void:
 		if not p.status.is_empty() and game.phase != "detained":
 			sidebar.add_child(paragraph("梦游中：自动掷骰和行走，不能主动出牌或交易。" if game.is_sleepwalking() else "当前%s。本次行程已结束，后续回合按提示推进状态。" % status_text(p), 16))
 		sidebar.add_child(label("载具 · " + vehicle_name(p), 15))
+		if not p.get("god", {}).is_empty():
+			sidebar.add_child(label("附身 · %s · 余%d次行动" % [Gods.CATALOG[p.god.id].name, p.god.remaining], 17, Color("e9c46a")))
+			sidebar.add_child(paragraph(Gods.CATALOG[p.god.id].description, 13))
 		if p.get("turtle_turns", 0) > 0: sidebar.add_child(label("乌龟 · 余%d次行动，每次1步" % p.turtle_turns, 14))
 		if p.get("stay_turns", 0) > 0: sidebar.add_child(label("停留/麻痹 · 下次行动原地结束", 14, Color("f1a69c")))
 		if not p.get("bomb", {}).is_empty(): sidebar.add_child(label("附身炸弹 · 剩余 %d 步" % p.bomb.remaining, 17, Color("f28a79")))
@@ -371,6 +411,10 @@ func refresh() -> void:
 		var object_kind: String = game.road_objects[id].kind
 		detail.add_child(label("道路物件 · " + Game.CARD_NAMES.get(object_kind, object_kind), 16, Color("e9c46a")))
 		detail.add_child(paragraph(Game.CARD_DESCRIPTIONS.get(object_kind, "经过时触发。"), 13))
+	if game.road_gods.has(id):
+		var god: Dictionary = Gods.CATALOG[game.road_gods[id]]
+		detail.add_child(label("道路神仙 · " + god.name, 16, Color("e9c46a")))
+		detail.add_child(paragraph(god.description, 13))
 	for lot_id in detail_lots:
 		var lot: Dictionary = game.lots[lot_id]
 		detail.add_child(label(lot.name, 18, Color("e9c46a")))
@@ -535,6 +579,26 @@ func show_card_catalog() -> void:
 		if not entry.unknowns.is_empty(): item.add_child(paragraph("待核验：" + "、".join(entry.unknowns), 12))
 	v.add_child(button("关闭", dismiss))
 
+func show_world_catalog() -> void:
+	var v := modal("角色天赋与神仙")
+	v.add_child(paragraph("角色能力、神仙规则与当前实现边界。角色外观仍为原创占位素材。", 14))
+	var content := scroll_content(v, 480)
+	content.add_child(label("角色天赋", 23, Color("e9c46a")))
+	for id in Traits.ids():
+		var entry: Dictionary = Traits.CATALOG[id]
+		var item := panel(content)
+		item.add_child(label(entry.name, 18))
+		item.add_child(paragraph(entry.description, 14))
+		if not entry.get("unknowns", "").is_empty(): item.add_child(paragraph("待核验/待接入：" + str(entry.unknowns), 12))
+	content.add_child(label("神仙附身", 23, Color("e9c46a")))
+	for id in Gods.CATALOG:
+		var entry: Dictionary = Gods.CATALOG[id]
+		var item := panel(content)
+		item.add_child(label(entry.name, 18))
+		item.add_child(paragraph(entry.description, 14))
+		if not entry.get("unknowns", "").is_empty(): item.add_child(paragraph("待核验/待接入：" + str(entry.unknowns), 12))
+	v.add_child(button("关闭", dismiss))
+
 func play_card(card_id: String) -> void:
 	if game.phase != "roll": return
 	var v := modal(Game.CARD_NAMES[card_id])
@@ -584,12 +648,39 @@ func play_card(card_id: String) -> void:
 			if road_choice.selected < 0: return
 			if game.use_card(card_id, people[player_choice.selected], road_choice.get_selected_id()): dismiss()
 			else: error_label.text = "目标或目的地无效，卡牌未消耗。", people.is_empty() or road_choice.item_count == 0))
-	elif target_type in ["player", "road", "lot"]:
+	elif target_type == "lot_pair":
+		var choices: Array = game.card_targets(card_id)
+		var origins: Array = []
+		var destinations: Array = []
+		var first := OptionButton.new()
+		first.name = "PairLotA"
+		var second := OptionButton.new()
+		second.name = "PairLotB"
+		for id in choices:
+			var lot: Dictionary = game.lots[id]
+			if lot.building_type not in ["house", "chain"]: continue
+			var text_value: String = lot.name + " · " + game.players[lot.owner].name
+			if game.lots_at_node(game.players[game.current].pos).has(id):
+				origins.append(id)
+				first.add_item(text_value)
+			if lot.owner == game.current and lot.level >= 1:
+				destinations.append(id)
+				second.add_item(text_value)
+		v.add_child(label("当前位置房屋"))
+		v.add_child(first)
+		v.add_child(label("范围内己方房屋 / 连锁店（至少1级）"))
+		v.add_child(second)
+		v.add_child(button("确认交换", func():
+			if game.use_card(card_id, [origins[first.selected], destinations[second.selected]]): dismiss()
+			else: error_label.text = "请选择符合规则的两块不同地产，卡牌未消耗。", origins.is_empty() or destinations.is_empty()))
+	elif target_type in ["player", "road", "lot", "god"]:
 		var target := OptionButton.new()
 		target.name = "CardTarget"
 		var options: Array = game.card_targets(card_id)
 		for id in options:
-			target.add_item(game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name]))
+			var title_text: String = game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name])
+			if target_type == "god": title_text += " · " + Gods.CATALOG[game.road_gods[id]].name
+			target.add_item(title_text)
 		v.add_child(target)
 		var building_choice: OptionButton
 		if card_id == "rebuild" and not options.is_empty():
@@ -736,6 +827,7 @@ func show_gm() -> void:
 	var v := scroll_content(outer, 480)
 	v.add_child(label("测试操作会标记本局；传送当前玩家触发落地，但不领起点奖励。", 14))
 	var who := OptionButton.new()
+	who.name = "GMPlayer"
 	for i in range(4): who.add_item(game.players[i].name, i)
 	who.select(game.current)
 	v.add_child(who)
@@ -748,6 +840,7 @@ func show_gm() -> void:
 	v.add_child(dice_row)
 	for n in range(1,7): dice_row.add_child(button(str(n), func(): gm_used = true; forced_dice = n; dismiss(), game.phase != "roll"))
 	var destination := OptionButton.new()
+	destination.name = "GMRoad"
 	for n in game.nodes: destination.add_item("%02d · %s" % [n.id,n.name], n.id)
 	v.add_child(destination)
 	v.add_child(button("传送选中玩家至此格", func(): gm_used = true; game.gm_teleport(who.selected, destination.selected); dismiss()))
@@ -769,6 +862,16 @@ func show_gm() -> void:
 	v.add_child(bombs)
 	bombs.add_child(button("附身炸弹 · 剩1步", func(): gm_used = true; game.gm_bomb(who.selected, 1); dismiss(), game.phase == "reaction"))
 	bombs.add_child(button("清除附身炸弹", func(): gm_used = true; game.gm_bomb(who.selected, 0); dismiss(), game.phase == "reaction"))
+	var god_choice := OptionButton.new()
+	god_choice.name = "GMGod"
+	var god_ids: Array = Gods.CATALOG.keys()
+	for id in god_ids: god_choice.add_item(Gods.CATALOG[id].name)
+	v.add_child(god_choice)
+	var god_actions := HBoxContainer.new()
+	v.add_child(god_actions)
+	god_actions.add_child(button("神仙附身", func(): gm_used = true; game.gm_god(who.selected, god_ids[god_choice.selected]); dismiss(), game.phase == "reaction"))
+	god_actions.add_child(button("放置道路神仙", func(): gm_used = true; game.gm_spawn_god(destination.get_selected_id(), god_ids[god_choice.selected]); dismiss(), game.phase == "reaction"))
+	god_actions.add_child(button("清除附身神仙", func(): gm_used = true; game.gm_god(who.selected, ""); dismiss(), game.phase == "reaction"))
 	v.add_child(button("手动选择所有岔路 · " + ("开" if game.gm_choose_route else "关"), func(): gm_used = true; game.gm_choose_route = not game.gm_choose_route; dismiss(), game.phase != "roll"))
 	v.add_child(button("立即结算整局", func(): gm_used = true; game.finish_game(); dismiss()))
 	outer.add_child(button("关闭  /  Esc", dismiss))

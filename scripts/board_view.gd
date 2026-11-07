@@ -1,5 +1,7 @@
 extends Control
 
+const Gods = preload("res://scripts/model/god_rules.gd")
+
 signal tile_clicked(id: int)
 signal lot_clicked(id: String)
 var game: RefCounted
@@ -95,6 +97,13 @@ func _draw() -> void:
 			draw_circle(mine_centre, radius, Color(object_colors.get(object_kind, "a12e38")))
 			var glyph: String = {"roadblock":"−", "portal":"门", "banana":"滑", "jelly":"返", "trap":"锁", "timebomb":"时", "explosive":"炸", "mine":"+"}.get(object_kind, "+")
 			draw_string(font, mine_centre + Vector2(-radius-2, radius*0.7), glyph, HORIZONTAL_ALIGNMENT_CENTER, radius*2+4, maxi(8, int(radius*1.8)), Color("fff2d8"))
+		if game.road_gods.has(n.id):
+			var god_id: String = game.road_gods[n.id]
+			var center := pos + Vector2(-cell*0.23, cell*0.23)
+			var radius := maxf(5, cell*0.25)
+			var diamond := PackedVector2Array([center+Vector2(0,-radius), center+Vector2(radius,0), center+Vector2(0,radius), center+Vector2(-radius,0)])
+			draw_colored_polygon(diamond, god_color(god_id))
+			draw_string(font, center+Vector2(-radius,radius*0.6), god_glyph(god_id), HORIZONTAL_ALIGNMENT_CENTER, radius*2, maxi(9,int(radius*1.7)), Color("142532"))
 	_draw_players()
 
 func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
@@ -215,6 +224,9 @@ func _draw_players() -> void:
 			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, -badge_radius - 4), "Zz", HORIZONTAL_ALIGNMENT_CENTER, badge_radius * 2 + 8, 14, Color("c6dcff"))
 		if not p.get("bomb", {}).is_empty():
 			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius-4, badge_radius+16), str(p.bomb.remaining), HORIZONTAL_ALIGNMENT_CENTER, badge_radius*2+8, 12, Color("ffb57a"))
+		if not p.get("god", {}).is_empty():
+			draw_arc(pos, badge_radius + 4, 0, TAU, 24, god_color(p.god.id), 2, true)
+			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, badge_radius+16), god_glyph(p.god.id), HORIZONTAL_ALIGNMENT_CENTER, badge_radius*2, 12, god_color(p.god.id))
 		if game.phase == "reaction" and game.reaction_player() == i:
 			draw_arc(pos, badge_radius + 6, 0, TAU, 24, Color("f28a79"), 3, true)
 
@@ -223,6 +235,12 @@ func _tile_style(color: Color, radius: int = 5) -> StyleBoxFlat:
 	result.bg_color = color
 	result.set_corner_radius_all(radius)
 	return result
+
+func god_glyph(id: String) -> String:
+	return {"wealth":"财", "poor":"穷", "fortune":"福", "misfortune":"衰", "angel":"天", "devil":"魔", "earth":"土", "confused":"糊", "martial":"武", "fierce":"凶"}.get(id,"神")
+
+func god_color(id: String) -> Color:
+	return Color("ef9c9c") if id in ["poor", "misfortune", "devil", "confused", "fierce"] else Color("e9d383")
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
