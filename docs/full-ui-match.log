@@ -1,0 +1,661 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 遥控骰子
+PASS: button enabled: 遥控骰子
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 01
+PASS: button enabled: → 01
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 39
+PASS: button enabled: → 39
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 39
+PASS: button enabled: → 39
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 01
+PASS: button enabled: → 01
+PASS: button exists: 换乘 →
+PASS: button enabled: 换乘 →
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 17
+PASS: button enabled: → 17
+PASS: button exists: → 50
+PASS: button enabled: → 50
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 25
+PASS: button enabled: → 25
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 56
+PASS: button enabled: → 56
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 56
+PASS: button enabled: → 56
+PASS: button exists: → 46
+PASS: button enabled: → 46
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 44
+PASS: button enabled: → 44
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 37
+PASS: button enabled: → 37
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 15
+PASS: button enabled: → 15
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 15
+PASS: button enabled: → 15
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 44
+PASS: button enabled: → 44
+PASS: button exists: 升级建筑
+PASS: button enabled: 升级建筑
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 升级建筑
+PASS: button enabled: 升级建筑
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 换乘 →
+PASS: button enabled: 换乘 →
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 19
+PASS: button enabled: → 19
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 56
+PASS: button enabled: → 56
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 升级建筑
+PASS: button enabled: 升级建筑
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 56
+PASS: button enabled: → 56
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 05
+PASS: button enabled: → 05
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 56
+PASS: button enabled: → 56
+PASS: button exists: → 46
+PASS: button enabled: → 46
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 17
+PASS: button enabled: → 17
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 05
+PASS: button enabled: → 05
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 40
+PASS: button enabled: → 40
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 换乘 →
+PASS: button enabled: 换乘 →
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 02
+PASS: button enabled: → 02
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 换乘 →
+PASS: button enabled: 换乘 →
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 升级建筑
+PASS: button enabled: 升级建筑
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 27
+PASS: button enabled: → 27
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 04
+PASS: button enabled: → 04
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 54
+PASS: button enabled: → 54
+PASS: button exists: → 25
+PASS: button enabled: → 25
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 35
+PASS: button enabled: → 35
+PASS: button exists: 换乘 →
+PASS: button enabled: 换乘 →
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 02
+PASS: button enabled: → 02
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 25
+PASS: button enabled: → 25
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 40
+PASS: button enabled: → 40
+PASS: button exists: 购买地产
+PASS: button enabled: 购买地产
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: button exists: → 40
+PASS: button enabled: → 40
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: complete match reaches results without GM
+PASS: match never used GM
+PASS: card and metro exercised
+PASS: natural winner exists
+PASS: screenshot 07-natural-results
+FULL_UI_MATCH actions=1388 rounds=21 failures=0

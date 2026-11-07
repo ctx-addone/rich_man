@@ -1,0 +1,34 @@
+{
+  "version": "0.1",
+  "purpose": "原创矢量原型占位素材，四角色无技能；未使用或复刻 Warland 原始素材",
+  "figma_url": "https://www.figma.com/design/DczcPjRbOMMmaFGoUEI2QX?node-id=3-2",
+  "figma_account": "dynamic08triumph@gmail.com",
+  "format": "SVG",
+  "size": [
+    128,
+    128
+  ],
+  "palette": [
+    "#E76F51",
+    "#2A9D8F",
+    "#5B7CFA",
+    "#A66DD4"
+  ],
+  "files": [
+    "buildings/level_0.svg",
+    "buildings/level_1.svg",
+    "buildings/level_2.svg",
+    "buildings/level_3.svg",
+    "characters/player_1.svg",
+    "characters/player_2.svg",
+    "characters/player_3.svg",
+    "characters/player_4.svg",
+    "icons/card.svg",
+    "icons/dice.svg",
+    "icons/event.svg",
+    "icons/metro.svg",
+    "icons/signal_green.svg",
+    "icons/signal_red.svg",
+    "icons/start.svg"
+  ]
+}
