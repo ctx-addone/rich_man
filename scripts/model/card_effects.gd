@@ -23,7 +23,7 @@ static func valid_command(game,card_id:String,target:Variant,value:int)->bool:
 	if card_id=="invite_god": return not game.road_gods.is_empty()
 	if card_id=="rapid_missile":
 		for i in range(game.players.size()):
-			if i!=game.current and game.Explosives.on_road(game.players[i]): return true
+			if game.is_opponent(i,game.current) and game.Explosives.on_road(game.players[i]): return true
 		return false
 	if card_id=="activate":
 		for road in game.Explosives.area(game,target):
@@ -48,6 +48,7 @@ static func targets(game, card_id: String) -> Array:
 			for i in range(game.players.size()):
 				var p: Dictionary = game.players[i]
 				if (i == game.current and card_id not in ["turtle","stay","reverse","teleport","send_god"]) or p.bankrupt: continue
+				if card_id in ["scheme","sleepwalk"] and not game.is_opponent(game.current,i): continue
 				if game.Traits.target_immune(game,game.current,i,card_id): continue
 				if card_id=="send_god" and p.get("god",{}).is_empty() and p.get("bomb",{}).is_empty(): continue
 				# A sleeping road character can still be imprisoned, but cannot defend.
@@ -68,7 +69,7 @@ static func targets(game, card_id: String) -> Array:
 				if not nearby: continue
 				if card_id=="buy_land" and lot.owner==game.current: continue
 				if card_id=="worker" and game.Gods.id(game,lot.owner)=="misfortune": continue
-				if card_id == "worker" and (lot.owner != game.current or lot.building_type == "vacant" or lot.level >= game.max_level(id)): continue
+				if card_id == "worker" and (not game.same_team(lot.owner,game.current) or lot.building_type == "vacant" or lot.level >= game.max_level(id)): continue
 				if card_id == "bulldozer" and lot.level <= 0: continue
 				result.append(id)
 	return result
@@ -203,10 +204,13 @@ static func apply(game, card_id: String, target: Variant = -1, value: int = 0) -
 			for id in game.lots:
 				var lot: Dictionary = game.lots[id]
 				if lot.kind != "facility" and lot.get("street_id",id) == street: lot[field] = maxi(int(lot.get(field,0)),game.round_number+duration)
-		"glory": actor.glory_until = maxi(int(actor.get("glory_until",0)),game.round_number+12)
+		"glory":
+			for who in range(game.players.size()):
+				if game.same_team(who,game.current) and not game.players[who].bankrupt:
+					game.players[who].glory_until = maxi(int(game.players[who].get("glory_until",0)),game.round_number+12)
 		"misery", "disaster":
 			for lot in game.lots.values():
-				if lot.kind == "facility" or lot.owner < 0 or lot.owner == game.current: continue
+				if lot.kind == "facility" or not game.is_opponent(lot.owner,game.current): continue
 				if card_id == "misery": lot.closed_until = maxi(int(lot.get("closed_until",0)),game.round_number+6)
 				else: lot.level = maxi(0,lot.level-4)
 		_: return false

@@ -29,7 +29,7 @@ static func attach(g,who:int,god_id:String)->bool:
  p.god={"id":god_id,"remaining":g.Traits.deity_duration(g,who,god_id,PROFILE.duration)}
  if god_id in ["wealth","poor"]:
   for i in range(g.players.size()):
-   if i==who or g.players[i].bankrupt: continue
+   if not g.is_opponent(i,who) or g.players[i].bankrupt: continue
    var payer:int=i if god_id=="wealth" else who
    var receiver:int=who if god_id=="wealth" else i
    var amount:int=mini(g.players[payer].cash,PROFILE.cash_entry)
@@ -103,11 +103,11 @@ static func pass_lots(g)->void:
   g.god_pass_seen[lot_id]=true
   var lot:Dictionary=g.lots[lot_id]
   if lot.kind=="facility" or lot.owner<0: continue
-  if god_id=="earth": lot.owner=g.current
+  if god_id=="earth" and g.is_opponent(lot.owner,g.current): lot.owner=g.current
   elif god_id=="angel" and lot.building_type!="vacant" and id(g,lot.owner)!="misfortune": lot.level=mini(g.max_level(lot_id),lot.level+1)
   elif god_id=="devil": lot.level=maxi(0,lot.level-1)
 static func stop_lot(g,lot:Dictionary)->void:
- if id(g,g.current)=="fortune" and lot.owner==g.current and lot.building_type!="vacant": lot.level=mini(g.max_level(lot.id),lot.level+1)
+ if id(g,g.current)=="fortune" and g.same_team(lot.owner,g.current) and lot.building_type!="vacant": lot.level=mini(g.max_level(lot.id),lot.level+1)
 static func invite(g)->bool:
  if g.road_gods.is_empty(): return false
  var best:int=-1

@@ -115,7 +115,7 @@ static func rapid_missile(g,attacker:int)->bool:
 	var seen:Dictionary={}
 	for i in range(g.players.size()):
 		var p:Dictionary=g.players[i]
-		if i!=attacker and on_road(p) and not seen.has(p.pos):
+		if g.is_opponent(i,attacker) and on_road(p) and not seen.has(p.pos):
 			seen[p.pos]=true
 			events.append({"road":p.pos,"source":"rapid_missile","owner":attacker})
 	return run(g,events,false)

@@ -26,7 +26,7 @@ static func offers(g)->Array[Dictionary]:
  var result:Array[Dictionary]=[]
  var markup:float=0.0
  for lot in g.lots.values():
-  if lot.owner>=0 and lot.owner!=g.current and lot.building_type=="energy" and lot.closed_until<=g.round_number:
+  if g.is_opponent(lot.owner,g.current) and lot.building_type=="energy" and lot.closed_until<=g.round_number:
    markup+=lot.level*g.Buildings.PROFILE.energy_markup
  var price:int=int(g.Buildings.PROFILE.card_price*(1+markup)*g.Traits.shop_price_multiplier(g,g.current))
  var stock:Array[String]=g.shop_stock if g.specials_enabled else pool(g)

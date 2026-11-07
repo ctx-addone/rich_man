@@ -24,6 +24,7 @@ var character_ids: Array[String] = []
 var talents_enabled: bool = true
 var gods_enabled: bool = true
 var specials_enabled: bool = true
+var teams: Array[int] = [0, 1, 2, 3]
 var turns: int = 20
 var screen: String = "menu"
 var handoff: bool = true
@@ -233,6 +234,15 @@ func character_select() -> void:
 		controller.select(1 if controllers[i] == "ai" else 0)
 		controller.item_selected.connect(func(index): controllers[i] = "ai" if index == 1 else "human")
 		col.add_child(controller)
+		var team := OptionButton.new()
+		team.name = "TeamChoice%d" % i
+		for team_id in range(4): team.add_item("队伍 %d" % (team_id + 1), team_id)
+		team.select(teams[i])
+		team.item_selected.connect(func(index):
+			capture_names()
+			teams[i] = index
+			character_select())
+		col.add_child(team)
 		var characters := OptionButton.new()
 		characters.name = "CharacterChoice%d" % i
 		var choices: Array = Traits.ids()
@@ -253,7 +263,8 @@ func character_select() -> void:
 			portraits[i] = next
 			character_select()))
 	spacer(v)
-	v.add_child(label("每人初始现金 10,000 · 起点奖励 1,000 · 最后存活或轮数结束时资产最高者获胜"))
+	v.add_child(label("每人现金 10,000 · 同队免租并可协助升级 · 按存活队伍或队伍总资产判胜"))
+	if not Game.Teams.valid_assignment(teams, 4): v.add_child(label("至少需要两支队伍才能开始比赛。", 16, Color("f28a79")))
 	var controls := HBoxContainer.new()
 	v.add_child(controls)
 	controls.add_child(button("← 地图", func(): capture_names(); map_select()))
@@ -263,6 +274,8 @@ func character_select() -> void:
 	rounds.select([10,20,30].find(turns))
 	rounds.item_selected.connect(func(index): turns = rounds.get_item_id(index))
 	controls.add_child(rounds)
+	controls.add_child(button("四人混战", func(): capture_names(); teams.assign([0, 1, 2, 3]); character_select()))
+	controls.add_child(button("2 对 2", func(): capture_names(); teams.assign([0, 1, 0, 1]); character_select()))
 	var talents := CheckButton.new()
 	talents.name = "TalentsToggle"
 	talents.text = "角色天赋"
@@ -281,7 +294,7 @@ func character_select() -> void:
 	specials.button_pressed = specials_enabled
 	specials.toggled.connect(func(enabled): specials_enabled = enabled)
 	controls.add_child(specials)
-	controls.add_child(button("开始对局 →", func(): capture_names(); start_game()))
+	controls.add_child(button("开始对局 →", func(): capture_names(); start_game(), not Game.Teams.valid_assignment(teams, 4)))
 
 func ensure_characters() -> void:
 	if character_ids.size() != 4:
@@ -294,9 +307,10 @@ func capture_names() -> void:
 			player_names[i] = n if not n.is_empty() else "玩家 %d" % (i+1)
 
 func start_game() -> void:
+	if not Game.Teams.valid_assignment(teams, 4): return
 	game = Game.new()
 	ensure_characters()
-	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids})
+	game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams})
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -363,6 +377,7 @@ func refresh() -> void:
 		var col := panel(score_row, Color("20394b") if i == game.current else Color("102535"))
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label(("▶ " if i == game.current else "") + p.name + (" · 破产" if p.bankrupt else ""), 18, COLORS[portraits[i]]))
+		col.add_child(label("队伍 %d · 团队资产 %d" % [p.team + 1, game.team_scores().get(p.team, 0)], 13))
 		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
 		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 电脑" if controllers[i] == "ai" else " · 人类") + (" · 天赋关" if not talents_enabled else ""), 13))
 		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
@@ -420,9 +435,10 @@ func refresh() -> void:
 					var lot: Dictionary = game.lots[lot_id]
 					if lot.kind == "facility": continue
 					if lot.owner < 0: sidebar.add_child(button("购买地产 · %s" % lot.name, func(): choose_building(lot_id, false)))
-					elif lot.owner == game.current:
-						sidebar.add_child(button("升级建筑 · %s · %d" % [game.building_name(lot.building_type), game.upgrade_cost(lot_id)], func(): game.upgrade_property(lot_id); refresh(), lot.building_type == "vacant" or lot.level >= game.max_level(lot_id) or p.cash < game.upgrade_cost(lot_id)))
-						sidebar.add_child(button("改建项目 · " + lot.name, func(): choose_building(lot_id, true)))
+					elif game.same_team(lot.owner, game.current):
+						sidebar.add_child(button("升级建筑 · %s · %d" % [game.building_name(lot.building_type), game.upgrade_cost(lot_id)], func(): game.upgrade_property(lot_id); refresh(), not game.can_upgrade_property(lot_id)))
+						if lot.owner != game.current: sidebar.add_child(paragraph("协助队友升级：由你支付费用，产权保留给队友。", 14))
+						else: sidebar.add_child(button("改建项目 · " + lot.name, func(): choose_building(lot_id, true)))
 			"bank":
 				sidebar.add_child(paragraph("银行服务\n可存入现金或提取存款。离开后继续剩余移动，不重复结算经过事件。"))
 				var amount := SpinBox.new()
@@ -816,6 +832,13 @@ func results() -> void:
 	var winner_names: Array = []
 	for id in game.winners: winner_names.append(game.players[id].name)
 	v.add_child(label("获胜：" + " / ".join(winner_names), 28, Color("e9c46a")))
+	var scores: Dictionary = game.team_scores()
+	var team_order: Array = scores.keys()
+	team_order.sort_custom(func(a,b): return scores[a] > scores[b])
+	for team_id in team_order:
+		var members: Array[String] = []
+		for who in game.team_members(team_id): members.append(game.players[who].name)
+		v.add_child(label("队伍 %d · 总资产 %d · %s" % [team_id + 1, scores[team_id], " / ".join(members)], 18))
 	v.add_child(label("净资产 = 现金 + 存款 + 股票市值 + 地价 + 建筑投资成本" + ("  ·  本局使用了GM" if gm_used else ""), 16))
 	var ranking := [0,1,2,3]
 	ranking.sort_custom(func(a,b): return game.net_worth(a) > game.net_worth(b))
@@ -852,7 +875,7 @@ func dismiss() -> void:
 
 func show_help() -> void:
 	var v := modal("玩法说明")
-	v.add_child(paragraph("1. 默认一名真人与三名电脑，可在选人页改为同机热座。掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口关联同一产权。停在入口可购买、升级或向对手付租金。\n3. 经过银行时可存取款，离开后继续剩余步数。大额费用可用免费或转移卡应对。\n4. 住院、入狱等状态按提示推进；最后存活者获胜，或达到轮数上限后比较净资产。\n5. “托管”可调整各席位控制；电脑行动时可暂停或接管，真人防御仍由真人确认。\n6. “存读档”每次新建一份记录，可从主菜单或局内读取。读档后电脑先暂停，确认局势后继续。\n7. 经过乐透站可购票；停在魔法屋先选效果再抽条件。商店货品在本次访问内固定，售出不补货。\n8. 点击建筑查看产权与入口；F1可构造资金、卡牌、地产和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
+	v.add_child(paragraph("1. 默认一名真人与三名电脑，可在选人页改为同机热座或选择队伍；至少两队。掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口关联同一产权。停在入口可购买、升级或向对手付租金。\n3. 经过银行时可存取款，离开后继续剩余步数。大额费用可用免费或转移卡应对。\n4. 住院、入狱等状态按提示推进；最后存活队伍获胜，或达到轮数上限后比较队伍净资产。队友免租，可由行动者付费协助加盖；卡牌仍可能误伤队友。\n5. “托管”可调整各席位控制；电脑行动时可暂停或接管，真人防御仍由真人确认。\n6. “存读档”每次新建一份记录，可从主菜单或局内读取。读档后电脑先暂停，确认局势后继续。\n7. 经过乐透站可购票；停在魔法屋先选效果再抽条件。商店货品在本次访问内固定，售出不补货。\n8. 点击建筑查看产权与入口；F1可构造资金、卡牌、地产和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
 
 func show_stocks() -> void:
@@ -1024,6 +1047,8 @@ func load_snapshot(path: String) -> Dictionary:
 	talents_enabled = game.talents_enabled
 	gods_enabled = game.gods_enabled
 	specials_enabled = game.specials_enabled
+	teams.clear()
+	for player in game.players: teams.append(player.team)
 	turns = game.round_limit
 	gm_used = bool(meta.get("gm_used", false))
 	forced_dice = clampi(int(meta.get("forced_dice", 0)), 0, 6)

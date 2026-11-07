@@ -12,11 +12,14 @@ static func step(g) -> bool:
 	match g.phase:
 		"reaction":
 			var options: Array = g.reaction_options()
+			var defender: int = g.reaction_player()
 			for card in ["free", "immune", "transfer", "same_fate"]:
 				if not options.has(card): continue
 				if card == "transfer":
-					var targets: Array = g.reaction_targets(card)
+					var targets: Array = _opponents(g, defender, g.reaction_targets(card))
 					if not targets.is_empty(): return g.resolve_reaction(card, _richest(g, targets))
+				elif card == "same_fate":
+					if g.is_opponent(defender, g.pending_attack.get("attacker", -1)): return g.resolve_reaction(card)
 				else: return g.resolve_reaction(card)
 			return g.resolve_reaction()
 		"roll":
@@ -67,7 +70,7 @@ static func step(g) -> bool:
 					if lot.owner < 0:
 						var kind: String = "house" if lot.kind == "small" else _large_building(g)
 						if p.cash >= g.purchase_cost(id, kind) + 1000 and g.buy_property(id, kind): return true
-					elif lot.owner == g.current:
+					elif g.same_team(lot.owner, g.current):
 						if p.cash >= CASH_RESERVE + g.upgrade_cost(id) and g.upgrade_property(id): return true
 				if _research(g): return true
 			return g.end_turn()
@@ -79,6 +82,12 @@ static func _richest(g, targets: Array) -> int:
 	for who in targets:
 		if g.net_worth(who) > g.net_worth(best): best = who
 	return best
+
+static func _opponents(g, actor: int, targets: Array) -> Array:
+	var result: Array = []
+	for who in targets:
+		if g.is_opponent(actor, who) and not g.players[who].bankrupt: result.append(who)
+	return result
 
 static func _large_building(g) -> String:
 	var owned: Array = []
@@ -107,7 +116,7 @@ static func _road_score(g, road: int) -> float:
 		var lot: Dictionary = g.lots[id]
 		if lot.kind == "facility": continue
 		if lot.owner < 0: score += 600
-		elif lot.owner == g.current: score += 200
+		elif g.same_team(lot.owner, g.current): score += 200
 		else: score -= g.rent_preview(id, g.current) + (800 if lot.building_type == "hotel" else 0)
 	return score
 
@@ -121,11 +130,13 @@ static func _play_card(g) -> bool:
 			if g.use_card(card): return true
 		elif card == "send_god":
 			for who in targets:
-				if (who == g.current and (BAD_GODS.has(p.god.get("id", "")) or not p.get("bomb", {}).is_empty())) or (who != g.current and GOOD_GODS.has(g.players[who].god.get("id", ""))):
+				var target: Dictionary = g.players[who]
+				if (g.same_team(g.current, who) and (BAD_GODS.has(target.god.get("id", "")) or not target.get("bomb", {}).is_empty())) or (g.is_opponent(g.current, who) and GOOD_GODS.has(target.god.get("id", ""))):
 					if g.use_card(card, who): return true
 		elif card == "god_bless":
 			for target in targets:
 				var key: int = int(str(target).get_slice(":", 1))
+				if str(target).begins_with("player:") and not g.is_opponent(g.current, key): continue
 				var god: String = g.road_gods[key] if str(target).begins_with("road:") else g.players[key].god.id
 				if GOOD_GODS.has(god) and g.use_card(card, target): return true
 		elif card in ["dice", "super_dice", "robot"]:
@@ -138,7 +149,11 @@ static func _play_card(g) -> bool:
 				if card == "robot":
 					value = 0
 					for road in route.path:
-						if g.road_objects.has(road): value += 100
+						if g.road_objects.has(road):
+							if g.same_team(g.current, g.road_objects[road].get("owner", -1)):
+								value = -INF
+								break
+							value += 100
 				else:
 					for road in route.path:
 						if g.road_objects.has(road): value -= 1000
@@ -147,11 +162,21 @@ static func _play_card(g) -> bool:
 			if g.use_card(card, best.path, best.steps): return true
 		elif card in ["worker", "buy_land"]:
 			for id in targets:
-				if card == "buy_land" and p.cash < g.lot_value(id) + CASH_RESERVE: continue
+				if card == "buy_land" and (not g.is_opponent(g.current, g.lots[id].owner) or p.cash < g.lot_value(id) + CASH_RESERVE): continue
+				if card == "worker" and not g.same_team(g.current, g.lots[id].owner): continue
 				if g.use_card(card, id): return true
 		elif card in ["glory", "misery", "disaster"]:
+			if card != "glory" and not _safe_global_attack(g, card): continue
 			if g.use_card(card): return true
 		else:
-			targets.erase(g.current)
+			targets = _opponents(g, g.current, targets)
 			if not targets.is_empty() and g.use_card(card, _richest(g, targets)): return true
+	return false
+
+static func _safe_global_attack(g, card: String) -> bool:
+	# The effect model excludes allied owners. Only spend the global attack when
+	# an enemy has a building that can actually be lowered or newly closed.
+	for lot in g.lots.values():
+		if lot.kind == "facility" or not g.is_opponent(g.current, lot.owner) or lot.level <= 0: continue
+		if card == "disaster" or int(lot.get("closed_until",0)) < g.round_number + 6: return true
 	return false

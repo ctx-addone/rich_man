@@ -1,6 +1,8 @@
 class_name RichCharacterTraits
 extends RefCounted
 
+const Teams = preload("res://scripts/model/team_rules.gd")
+
 # Provisional deterministic balancing profile, NOT original game values.
 const TEST_PROFILE = {"worker_exchange_probability": 0.35, "roadblock_refund_probability": 0.30, "stay_refund_probability": 0.30, "shop_price_multiplier": 0.70}
 const CATALOG = {
@@ -19,7 +21,7 @@ const CATALOG = {
  "tangtang": {"name":"糖糖", "description":"离商店随机得1卡；秘密购卡；商店大幅折扣。", "unknowns":"原版折扣未知，测试七折；随机池暂用已实现卡池。", "source":"https://gl.ali213.net/html/2022-10/934689_14.html", "implemented":"partial"},
  "john": {"name":"约翰乔", "description":"使用路障概率返还；路障范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_15.html", "implemented":"partial"},
  "wu_meila": {"name":"舞美拉", "description":"使用停留概率返还；停留范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_16.html", "implemented":"partial"},
- "ludwig": {"name":"路德维希", "description":"回合外意外失牌，我方全体各得1卡；所有卡范围 +1。", "unknowns":"完整团队模式未实现；仅相同有效team获牌，无team只自己；随机池待核验。", "source":"https://richman.fandom.com/zh/wiki/路德維希", "implemented":"partial"},
+ "ludwig": {"name":"路德维希", "description":"回合外意外失牌，我方未破产角色各得1卡；所有卡范围 +1。", "unknowns":"队伍关系沿用对局配置；无有效队伍只奖励自己；随机池与完整触发名单待核验。", "source":"https://richman.fandom.com/zh/wiki/路德維希", "implemented":"partial"},
  "eleven": {"name":"十一", "description":"用传送门得超级骰子；在金钱防御中用免费卡得遥控骰子。", "unknowns":"免费触发金额、奖励与满手处理仍待原版核验。", "source":"https://richman.fandom.com/zh/wiki/十一", "implemented":"partial"}
 }
 
@@ -58,14 +60,16 @@ static func card_range(g, actor: int, card_id: String, base: int) -> int:
  var doubled := (id == "shalong" and card_id == "turtle") or (id == "miyamoto" and card_id == "send_god") or (id == "danny" and card_id in ["jelly","banana"]) or (id == "john" and card_id == "roadblock") or (id == "wu_meila" and card_id == "stay")
  return base * 2 if doubled else base
 
-static func _same_team(a: Dictionary, b: Dictionary) -> bool:
- var team: Variant = a.get("team", null)
- return team != null and str(team) != "" and str(team) != "-1" and team == b.get("team", null)
+# Small legacy test harnesses expose only player dictionaries. They still use
+# the exact same relationship module rather than duplicating team semantics.
+static func _allied(g, a: int, b: int) -> bool:
+ if g.has_method("same_team"): return g.same_team(a,b)
+ return Teams.same(g,a,b)
 
 static func target_immune(g, actor: int, target: int, card_id: String) -> bool:
  if _is(g,target,"danny") and card_id == "sleepwalk": return true
  if _is(g,target,"qian") and card_id in ["steal","audit"] and not g.players[target].get("god",{}).is_empty(): return true
- return _is(g,target,"jin_beibei") and card_id == "send_god" and g.current != target and actor != target and not _same_team(g.players[actor],g.players[target])
+ return _is(g,target,"jin_beibei") and card_id == "send_god" and g.current != target and actor >= 0 and actor < g.players.size() and not _allied(g,actor,target)
 
 static func deity_immune(g, p: int, god: String) -> bool:
  return _is(g,p,"sarah") and god in ["poor","misfortune","confused","fierce"]
@@ -104,7 +108,7 @@ static func on_release(g, p: int, status_kind: String) -> void:
 static func on_card_lost(g, p: int, reason: String = "unexpected") -> void:
  if not _is(g,p,"ludwig") or g.current == p or reason not in ["steal","magic_house","misfortune"]: return
  for i in range(g.players.size()):
-  if not g.players[i].get("bankrupt",false) and (i == p or _same_team(g.players[p],g.players[i])): g.give_card(i,g.random_card())
+  if not g.players[i].get("bankrupt",false) and _allied(g,p,i): g.give_card(i,g.random_card())
 
 static func shop_price_multiplier(g, p: int) -> float:
  return TEST_PROFILE.shop_price_multiplier if _is(g,p,"tangtang") else 1.0

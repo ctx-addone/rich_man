@@ -610,6 +610,62 @@
       "normalized_sha256": "4AE9F5562D0DC3900C494489852EED0E119BDAF4791AB68849C15DB19591AA09",
       "source_sha256": "B18CA990DE8DF5E3C2601AC9D6178C7831C0D1499E10213589531BEB43841229",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-10-report.md",
+      "title": "35 · 第十轮传统自由组队验收",
+      "node_token": "VPOJwyyX1i67jLk0Wc6cIzXmnRf",
+      "document_id": "WYyCdR2FCojBKHxt1L0cPcNPnhe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/VPOJwyyX1i67jLk0Wc6cIzXmnRf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-35.json",
+      "revision_id": 2,
+      "remote_characters": 2386,
+      "normalized_sha256": "1DEA58C177038CA6ABEAF026D6DD924CB6BE530CFCC87C0763FCECD79EFEB0A4",
+      "source_sha256": "C5B147890E3A7F65B2AB700946A11376FD3EC3E90D62D43AE54D4B3F037B4B71",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-10-teams.md",
+      "title": "36 · 队伍关系与地产协作",
+      "node_token": "BvTPwKEaEieoGxk5647cLivlnze",
+      "document_id": "Ii8HdfNPVoxLwRx2OlRcKzoKnOc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/BvTPwKEaEieoGxk5647cLivlnze",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-36.json",
+      "revision_id": 2,
+      "remote_characters": 2272,
+      "normalized_sha256": "61A2ED7730B0AED5E2D9AE2CE716B1F9E3AD3DB90EDF832937F5CE61EEF11AC6",
+      "source_sha256": "A7F521F458A4F4E155E2772B2FE6ABBA96B0C9D51C326C45DED3CB53FAD70E60",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-10-team-ai.md",
+      "title": "37 · 团队电脑与天赋",
+      "node_token": "HLU4wEHCSitvaykV6tNcqjxCnwd",
+      "document_id": "AsVVdNyxgo4ge6xSnJCcnEV0npb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/HLU4wEHCSitvaykV6tNcqjxCnwd",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-37.json",
+      "revision_id": 2,
+      "remote_characters": 1072,
+      "normalized_sha256": "AE7C495DBB4CE9EEBDFEF5D31737794ADB34C1F96CBBF443091F683065BC5540",
+      "source_sha256": "6F5624242C40B1B7F993CE5C0BDCACB4C184FB47B710575530900240FF71BBCA",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-teams.md",
+      "title": "38 · 组队规则原作补证",
+      "node_token": "Iq0NwD6OriKrY4kL7UHcZihAnTf",
+      "document_id": "KnAYdLa6YoAiWmxW3lfc44ZwnBg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Iq0NwD6OriKrY4kL7UHcZihAnTf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-38.json",
+      "revision_id": 2,
+      "remote_characters": 4938,
+      "normalized_sha256": "2A40CCE32ADDA689FD153DD4C81DA1781590BD4EB422D7C3916BBA64F9BE3D13",
+      "source_sha256": "3C959402E3A3A9C9CC5810CD9FC5A71D543647928CF1EA3F2D24FCFC471433FE",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -624,5 +680,6 @@
   "round6_updated_at": "2026-11-08",
   "round7_updated_at": "2026-11-08",
   "round8_updated_at": "2026-11-08",
-  "round9_updated_at": "2026-11-08"
+  "round9_updated_at": "2026-11-08",
+  "round10_updated_at": "2026-11-08"
 }

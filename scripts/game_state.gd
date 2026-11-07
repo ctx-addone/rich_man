@@ -11,6 +11,7 @@ const Market = preload("res://scripts/model/stock_market.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
 const Specials = preload("res://scripts/model/special_services.gd")
 const Shop = preload("res://scripts/model/shop_rules.gd")
+const Teams = preload("res://scripts/model/team_rules.gd")
 const Traits = preload("res://scripts/model/character_traits.gd")
 const HAND_LIMIT = 8
 var gods_enabled := false
@@ -114,6 +115,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	for i in range(players.size()):
 		players[i].character_id = str(characters[i]) if i<characters.size() else ""
 		players[i].god = {}
+	Teams.assign(self,options.get("teams",null))
 	if gods_enabled: Gods.spawn(self)
 	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
 
@@ -381,7 +383,7 @@ func _continue_land() -> void:
 			continue
 		active_lot_id=id
 		Gods.stop_lot(self,lot)
-		if lot.owner>=0 and lot.owner!=current:
+		if is_opponent(lot.owner,current):
 			var cost:int=rent_preview(id,current)
 			if lot.building_type=="mall":
 				var multiplier:int=rng.randi_range(1,3)
@@ -424,6 +426,7 @@ func lot_value(lot_id:String)->int:
 	var lot:Dictionary=lots[lot_id]
 	return int(lot.price+Buildings.PROFILE.upgrade_cost*maxi(0,lot.level-1))
 func rent_preview(lot_id:String,visitor_id:int=-1)->int:
+	if lots.has(lot_id) and visitor_id>=0 and same_team(lots[lot_id].owner,visitor_id): return 0
 	return Buildings.rent(self,lots[lot_id],visitor_id) if lots.has(lot_id) else 0
 func buy_property(lot_id:String="",building_type:String="")->bool:
 	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
@@ -439,14 +442,19 @@ func buy_property(lot_id:String="",building_type:String="")->bool:
 	phase="end"
 	_log("购买%s，建造%s。"%[lot.name,building_name(building_type)])
 	return true
-func upgrade_property(lot_id:String="")->bool:
+func can_upgrade_property(lot_id:String="")->bool:
 	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
 	var lot:=_selected_lot(lot_id)
 	if Gods.id(self,current)=="misfortune": return false
-	if lot.is_empty() or lot.kind=="facility" or lot.building_type=="vacant" or lot.owner!=current or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
+	if lot.is_empty() or lot.kind=="facility" or lot.building_type=="vacant" or not same_team(lot.owner,current) or players[lot.owner].bankrupt or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
+	return true
+func upgrade_property(lot_id:String="")->bool:
+	if not can_upgrade_property(lot_id): return false
+	var lot:=_selected_lot(lot_id)
 	players[current].cash-=upgrade_cost(lot.id)
 	lot.level+=1
 	phase="end"
+	_log("%s 为%s加盖，产权仍归%s。"%[players[current].name,lot.name,players[lot.owner].name])
 	return true
 func rebuild_property(lot_id:String,building_type:String)->bool:
 	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
@@ -512,7 +520,7 @@ func close_shop()->bool:
 	phase="end"
 	Traits.on_shop_exit(self,current)
 	for lot in lots.values():
-		if lot.owner==current and lot.building_type=="bookstore" and lot.level>0 and lot.closed_until<=round_number:
+		if same_team(lot.owner,current) and lot.building_type=="bookstore" and lot.level>0 and lot.closed_until<=round_number:
 			if rng.randf()<minf(1.0,lot.level*Buildings.PROFILE.bookstore_chance_per_level):
 				for i in range(rng.randi_range(1,3)): give_card(current,CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)])
 	return true
@@ -682,10 +690,7 @@ func trade_stock(stock_id: String, quantity: Variant, buying: bool) -> bool:
 	return success
 
 func _check_winner() -> void:
-	var alive:=0
-	for p in players:
-		if not p.bankrupt: alive+=1
-	if alive<=1: finish_game()
+	if team_scores().size()<=1: finish_game()
 
 func finish_game() -> void:
 	pending_service.clear()
@@ -694,14 +699,19 @@ func finish_game() -> void:
 	landing_queue.clear()
 	landing_hotel=""
 	phase="finished"
-	winners.clear()
-	var highest: int=-1
-	for i in range(players.size()):
-		if players[i].bankrupt: continue
-		var worth:=net_worth(i)
-		if worth>highest: highest=worth; winners.clear()
-		if worth==highest: winners.append(i)
-	_log("比赛结束，按未破产角色净资产结算。")
+	winners=Teams.winner_members(self)
+	_log("比赛结束，按未破产队伍成员净资产合计结算；获胜名单含全队席位。")
+
+func same_team(player_a:int,player_b:int)->bool:
+	return Teams.same(self,player_a,player_b)
+func is_opponent(player_a:int,player_b:int)->bool:
+	return Teams.opponent(self,player_a,player_b)
+func team_members(team_id:int,include_bankrupt:bool=true)->Array[int]:
+	return Teams.members(self,team_id,include_bankrupt)
+func team_scores()->Dictionary:
+	return Teams.scores(self)
+func active_teams()->Array[int]:
+	return Teams.active(self)
 
 func gm_cash(player_id: int, delta: int) -> bool:
 	if phase=="reaction": return false

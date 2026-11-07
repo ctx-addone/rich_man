@@ -1,0 +1,45 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: new games enable special facilities
+PASS: facility toggle exposed
+PASS: screenshot 01-special-setup
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: walk into lottery
+PASS: lottery pauses with one step left
+PASS: button exists: 购入一注
+PASS: button enabled: 购入一注
+PASS: UI purchases selected ticket once
+PASS: screenshot 02-lottery-ticket
+PASS: save while buying lottery
+PASS: load lottery snapshot through app
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: load retains purchased ticket and quota
+PASS: button exists: 离开乐透站
+PASS: button enabled: 离开乐透站
+PASS: leaving resumes remaining movement and lands
+PASS: magic landing fixture
+PASS: stopping enters magic selection
+PASS: screenshot 03-magic-choice
+PASS: button exists: 施放 · 获得3张卡片
+PASS: button enabled: 施放 · 获得3张卡片
+PASS: magic selection resolves then returns to land
+PASS: screenshot 04-magic-result
+PASS: shop landing fixture
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: random visit has bounded offers
+PASS: screenshot 05-random-shop
+PASS: button exists: 购买卡牌 · 神眷卡
+PASS: button enabled: 购买卡牌 · 神眷卡
+PASS: buy removes one stock without rerolling
+PASS: remaining stock stays fixed
+ROUND9_UI_TEST failures=0

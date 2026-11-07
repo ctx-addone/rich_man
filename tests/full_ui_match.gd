@@ -1,11 +1,13 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
-	out_dir = "res://docs/testing/round9"
+	out_dir = "res://docs/testing/round10"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
 	app.controllers.assign(["human", "human", "human", "human"])
+	var team_match:bool=OS.get_environment("RICHMAN_TEST_TEAMS")=="2v2"
+	if team_match: app.teams.assign([0,1,0,1])
 	root.add_child(app)
 	await click("开始游戏")
 	await click("选择角色")
@@ -62,6 +64,8 @@ func run() -> void:
 	check(not app.gm_used, "match never used GM")
 	check(card_played and bank_used, "card and bank exercised")
 	check(not app.game.winners.is_empty(), "natural winner exists")
+	if team_match:
+		check(app.game.winners.size()>=2 and app.game.same_team(0,2), "team configuration persists through natural result")
 	await capture("07-natural-results")
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])
 	quit(1 if failures > 0 else 0)

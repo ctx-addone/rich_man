@@ -28,7 +28,7 @@ func legacy() -> void:
 	var old = result.game
 	check(not old.specials_enabled and old.nodes[17].kind == "event" and old.nodes[51].kind == "event","v1 keeps original road layout")
 	check(old.lottery_state == old.Specials.initial_lottery() and old.shop_stock.is_empty() and old.god_respawn_due.is_empty(),"v1 adds only inactive service defaults")
-	check(Save.snapshot(old).version == 2,"migrated save writes schema v2")
+	check(Save.snapshot(old).version == Save.VERSION,"migrated save writes current schema")
 	var file := FileAccess.open(FIXTURE,FileAccess.READ)
 	file.seek(44)
 	var raw: Dictionary = bytes_to_var(file.get_buffer(file.get_length()-44))
@@ -36,7 +36,11 @@ func legacy() -> void:
 	check(raw.version == 1,"fixture actually predates v2")
 	var migrated: Dictionary = Save.snapshot(old)
 	for key in raw.state:
-		check(raw.state[key] == migrated.state[key],"v1 preserves field " + key)
+		if key == "players":
+			for i in range(raw.state.players.size()):
+				for field in raw.state.players[i]:
+					check(raw.state.players[i][field] == migrated.state.players[i][field],"v1 preserves original player field " + field)
+		else: check(raw.state[key] == migrated.state[key],"v1 preserves field " + key)
 	check(raw.rng_state == migrated.rng_state and raw.market == migrated.market and raw.metadata == result.metadata,"v1 preserves RNG market metadata")
 	raw.state.erase("bank_visited")
 	reject(raw,"migration must not repair missing original v1 fields")

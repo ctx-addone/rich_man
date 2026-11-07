@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 2
+const VERSION = 3
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -57,6 +57,20 @@ static func v1_additions() -> Dictionary:
 	return {"specials_enabled":false,"lottery_state":Game.Specials.initial_lottery(),
 		"service_visited":[],"pending_service":{},"magic_last_result":{},
 		"god_respawn_due":{},"shop_stock":[],"shop_visit_serial":0}
+static func migrate_legacy_teams(players: Array) -> String:
+	# Before v3, team was optional trait metadata. Preserve valid relationships,
+	# but never merge missing/null identifiers into a single team.
+	var groups: Dictionary = {}
+	for i in range(players.size()):
+		var p: Dictionary = players[i]
+		var team: Variant = p.get("team", null)
+		if typeof(team) not in [TYPE_NIL,TYPE_INT,TYPE_STRING]: return "旧队伍标识无效"
+		var key: String = "seat:%d" % i
+		if team is int and team >= 0: key = "int:%d" % team
+		elif team is String and not team.is_empty() and team != "-1": key = "string:" + team
+		if not groups.has(key): groups[key] = groups.size()
+		p.team = groups[key]
+	return "" if groups.size() >= 2 else "旧队伍数据只包含一个阵营，无法恢复比赛"
 static func exact_shape(value: Variant, template: Dictionary) -> bool:
 	return value is Dictionary and value.size() == template.size() and shape(value,template)
 static func unique_indices(value: Variant, count: int) -> bool:
@@ -136,7 +150,7 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
 	if data.version == 1:
@@ -150,8 +164,14 @@ static func restore(data: Variant) -> Dictionary:
 	for player in state.players:
 		if not player is Dictionary or not player.get("name") is String: return failure("玩家格式无效")
 		names.append(player.name)
+	if data.version < 3:
+		var migration_error: String = migrate_legacy_teams(state.players)
+		if not migration_error.is_empty(): return failure(migration_error)
+	var team_ids: Array = []
+	for player in state.players: team_ids.append(player.get("team"))
+	if not Game.Teams.valid_assignment(team_ids, state.players.size()): return failure("队伍配置无效")
 	var game = Game.new()
-	game.setup(names,1,20,{"specials_enabled":state.specials_enabled})
+	game.setup(names,1,20,{"specials_enabled":state.specials_enabled,"teams":team_ids})
 	for key in fields(game):
 		if EXCLUDED.has(key): continue
 		if not state.has(key) or not shape(state[key],game.get(key)): return failure("存档字段无效："+key)
@@ -173,7 +193,6 @@ static func restore(data: Variant) -> Dictionary:
 		if p.has("choose_junction") and not p.choose_junction is bool: return failure("岔路选择状态无效")
 		if p.has("glory_until") and (not p.glory_until is int or p.glory_until < 0): return failure("辉煌到期状态无效")
 		if p.has("next_direction") and (not p.next_direction is int or p.next_direction < -1 or p.next_direction >= game.nodes.size()): return failure("预选方向无效")
-		if p.has("team") and typeof(p.team) not in [TYPE_NIL,TYPE_INT,TYPE_STRING]: return failure("队伍标识无效")
 		if not p.god.is_empty() and (not game.Gods.CATALOG.has(p.god.get("id")) or not p.god.get("remaining") is int): return failure("神仙状态无效")
 		if not p.god.is_empty() and p.god.remaining <= 0: return failure("附身时长无效")
 		if not p.get("bomb",{}) is Dictionary: return failure("炸弹格式无效")
@@ -207,8 +226,8 @@ static func restore(data: Variant) -> Dictionary:
 		if not state.lots.has(id): return failure("银行记录无效")
 	for id in [state.active_lot_id,state.landing_hotel]:
 		if not id.is_empty() and not state.lots.has(id): return failure("活动地产无效")
-	for who in state.winners:
-		if not player_index(who,count): return failure("获胜者无效")
+	if not unique_indices(state.winners,count): return failure("获胜者无效")
+	if state.phase != "finished" and not state.winners.is_empty(): return failure("未结束比赛不能包含获胜者")
 	if state.phase == "reaction":
 		var a: Dictionary = state.pending_attack
 		if not event_valid(a,count) or not a.get("events") is Array or not a.get("return_phase") is String or not a.get("arrival") is bool: return failure("待处理事件无效")
@@ -228,7 +247,8 @@ static func restore(data: Variant) -> Dictionary:
 	for trade in market.ledger:
 		if not trade is Dictionary or not shape(trade,{"round":1,"player":"","player_id":0,"side":"","stock_id":"","quantity":1,"price":1,"amount":1}): return failure("交易记录无效")
 		if not market.quotes.has(trade.stock_id) or not player_index(trade.player_id,count): return failure("交易引用无效")
-	# All checks precede reconstruction; caller's live game is never mutated.
+	# Reconstruct only this private candidate. Final semantic checks also cannot
+	# mutate the caller's live game or the deeply copied input snapshot.
 	for key in fields(game):
 		if not EXCLUDED.has(key): game.set(key,state[key])
 	game.board_model.lots = game.lots
@@ -239,6 +259,13 @@ static func restore(data: Variant) -> Dictionary:
 	game.stock_market.market_round = market.market_round
 	game.stock_market.rng.seed = market.rng_seed
 	game.stock_market.rng.state = market.rng_state
+	if state.phase == "finished":
+		var expected_winners: Array[int] = game.Teams.winner_members(game)
+		if data.version < 3:
+			# Old team labels only affected traits. After explicit relationship
+			# migration, completed legacy results use the new team scoring policy.
+			game.winners = expected_winners
+		elif state.winners != expected_winners: return failure("队伍胜负记录不一致")
 	return {"ok":true,"error":"","game":game,"metadata":data.metadata}
 static func digest(bytes: PackedByteArray) -> PackedByteArray:
 	var hash := HashingContext.new()
