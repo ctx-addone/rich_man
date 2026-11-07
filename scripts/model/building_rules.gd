@@ -10,6 +10,8 @@ static func options(kind:String)->Array[String]:
 	return out
 static func rent(game,lot:Dictionary,payer:int=-1)->int:
 	if lot.owner<0 or lot.level<=0 or lot.get("closed_until",0)>game.round_number: return 0
+	if lot.building_type == "vacant": return 0
+	if game.players[lot.owner].status.get("kind", "") == "sleepwalk": return 0
 	var kind:String=lot.building_type
 	var amount:float=RENTS.get(kind,RENTS.house)[clampi(lot.level,0,5)]
 	var count:=0

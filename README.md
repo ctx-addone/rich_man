@@ -1,6 +1,6 @@
 # 街区大亨 · R11玩法重建
 
-当前为 v0.4 系统验证版本，**尚未完成《大富翁11》还原**。完整目标见 [目标与完成门槛](docs/r11-target.md)，本轮事实与差距见 [第四轮验收](docs/round-04-report.md)。
+当前为 v0.5 系统验证版本，**尚未完成《大富翁11》还原**。完整目标见 [目标与完成门槛](docs/r11-target.md)，本轮事实与差距见 [第五轮验收](docs/round-05-report.md)。
 
 ## 启动
 
@@ -13,18 +13,20 @@ Windows 双击 `start_game.cmd`。脚本通过 Godot 命令行导入并启动；
 - 购买、升级、收租与破产；现金、存款及净资产分开显示。
 - 经过银行暂停移动，存取款后继续剩余步数。
 - 谋划卡使对手入狱；道路地雷使经过者住院；停留期间不能行走和主动出牌，结束指定次数的停留回合后返回原路线。
-- 住宅/连锁店与七类大型建筑可选择、升级和改建，具有不同租金及被动效果；研究所当前只产出传送门，其他研究项目待实现。
+- 住宅/连锁店与七类大型建筑可选择、升级和改建；五级研究池接入传送门、陷阱、超级骰、传送和量子飞弹。
 - 商店现金购卡、每次到访限购、8张手牌上限和弃牌；周期存款利息。
-- 22项卡牌效果可执行，图鉴收录48项及实现边界，不代表全卡池已完成。新增飞弹、冬眠，以及无懈/转移/同命的受击玩家交接和反应选择。
+- 39项卡牌效果可执行，图鉴收录48项及实现边界，不代表全卡池已完成。无懈/转移/同命支持受击玩家交接及连锁事件的逐次防御。
+- 载具可选1～3骰；遥控/超级骰选择合法路线与落点；普通穿越岔路随机，停在岔路后可选方向。梦游自动移动，乌龟、转向、停留和道路物件接入同一行程。
+- 地雷/飞弹等连爆；附身炸弹按30实际道路步倒数、追上传递；住院防御不撤回车辆及建筑损害。爆炸范围等仍为测试参数。
 - 股票窗口支持用存款买卖、持仓估值、行情历史与交易记录；股票计入净资产，资金不足时可自动卖股偿债。公司、价格与行情算法均为测试配置。
 - 点击道路看关联建筑，点击建筑高亮全部入口；被拘留人物显示在对应设施内。
-- F1打开GM：资金、指定骰子、传送、发牌、住院/入狱、解除状态、强制结算。
+- F1打开GM：资金、指定骰子、传送、发牌、住院/入狱、解除状态、载具、剩1步炸弹、手动岔路及强制结算。
 
 ## 测试参数与待完成项
 
 本图是集成验证布局，**不是原作地图**。价格、5级上限、各类型租金表、商店限购3张、利息和清偿顺序仍是临时规则，集中在 `scripts/model/building_rules.gd` 的 PROFILE/RENTS。攻击距离6、异常状态计时、地雷范围、传送门移动边界也未完成原版核验。
 
-大小地产、股票和攻防已有可执行流程，但真实数值与全部交互仍缺；原版清偿、金损反制、连爆、神仙、角色天赋、其余卡牌、原版地图/随机路口/设施出口、热斗、组队、挑战AI和存档尚未完成。旧版地铁/全城红绿灯留作扩展需求，不算11代已还原内容。
+大小地产、股票、移动和连爆已有可执行流程，但真实数值与全部交互仍缺；原版清偿、金损反制、神仙、角色天赋、其余9张卡及合成、原版地图/设施出口/机关、热斗、组队、挑战AI和存档尚未完成。旧版地铁/全城红绿灯留作扩展需求，不算11代已还原内容。
 
 ## 验证
 
@@ -37,13 +39,18 @@ Windows 双击 `start_game.cmd`。脚本通过 Godot 命令行导入并启动；
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/stock_integration_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/combat_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/round4_review_test.gd
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/route_planner_test.gd
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/movement_test.gd
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/explosives_test.gd
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/round5_review_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/ui_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/round3_ui_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/round4_ui_test.gd
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/round5_ui_test.gd
 & 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --script tests/full_ui_match.gd
 ```
 
-验证范围与局限见 [第四轮证据](docs/testing/round4/README.md)。界面测试必须使用有图形输出的Godot，不能加headless。
+验证范围与局限见 [第五轮证据](docs/testing/round5/README.md)。界面测试必须使用有图形输出的Godot，不能加headless。
 
 ## 策划与素材
 

@@ -11,6 +11,8 @@
 - [第四轮股票与攻防](round-04-report.md)：本轮实现、验证与仍缺失的目标。
 - [第四轮股票规则](round-04-stocks.md)及[攻防模型](round-04-combat.md)：可执行模型与测试参数。
 - [股票及反应卡补证](research/r11-reactions-stocks.md)：反应矩阵、原版股票截图和未核实的时序。
+- [第五轮移动与爆炸验收](round-05-report.md)：39项可执行卡、交叉修复与未完成项。
+- [路线与载具模型](round-05-movement.md)、[爆炸与附身炸弹](round-05-explosives.md)、[第五轮补证](research/r11-movement-explosions.md)。
 - [原作地图证据盘点](research/r11-map-catalog.md)：16张地图、实际图像依据和待补拓扑。
 - [现有实现差距审查](research/r11-current-gap-audit.md)：22项系统差距与代码位置。
 - [经济与特殊设施研究](research/r11-economy-specials.md)：规则来源、证据等级及待核验数值。

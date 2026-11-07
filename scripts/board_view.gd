@@ -91,9 +91,10 @@ func _draw() -> void:
 			var radius := maxf(4, cell * 0.19)
 			draw_circle(mine_centre, radius + 1, Color("ffdb9f"))
 			var object_kind: String = game.road_objects[n.id].kind
-			draw_circle(mine_centre, radius, Color("bc8136") if object_kind in ["barrier", "roadblock"] else Color("7757be") if object_kind == "portal" else Color("a12e38"))
-			draw_line(mine_centre - Vector2(radius * 0.55, 0), mine_centre + Vector2(radius * 0.55, 0), Color("ffead2"), 2)
-			if object_kind not in ["barrier", "roadblock"]: draw_line(mine_centre - Vector2(0, radius * 0.55), mine_centre + Vector2(0, radius * 0.55), Color("ffead2"), 2)
+			var object_colors := {"roadblock":"bc8136", "portal":"7757be", "banana":"ba8b18", "jelly":"3c7bb8", "trap":"575a63", "timebomb":"c46824", "explosive":"a12e38", "mine":"a12e38"}
+			draw_circle(mine_centre, radius, Color(object_colors.get(object_kind, "a12e38")))
+			var glyph: String = {"roadblock":"−", "portal":"门", "banana":"滑", "jelly":"返", "trap":"锁", "timebomb":"时", "explosive":"炸", "mine":"+"}.get(object_kind, "+")
+			draw_string(font, mine_centre + Vector2(-radius-2, radius*0.7), glyph, HORIZONTAL_ALIGNMENT_CENTER, radius*2+4, maxi(8, int(radius*1.8)), Color("fff2d8"))
 	_draw_players()
 
 func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
@@ -204,8 +205,16 @@ func _draw_players() -> void:
 		draw_circle(pos, badge_radius + 1, Color.WHITE)
 		draw_circle(pos, badge_radius, _player_color(i))
 		draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, badge_radius * 0.5), str(i + 1), HORIZONTAL_ALIGNMENT_CENTER, badge_radius * 2, clampi(int(badge_radius * 1.5), 9, 14), Color.WHITE)
-		if p.get("status", {}).get("kind", "") == "hibernate":
+		if p.get("vehicle", "foot") != "foot":
+			var chassis := Rect2(pos + Vector2(-badge_radius-3, badge_radius-2), Vector2(badge_radius*2+6, 5))
+			draw_rect(chassis, _player_color(i).lightened(0.3))
+			draw_circle(chassis.position + Vector2(3, 5), 3, Color("182733"))
+			draw_circle(chassis.end + Vector2(-3, 0), 3, Color("182733"))
+			if p.vehicle == "car": draw_rect(Rect2(pos + Vector2(-badge_radius-2, -badge_radius-4), Vector2(badge_radius*2+4, 3)), _player_color(i).lightened(0.3))
+		if p.get("status", {}).get("kind", "") in ["hibernate", "sleepwalk"]:
 			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius, -badge_radius - 4), "Zz", HORIZONTAL_ALIGNMENT_CENTER, badge_radius * 2 + 8, 14, Color("c6dcff"))
+		if not p.get("bomb", {}).is_empty():
+			draw_string(get_theme_default_font(), pos + Vector2(-badge_radius-4, badge_radius+16), str(p.bomb.remaining), HORIZONTAL_ALIGNMENT_CENTER, badge_radius*2+8, 12, Color("ffb57a"))
 		if game.phase == "reaction" and game.reaction_player() == i:
 			draw_arc(pos, badge_radius + 6, 0, TAU, 24, Color("f28a79"), 3, true)
 

@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "identity": "user",
+  "data": {
+    "document": {
+      "content": "<title>16 · 路线与载具模型</title>\n\n# 第5轮移动与载具\n\n本轮把移动牌、载具和道路物件接入实际逐步行走；目录48张中39张有可执行规则。implemented_provisional只表示本地可操作和回归可测，不代表已对照原版实机。\n\n来源确认的骨架：乌龟3天每次1步，停留1天，梦游2天仍移动，机车最多2骰、汽车最多3骰，香蕉前滑1步、果冻弹回2步、机器娃娃清前方10步。研究补证：普通途经岔路随机，正好停在岔路才可选方向；遥控可指定路径和落点；超级骰子前后1–6步，后退改变朝向。来源链接及证据等级见 `docs/research/r11-cards-characters.md` 与第5轮研究。\n\n接口：`max_dice()` / `set_dice_count(n)` / `dice_count` / `last_dice`；`controlled_routes(id)` 返回 destination、signed steps、path（不含起点），`use_card(id,path,steps)` 验证整条路线后消费。数值遥控接口保留供测试，合法总数为骰数至骰数×6；多骰总数分解成合法1–6点骰面。每个人新行动默认1骰，使用车辆时默认最大骰数；使用遥控后禁止改骰数，换车会撤销控制路径。查询普通岔路选项缓存随机结果，不重抽。\n\n梦游状态仍处于roll，UI自动调用roll_dice；初始方向亦自动选择。禁止出牌、弃牌、股票、银行操作、买地、建设、研究和商店；经过银行不暂停，仍正常支付租金。解除梦游保持当前位置，不回到施卡时起点。同命梦游通过原攻击队列响应，current始终保持原行动者。乌龟/冬眠/梦游互相覆盖；遥控可以覆盖当次乌龟步数。\n\n明确测试规则：天数按受影响者实际行动次数扣除；停留不重复结算原地；陷阱停住并附下一次停留1回合（原时长未知）；果冻把剩余路线替换为反向2步；传送任意指定道路，不当场触发路物件/事件，不损失原行动；机器人清除选中路径所有已建模道路物件；无神仙模型。范围默认图距离6。香蕉额外一步、果冻步都进入真实move_to，计入附身炸弹倒数；传送不扣炸弹。银行暂停不丢步数、不重放道路物件，反应后从道路抵达阶段续接。\n\n爆炸卡接入timebomb/explosive/quantum/rapid_missile/activate；爆炸半径、连爆与车辆独立损毁细则见爆炸模块说明。特殊研究池按等级提供portal/trap/super_dice/teleport/quantum，排除普通商店；合成系统尚未实现，不把特殊卡进商店冒充合成。\n\n验证：`tests/movement_test.gd`覆盖多骰合法面与总数、遥控优先级、停留不重放、超级反向、梦游同命/行动限制/真实移动/释放、银行略过、传送原子性、香蕉果冻陷阱、岔路选择与缓存、机器人清除。`tests/route_planner_test.gd`验证路径枚举及选择。既有核心50局、combat回归均通过；未进行原版实机对照。",
+      "document_id": "IJj1dDezBo1ZQJxC5VjcAJNWnjb",
+      "revision_id": 2
+    }
+  },
+  "_notice": {
+    "update": {
+      "command": "lark-cli update",
+      "current": "1.0.96",
+      "latest": "1.0.99",
+      "message": "lark-cli 1.0.99 available, current 1.0.96, run: lark-cli update"
+    }
+  }
+}

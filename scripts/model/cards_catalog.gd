@@ -1,7 +1,7 @@
 class_name RichCardsCatalog
 extends RefCounted
 
-# Evidence catalogue; implemented means a testable provisional effect, not original-game fidelity.
+# implemented means executable provisional rules, not verified original fidelity.
 const NAMES = {
   "same_fate": "同命卡",
   "transfer": "转移卡",
@@ -24,20 +24,37 @@ const NAMES = {
   "portal": "随意门卡",
   "glory": "辉煌卡",
   "misery": "窘困卡",
-  "disaster": "灾祸卡"
+  "disaster": "灾祸卡",
+  "turtle": "乌龟卡",
+  "stay": "停留卡",
+  "reverse": "转向卡",
+  "sleepwalk": "梦游卡",
+  "motorbike": "机车卡",
+  "car": "汽车卡",
+  "super_dice": "超级骰子卡",
+  "teleport": "传送卡",
+  "robot": "机器娃娃卡",
+  "banana": "香蕉皮卡",
+  "trap": "陷阱卡",
+  "jelly": "果冻墙卡",
+  "quantum": "量子飞弹卡",
+  "rapid_missile": "急速弹卡",
+  "activate": "启动卡",
+  "timebomb": "定时炸弹卡",
+  "explosive": "炸药卡"
 }
 const DESCRIPTIONS = {
-  "same_fate": "反应谋划/冬眠时自己仍受效果，施卡者同受；无递归反击，规则provisional。",
-  "transfer": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则provisional。",
-  "immune": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则provisional。",
-  "missile": "选道路使同格角色住院1次行动，临街建筑降1层；无连爆/热斗，范围为provisional。",
-  "hibernate": "指定对手冬眠2次行动；计时及目标资格为provisional。",
+  "same_fate": "反应谋划/冬眠/梦游时自己仍受效果，施卡者同受；无递归反击，规则待核验。",
+  "transfer": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则待核验。",
+  "immune": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则待核验。",
+  "missile": "选道路爆炸使测试半径1内角色住院1次行动、临街建筑降1层，连爆地雷/炸药；载具独立毁坏，无热斗。",
+  "hibernate": "指定对手冬眠2次行动；计时及目标资格尚待核验。",
   "rebuild": "选择附近一块地产及新建筑类型，保留等级并清除旧研究。 范围、计时及边界为测试规则。",
   "close_street": "所选地产整街停业5轮。 范围、计时及边界为测试规则。",
   "bulldozer": "选择附近一块地产降低1级。 范围、计时及边界为测试规则。",
-  "dice": "选择下一次骰子1～6点。 范围、计时及边界为测试规则。",
+  "dice": "选择下一次路线及落点，总步数范围为当前骰数至骰数×6。 范围、计时及边界为测试规则。",
   "roadblock": "道路放路障；经过者停止剩余移动并结算落点。 范围、计时及边界为测试规则。",
-  "mine": "道路放地雷；经过者住院2次行动，临街建筑降1层。暂不含连爆和热斗。 范围、计时及边界为测试规则。",
+  "mine": "道路放地雷；测试半径1内角色住院2次行动，临街建筑降1层并连爆；载具独立毁坏，暂无热斗。 范围、计时及边界为测试规则。",
   "audit": "获得附近对手现金的15%，向下取整。 范围、计时及边界为测试规则。",
   "equal_pair": "与附近指定对手平均现金，奇数余款留给目标。 范围、计时及边界为测试规则。",
   "equal_all": "场上未破产且未离场角色平均现金，余款按席位分配。 范围、计时及边界为测试规则。",
@@ -48,7 +65,24 @@ const DESCRIPTIONS = {
   "portal": "放置一次性传送门；踩中随机转移至另一道路并结束移动。 范围、计时及边界为测试规则。",
   "glory": "自己全部地产租金翻倍12轮。 范围、计时及边界为测试规则。",
   "misery": "其他玩家全部地产停业6轮。 范围、计时及边界为测试规则。",
-  "disaster": "其他玩家全部建筑降低4级，最低0级。 范围、计时及边界为测试规则。"
+  "disaster": "其他玩家全部建筑降低4级，最低0级。 范围、计时及边界为测试规则。",
+  "turtle": "3次移动每次1步；遥控可覆盖。 范围、时序、优先级为测试规则，未实机核验。",
+  "stay": "下一次行动原地停留，不重放落点。 范围、时序、优先级为测试规则，未实机核验。",
+  "reverse": "周围角色反向 范围、时序、优先级为测试规则，未实机核验。",
+  "sleepwalk": "2次自动移动，禁出牌、交易、银行及购建；仍付普通租金。 范围、时序、优先级为测试规则，未实机核验。",
+  "motorbike": "可用骰子数上限 2 范围、时序、优先级为测试规则，未实机核验。",
+  "car": "可用骰子数上限 3 范围、时序、优先级为测试规则，未实机核验。",
+  "super_dice": "向前或向后选目的地 范围、时序、优先级为测试规则，未实机核验。",
+  "teleport": "指定附近角色到指定道路，不立即触发事件，继续原行动。 范围、时序、优先级为测试规则，未实机核验。",
+  "robot": "选择前方10步路径，清沿途道路物件。 范围、时序、优先级为测试规则，未实机核验。",
+  "banana": "踩到前滑 1 步 范围、时序、优先级为测试规则，未实机核验。",
+  "trap": "触碰停止，并在下一次行动原地停留1次。 范围、时序、优先级为测试规则，未实机核验。",
+  "jelly": "触碰转向后移动2步替代剩余步数。 范围、时序、优先级为测试规则，未实机核验。",
+  "quantum": "测试图距离半径1内建筑夷平、角色住院5次行动，并引爆地雷及炸药；保留地权，未实现热斗，范围与时序待核验。",
+  "rapid_missile": "向道路上的对手位置发弹，同格共用爆点；测试半径1、住院3次行动、建筑降1层并连爆。未实现热斗，叠加规则待核验。",
+  "activate": "引爆测试半径1内已建模的地面炸物和附身炸弹；没有对象时不耗牌。地图机关尚未实现，范围和时序待核验。",
+  "timebomb": "经过附身，30个实际道路步后爆炸；追上无弹角色时传递，住院4次行动、建筑降2层。未实现热斗，计步边界待核验。",
+  "explosive": "触碰或被连爆引爆，测试半径1内住院8次行动，毁车；当前不损坏建筑，也不继续传播。未实现热斗，范围与时序待核验。"
 }
 const TARGETS = {
   "same_fate": "reaction",
@@ -72,7 +106,24 @@ const TARGETS = {
   "portal": "road",
   "glory": "none",
   "misery": "none",
-  "disaster": "none"
+  "disaster": "none",
+  "turtle": "player",
+  "stay": "player",
+  "reverse": "player",
+  "sleepwalk": "player",
+  "motorbike": "none",
+  "car": "none",
+  "super_dice": "dice",
+  "teleport": "player_road",
+  "robot": "none",
+  "banana": "road",
+  "trap": "road",
+  "jelly": "road",
+  "quantum": "road",
+  "rapid_missile": "none",
+  "activate": "road",
+  "timebomb": "road",
+  "explosive": "road"
 }
 const ALL = {
   "buy_land": {
@@ -164,59 +215,59 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "选择下一次骰子1～6点。 范围、计时及边界为测试规则。"
+    "implementation_note": "选择下一次路线及落点，总步数范围为当前骰数至骰数×6。 范围、计时及边界为测试规则。"
   },
   "turtle": {
     "number": 8,
     "name": "乌龟卡",
     "description": "每次走 1 步，3 天",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "与车、遥控、梦游的优先级",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "3次移动每次1步；遥控可覆盖。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "reverse": {
     "number": 9,
     "name": "转向卡",
     "description": "周围角色反向",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "岔路前后朝向定义",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "周围角色反向 范围、时序、优先级为测试规则，未实机核验。"
   },
   "stay": {
     "number": 10,
     "name": "停留卡",
     "description": "周围角色原地 1 天",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "停留是否重新触发当前格",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "下一次行动原地停留，不重放落点。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "sleepwalk": {
     "number": 11,
     "name": "梦游卡",
     "description": "周围对手梦游 2 天",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "自动骰、路线、收费、反应卡限制",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "2次自动移动，禁出牌、交易、银行及购建；仍付普通租金。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "hibernate": {
     "number": 12,
@@ -229,7 +280,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "指定对手冬眠2次行动；计时及目标资格为provisional。"
+    "implementation_note": "指定对手冬眠2次行动；计时及目标资格尚待核验。"
   },
   "roadblock": {
     "number": 13,
@@ -255,20 +306,20 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "道路放地雷；经过者住院2次行动，临街建筑降1层。暂不含连爆和热斗。 范围、计时及边界为测试规则。"
+    "implementation_note": "道路放地雷；测试半径1内角色住院2次行动，临街建筑降1层并连爆；载具独立毁坏，暂无热斗。 范围、计时及边界为测试规则。"
   },
   "timebomb": {
     "number": 15,
     "name": "定时炸弹卡",
     "description": "附身后 30 步倒计时，可追上传递；传统爆炸住院 4 天、建筑降 2 层；热斗损失现金",
     "source": "https://gl.ali213.net/html/2022-10/934689_19.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "传递条件、移动方式扣步、爆炸范围",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "经过附身，30个实际道路步后爆炸；追上无弹角色时传递，住院4次行动、建筑降2层。未实现热斗，计步边界待核验。"
   },
   "missile": {
     "number": 16,
@@ -281,7 +332,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "选道路使同格角色住院1次行动，临街建筑降1层；无连爆/热斗，范围为provisional。"
+    "implementation_note": "选道路爆炸使测试半径1内角色住院1次行动、临街建筑降1层，连爆地雷/炸药；载具独立毁坏，无热斗。"
   },
   "invite_god": {
     "number": 17,
@@ -398,7 +449,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "反应谋划/冬眠时自己仍受效果，施卡者同受；无递归反击，规则provisional。"
+    "implementation_note": "反应谋划/冬眠/梦游时自己仍受效果，施卡者同受；无递归反击，规则待核验。"
   },
   "transfer": {
     "number": 26,
@@ -411,7 +462,7 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则provisional。"
+    "implementation_note": "反应时将住院/入狱转给另一个未命中且无状态角色；无金钱转嫁，规则待核验。"
   },
   "immune": {
     "number": 27,
@@ -424,33 +475,33 @@ const ALL = {
       "范围、计时、叠加和目标资格未实机核验"
     ],
     "status": "implemented_provisional",
-    "implementation_note": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则provisional。"
+    "implementation_note": "反应时可拒用或免除一次住院/入狱；建筑损伤独立结算，规则待核验。"
   },
   "banana": {
     "number": 28,
     "name": "香蕉皮卡",
     "description": "踩到前滑 1 步",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "滑动后的连续触发与炸弹步数",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "踩到前滑 1 步 范围、时序、优先级为测试规则，未实机核验。"
   },
   "trap": {
     "number": 29,
     "name": "陷阱卡",
     "description": "路过停止且麻痹不能移动",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "麻痹时长、是否允许出牌",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "触碰停止，并在下一次行动原地停留1次。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "raise_rent": {
     "number": 30,
@@ -470,13 +521,13 @@ const ALL = {
     "name": "机器娃娃卡",
     "description": "清前方 10 步障碍",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "岔路、神仙、地图机关是否在清除集合",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "选择前方10步路径，清沿途道路物件。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "worker": {
     "number": 32,
@@ -496,52 +547,52 @@ const ALL = {
     "name": "量子飞弹卡",
     "description": "传统：范围建筑清空、住院 5 天、连爆；热斗：范围巨额现金损失并连爆",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "范围、所有权是否保留、金额",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "测试图距离半径1内建筑夷平、角色住院5次行动，并引爆地雷及炸药；保留地权，未实现热斗，范围与时序待核验。"
   },
   "explosive": {
     "number": 34,
     "name": "炸药卡",
     "description": "碰到引爆；传统住院 8 天；热斗扣现金",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "建筑/连爆行为、金额",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "触碰或被连爆引爆，测试半径1内住院8次行动，毁车；当前不损坏建筑，也不继续传播。未实现热斗，范围与时序待核验。"
   },
   "super_dice": {
     "number": 35,
     "name": "超级骰子卡",
     "description": "向前或向后选目的地",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "C 补证为 1–6 步，向后会转向；需实机",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "向前或向后选目的地 范围、时序、优先级为测试规则，未实机核验。"
   },
   "jelly": {
     "number": 36,
     "name": "果冻墙卡",
     "description": "碰到后弹回 2 步",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "是否改变朝向、连锁触发",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "触碰转向后移动2步替代剩余步数。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "portal": {
     "number": 37,
@@ -561,39 +612,39 @@ const ALL = {
     "name": "传送卡",
     "description": "指定角色移至指定地点",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "目标范围、终点结算、状态保留",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "指定附近角色到指定道路，不立即触发事件，继续原行动。 范围、时序、优先级为测试规则，未实机核验。"
   },
   "motorbike": {
     "number": 39,
     "name": "机车卡",
     "description": "可用骰子数上限 2",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "可选 1/2 骰、与汽车替换、失去条件",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "可用骰子数上限 2 范围、时序、优先级为测试规则，未实机核验。"
   },
   "car": {
     "number": 40,
     "name": "汽车卡",
     "description": "可用骰子数上限 3",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "可选骰数、与异常状态的优先级",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "可用骰子数上限 3 范围、时序、优先级为测试规则，未实机核验。"
   },
   "magic": {
     "number": 41,
@@ -613,13 +664,13 @@ const ALL = {
     "name": "急速弹卡",
     "description": "向每位对手处发弹；传统住院 3 天、降 1 层、连爆；热斗大量扣现",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "“极速弹/急速飞弹”名称、重叠爆炸",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "向道路上的对手位置发弹，同格共用爆点；测试半径1、住院3次行动、建筑降1层并连爆。未实现热斗，叠加规则待核验。"
   },
   "glory": {
     "number": 43,
@@ -691,12 +742,12 @@ const ALL = {
     "name": "启动卡",
     "description": "触发范围内附身炸弹与机关",
     "source": "https://gl.ali213.net/html/2022-10/934689_20.html",
-    "implemented": false,
+    "implemented": true,
     "unknowns": [
       "选择地格后作用半径、执行顺序",
       "范围、计时、叠加和目标资格未实机核验"
     ],
-    "status": "not_implemented",
-    "implementation_note": "尚未实现，不进入活动卡池。"
+    "status": "implemented_provisional",
+    "implementation_note": "引爆测试半径1内已建模的地面炸物和附身炸弹；没有对象时不耗牌。地图机关尚未实现，范围和时序待核验。"
   }
 }

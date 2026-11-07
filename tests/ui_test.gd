@@ -2,7 +2,7 @@ extends SceneTree
 
 var app: Control
 var failures: int = 0
-var out_dir := "res://docs/testing/round3"
+var out_dir := "res://docs/testing/round5/base"
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -62,6 +62,20 @@ func capture(file_name: String) -> void:
 	await RenderingServer.frame_post_draw
 	check(root.get_texture().get_image().save_png(out_dir.path_join(file_name + ".png")) == OK, "screenshot " + file_name)
 
+func choose_route_steps(steps: int) -> void:
+	var choice: OptionButton = app.popup.find_child("RouteChoice", true, false)
+	check(choice != null, "route selector exists")
+	if choice == null: return
+	var found := false
+	for index in range(choice.item_count):
+		if choice.get_item_metadata(index) == steps:
+			choice.select(index)
+			choice.item_selected.emit(index)
+			found = true
+			break
+	check(found, "requested route length exists")
+	if found: await click("确认路线")
+
 func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
@@ -84,7 +98,7 @@ func run() -> void:
 	await click("+1000 现金")
 	check(app.game.players[0].cash == 11000 and app.gm_used, "GM adds cash")
 	await click("遥控骰子")
-	await click("1")
+	await choose_route_steps(1)
 	await click("掷骰子")
 	check(app.game.phase == "move", "roll requests initial direction")
 	var move: int = app.game.available_moves()[0]

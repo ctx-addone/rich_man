@@ -1,0 +1,80 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 汽车卡
+PASS: button enabled: 汽车卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: vehicle card equips car
+PASS: button exists: 3颗骰子
+PASS: button enabled: 3颗骰子
+PASS: car permits selecting three dice
+PASS: button exists: 遥控骰子
+PASS: button enabled: 遥控骰子
+PASS: screenshot 01-controlled-routes
+PASS: route selector exists
+PASS: requested route length exists
+PASS: button exists: 确认路线
+PASS: button enabled: 确认路线
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: controlled route produces legal three-die sum
+PASS: screenshot 02-vehicle-dice
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 传送卡
+PASS: button enabled: 传送卡
+PASS: teleport has separate player and road selectors
+PASS: button exists: 确认传送
+PASS: button enabled: 确认传送
+PASS: teleport changes road without spending the current dice action
+PASS: screenshot 03-teleport-road
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 梦游卡
+PASS: button enabled: 梦游卡
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: sleepwalk card applies moving status
+PASS: button exists: 结束回合
+PASS: button enabled: 结束回合
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: automatic movement resolves within bounded time
+PASS: sleepwalk moves automatically and bypasses bank service
+PASS: sleepwalker cannot play active cards
+PASS: screenshot 04-sleepwalk
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 设置汽车
+PASS: button enabled: 设置汽车
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 附身炸弹 · 剩1步
+PASS: button enabled: 附身炸弹 · 剩1步
+PASS: GM constructs vehicle and timed bomb through UI
+PASS: screenshot 05-bomb-countdown
+PASS: button exists: 掷骰子
+PASS: button enabled: 掷骰子
+PASS: automatic movement resolves within bounded time
+PASS: bomb explosion destroys vehicle before personal defense
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: button exists: 使用 无懈卡
+PASS: button enabled: 使用 无懈卡
+PASS: immune prevents hospital without restoring bomb or vehicle
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: defended last-step blast resumes landing
+PASS: screenshot 06-bomb-defense
+R5_UI failures=0

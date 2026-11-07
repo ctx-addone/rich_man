@@ -1,7 +1,7 @@
 extends "res://tests/ui_test.gd"
 
 func run() -> void:
-	out_dir = "res://docs/testing/round4"
+	out_dir = "res://docs/testing/round5"
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
@@ -20,9 +20,12 @@ func run() -> void:
 			continue
 		match app.game.phase:
 			"roll":
+				if app.game.is_sleepwalking():
+					await create_timer(0.05).timeout
+					continue
 				if not card_played:
 					await click("遥控骰子")
-					await click("6")
+					await choose_route_steps(6)
 					card_played = true
 				await click("掷骰子")
 			"move":

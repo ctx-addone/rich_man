@@ -330,6 +330,62 @@
       "normalized_sha256": "BD251D4592010F13508A0E2A196D5D126D5F0D700C3B1D9CFE6825BCCEC7269B",
       "source_sha256": "62A57590EDFEDD264D5285788D0E32205879B9FC23EE90586E2EE80CBA1C6A49",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-05-report.md",
+      "title": "15 · 第五轮移动与爆炸验收",
+      "node_token": "FhWaw1PquiP0ZTkkv3NcRc71nJc",
+      "document_id": "FGPrd38b1o6tluxTqilcxRapnzf",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/FhWaw1PquiP0ZTkkv3NcRc71nJc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-15.json",
+      "revision_id": 2,
+      "remote_characters": 2158,
+      "normalized_sha256": "AFB221059ED9393D42577233CA83A6856E9F1ACBCF35507C76A0FD01D089FBD7",
+      "source_sha256": "96DDB24B82FF085E383454F14AC33400710BC8C1CE531F05EC839EBCB6F5B7D7",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-05-movement.md",
+      "title": "16 · 路线与载具模型",
+      "node_token": "TezWwTfhviTvtRkWD6bc3nXonAg",
+      "document_id": "IJj1dDezBo1ZQJxC5VjcAJNWnjb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/TezWwTfhviTvtRkWD6bc3nXonAg",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-16.json",
+      "revision_id": 2,
+      "remote_characters": 1283,
+      "normalized_sha256": "B1AFFD1DE3C3F60522904E54EBFAA9A880D5E114371357EAE8D6693A44DF5A74",
+      "source_sha256": "6FFB02FF9B2E9A065B13E4FAF05A07D8D9561072CDE21EEABC3B7B9DE8FC5847",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-05-explosives.md",
+      "title": "17 · 爆炸连锁与附身炸弹",
+      "node_token": "Ry5EwV7vmiFdH9kRbhyc6Nein1c",
+      "document_id": "KvdydXbisoE3EMxjGqjcVJt5n6d",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Ry5EwV7vmiFdH9kRbhyc6Nein1c",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-17.json",
+      "revision_id": 2,
+      "remote_characters": 1420,
+      "normalized_sha256": "F8FA98CEC6E60FEEAEA1C5FC7F463F23E12554CC2CD8B9F143F3F8B0DCD56CDD",
+      "source_sha256": "1E0F00E629AE32C3AC003AD164569D5E73CD7F5A38F67A7EC8A83FDA83469ECA",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r11-movement-explosions.md",
+      "title": "18 · 移动与爆炸规则补证",
+      "node_token": "IkGnwsIGGiKIWxkH7n3cgJLWn36",
+      "document_id": "AX5sdrtXUoX3B6xc6pLcNjPOnTh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/IkGnwsIGGiKIWxkH7n3cgJLWn36",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-18.json",
+      "revision_id": 2,
+      "remote_characters": 5449,
+      "normalized_sha256": "1612501E2B570CFB1BA1C51AF1C0DD7353659715A05C92E223819BE60C7A12D3",
+      "source_sha256": "4B3AA31ECBC078A789BFFEF08926D7C119C3E550B7A7F64299B0B4E119F25972",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -339,5 +395,6 @@
     "round-02-report.md": "https://dcncd5jl63xs.feishu.cn/wiki/I73vwc6Y4iluPjkW8NMc7yxMnCg"
   },
   "round3_updated_at": "2026-11-08",
-  "round4_updated_at": "2026-11-08"
+  "round4_updated_at": "2026-11-08",
+  "round5_updated_at": "2026-11-08"
 }

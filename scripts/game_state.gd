@@ -1,6 +1,9 @@
 class_name RichGame
 extends RefCounted
 
+const Explosives = preload("res://scripts/model/explosives.gd")
+const RoutePlanner = preload("res://scripts/model/route_planner.gd")
+const Movement = preload("res://scripts/model/movement_rules.gd")
 const Combat = preload("res://scripts/model/combat_rules.gd")
 const Buildings = preload("res://scripts/model/building_rules.gd")
 const Market = preload("res://scripts/model/stock_market.gd")
@@ -23,12 +26,18 @@ var round_limit := 20
 var phase := "roll"
 var steps_left := 0
 var last_roll := 0
+var last_dice: Array[int] = []
+var dice_count := 1
+var gm_choose_route := false
+var forced_next := -1
+var cached_next := -1
 var logs: Array[String] = []
 var winners: Array[int] = []
 var traffic_phase := 0
 var rng := RandomNumberGenerator.new()
 var card_used := false
 var controlled_dice := 0
+var controlled_path: Array = []
 var active_lot_id := ""
 var road_objects: Dictionary = {}
 var bank_visited: Array[String] = []
@@ -40,6 +49,12 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	if seed_value == 0: rng.randomize()
 	else: rng.seed = seed_value
 	pending_attack.clear()
+	controlled_path.clear()
+	dice_count=1
+	last_dice.clear()
+	gm_choose_route=false
+	forced_next=-1
+	cached_next=-1
 	players.clear()
 	logs.clear()
 	winners.clear()
@@ -57,7 +72,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20) -> void:
 	active_lot_id = ""
 	_build_map()
 	for n in names:
-		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{}})
+		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":0, "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
 	_log("集成验证地图：经济、范围与计时参数待原版核验；非原版地图。")
 
 func _build_map() -> void:
@@ -139,23 +154,57 @@ func facility_lot(kind: String) -> Dictionary:
 
 func signal_state(_id: int) -> String: return "此验证地图无红绿灯"
 
+func is_sleepwalking() -> bool:
+	return not players.is_empty() and players[current].status.get("kind","")=="sleepwalk"
+
+func max_dice() -> int:
+	return Movement.max_dice(players[current]) if not players.is_empty() else 1
+
+func set_dice_count(count: int) -> bool:
+	if phase!="roll" or is_sleepwalking() or count<1 or count>max_dice() or controlled_dice!=0: return false
+	dice_count=count
+	return true
+
 func available_moves() -> Array[int]:
-	var result: Array[int] = []
-	if phase!="move" or players.is_empty(): return result
-	var p: Dictionary = players[current]
-	for id in nodes[p.pos].neighbors:
-		if id!=p.previous or nodes[p.pos].neighbors.size()==1: result.append(id)
-	return result
+	return Movement.available_moves(self)
 
 func roll_dice(forced: int = 0) -> bool:
-	if phase!="roll" or players.is_empty() or not players[current].status.is_empty(): return false
-	last_roll = clampi(forced,1,6) if forced>0 else (controlled_dice if controlled_dice>0 else rng.randi_range(1,6))
+	if phase!="roll" or players.is_empty() or (not players[current].status.is_empty() and not is_sleepwalking()): return false
+	var p:Dictionary=players[current]
+	dice_count=clampi(dice_count,1,max_dice())
+	last_dice.clear()
+	if int(p.get("stay_turns",0))>0:
+		p.stay_turns-=1
+		last_roll=0
+		controlled_dice=0
+		phase="end"
+		_log("停留：原地结束行动，不重复触发落点（测试规则）。")
+		return true
+	if is_sleepwalking(): forced=0; controlled_dice=0; controlled_path.clear()
+	if int(p.get("turtle_turns",0))>0 and controlled_dice==0 and forced==0:
+		last_dice.append(1)
+	elif forced>0 or controlled_dice>0:
+		var total:int=clampi(forced,1,18) if forced>0 else controlled_dice
+		# A controlled total is split into legal faces; super dice uses one die.
+		var count:int=mini(dice_count,total)
+		for i in range(count):
+			var face:int=mini(6,total-(count-i-1))
+			last_dice.append(face)
+			total-=face
+	else:
+		for i in range(dice_count): last_dice.append(rng.randi_range(1,6))
+	if int(p.get("turtle_turns",0))>0: p.turtle_turns-=1
+	last_roll=0
+	for face in last_dice: last_roll+=face
 	controlled_dice=0
 	steps_left=last_roll
 	active_lot_id=""
 	bank_visited.clear()
+	cached_next=-1
+	p.choose_junction=nodes[p.pos].neighbors.size()>2
+	if p.has("next_direction"): forced_next=p.next_direction
 	phase="move"
-	_log("%s 掷出%d。"%[players[current].name,last_roll])
+	_log("%s 掷出%s，共%d步。"%[p.name,str(last_dice),last_roll])
 	return true
 
 func move_to(node_id: int) -> bool:
@@ -163,9 +212,25 @@ func move_to(node_id: int) -> bool:
 	var p: Dictionary=players[current]
 	p.previous=p.pos
 	p.pos=node_id
+	if not controlled_path.is_empty(): controlled_path.pop_front()
+	p.erase("next_direction")
+	p.choose_junction=false
+	cached_next=-1
+	forced_next=-1
 	steps_left-=1
 	if node_id==0: p.cash+=1000; _log("经过起点获得1000（测试规则）。")
-	if road_objects.has(node_id):
+	if Explosives.after_step(self,current):
+		Combat.advance(self)
+		return true
+	return _resume_road_arrival()
+
+func _resume_road_arrival() -> bool:
+	var p:Dictionary=players[current]
+	var node_id:int=p.pos
+	if Explosives.arrive(self,current):
+		Combat.advance(self)
+		return true
+	if road_objects.has(node_id) and road_objects[node_id].kind!="timebomb":
 		var object_owner:int=road_objects[node_id].get("owner",-1)
 		var object_kind:String=road_objects[node_id].kind
 		road_objects.erase(node_id)
@@ -173,8 +238,22 @@ func move_to(node_id: int) -> bool:
 			var choices:Array=[]
 			for road in nodes:
 				if road.id!=node_id: choices.append(road.id)
-			return gm_teleport(current,choices[rng.randi_range(0,choices.size()-1)])
-		if object_kind=="roadblock":
+			controlled_path.clear()
+			p.pos=choices[rng.randi_range(0,choices.size()-1)]
+			p.previous=-1
+			steps_left=0
+			_continue_arrival()
+			return true
+		if object_kind=="banana":
+			steps_left+=1
+		elif object_kind=="jelly":
+			controlled_path.clear()
+			Movement.reverse(self,current)
+			steps_left=2
+		elif object_kind=="trap":
+			p.stay_turns=1
+			steps_left=0
+		elif object_kind=="roadblock":
 			steps_left=0
 			# Arrival still resolves pass services before the final landing.
 		else:
@@ -187,7 +266,7 @@ func move_to(node_id: int) -> bool:
 func _continue_arrival() -> void:
 	var node_id:int=players[current].pos
 	for id in board_model.lots_for_event(str(node_id),"pass"):
-		if lots[id].building_type=="bank" and not bank_visited.has(id):
+		if lots[id].building_type=="bank" and not bank_visited.has(id) and not is_sleepwalking():
 			bank_visited.append(id)
 			phase="bank"
 			_log("经过银行，可调整现金与存款；剩余%d步。"%steps_left)
@@ -199,7 +278,7 @@ func _check_movement() -> void:
 	elif available_moves().is_empty(): steps_left=0; _land()
 
 func bank_transfer(amount: int) -> bool:
-	if phase!="bank" or amount==0: return false
+	if phase!="bank" or amount==0 or is_sleepwalking(): return false
 	var p: Dictionary=players[current]
 	if amount>p.cash or -amount>p.deposit: return false
 	p.cash-=amount
@@ -222,7 +301,7 @@ func _land() -> void:
 	for id in board_model.lots_for_event(str(p.pos),"stop"):
 		var lot: Dictionary=lots[id]
 		if lot.kind=="facility":
-			if lot.building_type=="shop":
+			if lot.building_type=="shop" and not is_sleepwalking():
 				phase="shop"
 				if not continuing_shop: shop_purchases=0
 			continue
@@ -269,7 +348,7 @@ func lot_value(lot_id:String)->int:
 func rent_preview(lot_id:String,visitor_id:int=-1)->int:
 	return Buildings.rent(self,lots[lot_id],visitor_id) if lots.has(lot_id) else 0
 func buy_property(lot_id:String="",building_type:String="")->bool:
-	if phase!="land" or players[current].bankrupt: return false
+	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
 	var lot:=_selected_lot(lot_id)
 	if lot.is_empty() or lot.kind=="facility" or lot.owner!=-1: return false
 	if building_type.is_empty(): building_type="house" if lot.kind=="small" else "mall"
@@ -283,15 +362,15 @@ func buy_property(lot_id:String="",building_type:String="")->bool:
 	_log("购买%s，建造%s。"%[lot.name,building_name(building_type)])
 	return true
 func upgrade_property(lot_id:String="")->bool:
-	if phase!="land" or players[current].bankrupt: return false
+	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
 	var lot:=_selected_lot(lot_id)
-	if lot.is_empty() or lot.kind=="facility" or lot.owner!=current or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
+	if lot.is_empty() or lot.kind=="facility" or lot.building_type=="vacant" or lot.owner!=current or lot.level>=max_level(lot.id) or players[current].cash<upgrade_cost(lot.id): return false
 	players[current].cash-=upgrade_cost(lot.id)
 	lot.level+=1
 	phase="end"
 	return true
 func rebuild_property(lot_id:String,building_type:String)->bool:
-	if phase!="land" or players[current].bankrupt: return false
+	if phase!="land" or players[current].bankrupt or is_sleepwalking(): return false
 	var lot:=_selected_lot(lot_id)
 	if lot.is_empty() or lot.owner!=current or not building_options(lot_id).has(building_type) or lot.building_type==building_type: return false
 	if players[current].cash<rebuild_cost(lot_id,building_type): return false
@@ -304,11 +383,11 @@ func research_options(lot_id:String)->Array[String]:
 	var result:Array[String]=[]
 	if not lots.has(lot_id): return result
 	# Verified research pool remains incomplete; only currently playable cards offered.
-	var pool:Array=["portal"] if CARD_NAMES.has("portal") else []
+	var pool:Array=["portal","trap","super_dice","teleport","quantum"]
 	for i in range(mini(lots[lot_id].level,pool.size())): result.append(pool[i])
 	return result
 func start_research(lot_id:String,card_id:String)->bool:
-	if phase not in ["land","roll"] or not lots.has(lot_id): return false
+	if is_sleepwalking() or phase not in ["land","roll"] or not lots.has(lot_id): return false
 	var lot:Dictionary=lots[lot_id]
 	if lot.owner!=current or lot.building_type!="lab" or not lot.research.is_empty() or not research_options(lot_id).has(card_id) or lot.closed_until>round_number: return false
 	if players[current].cash<research_cost(lot_id): return false
@@ -316,7 +395,7 @@ func start_research(lot_id:String,card_id:String)->bool:
 	lot.research={"card_id":card_id,"remaining":Buildings.PROFILE.research_turns}
 	return true
 func collect_research(lot_id:String)->bool:
-	if phase not in ["roll","land","shop"] or not lots.has(lot_id): return false
+	if is_sleepwalking() or phase not in ["roll","land","shop"] or not lots.has(lot_id): return false
 	var lot:Dictionary=lots[lot_id]
 	if lot.owner!=current or lot.building_type!="lab" or lot.level<=0 or lot.research.is_empty() or lot.research.remaining>0 or lot.closed_until>round_number: return false
 	if not give_card(current,lot.research.card_id): return false
@@ -331,7 +410,7 @@ func give_card(player_id:int,card_id:String)->bool:
 	players[player_id].cards.append(card_id)
 	return true
 func discard_card(index:int)->bool:
-	if phase not in ["roll","land","shop"] or index<0 or index>=players[current].cards.size(): return false
+	if is_sleepwalking() or phase not in ["roll","land","shop"] or index<0 or index>=players[current].cards.size(): return false
 	players[current].cards.remove_at(index)
 	return true
 func shop_offers()->Array[Dictionary]:
@@ -340,13 +419,13 @@ func shop_offers()->Array[Dictionary]:
 	for lot in lots.values():
 		if lot.owner>=0 and lot.owner!=current and lot.building_type=="energy" and lot.closed_until<=round_number: markup+=lot.level*Buildings.PROFILE.energy_markup
 	for id in CARD_NAMES:
-		if id in ["portal","glory","misery","disaster"]: continue
+		if id in ["portal","trap","super_dice","teleport","quantum","glory","misery","disaster","rapid_missile"]: continue
 		offers.append({"id":id,"name":CARD_NAMES[id],"price":int(Buildings.PROFILE.card_price*(1.0+markup))})
 	return offers
 func shop_remaining()->int:
 	return maxi(0,int(Buildings.PROFILE.shop_purchase_limit)-shop_purchases) if phase=="shop" else 0
 func buy_card(card_id:String)->bool:
-	if phase!="shop" or shop_remaining()<=0 or players[current].cards.size()>=HAND_LIMIT: return false
+	if is_sleepwalking() or phase!="shop" or shop_remaining()<=0 or players[current].cards.size()>=HAND_LIMIT: return false
 	for offer in shop_offers():
 		if offer.id==card_id and players[current].cash>=offer.price:
 			if not give_card(current,card_id): return false
@@ -409,6 +488,7 @@ func send_to_facility(player_id: int, kind: String, days: int, combat_internal: 
 	var p: Dictionary=players[player_id]
 	if p.bankrupt or facility_lot(kind).is_empty(): return false
 	var prior: Dictionary=p.status
+	if prior.get("kind","")=="sleepwalk": prior={}
 	p.status={"kind":kind,"remaining":days,"return_pos":prior.get("return_pos",p.pos),"return_previous":prior.get("return_previous",p.previous)}
 	_log("%s 进入%s，滞留%d次行动。"%[p.name,"医院" if kind=="hospital" else "监狱",days])
 	if player_id==current:
@@ -422,8 +502,9 @@ func gm_release(player_id: int) -> bool:
 	if phase=="reaction": return false
 	if phase=="finished" or player_id<0 or player_id>=players.size() or players[player_id].status.is_empty(): return false
 	var p: Dictionary=players[player_id]
-	p.pos=p.status.return_pos
-	p.previous=p.status.return_previous
+	if p.status.get("kind","")!="sleepwalk":
+		p.pos=p.status.return_pos
+		p.previous=p.status.return_previous
 	p.status={}
 	if player_id==current and phase=="detained": phase="roll"
 	_log(p.name+" 返回原路线。")
@@ -431,7 +512,7 @@ func gm_release(player_id: int) -> bool:
 
 func end_turn() -> bool:
 	if phase not in ["land","end","detained"]: return false
-	if phase=="detained": players[current].status.remaining=maxi(0,players[current].status.remaining-1)
+	if phase=="detained" or is_sleepwalking(): players[current].status.remaining=maxi(0,players[current].status.remaining-1)
 	_check_winner()
 	if phase=="finished": return true
 	for ignored in range(players.size()):
@@ -442,13 +523,17 @@ func end_turn() -> bool:
 			if round_number>round_limit: finish_game(); return true
 		if not players[current].bankrupt: break
 	phase="roll"
+	controlled_path.clear()
+	dice_count=1
+	forced_next=-1
+	cached_next=-1
 	steps_left=0
 	card_used=false
 	controlled_dice=0
 	active_lot_id=""
 	if not players[current].status.is_empty():
 		if players[current].status.remaining<=0: gm_release(current)
-		else: phase="detained"
+		elif not is_sleepwalking(): phase="detained"
 	return true
 
 func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
@@ -526,7 +611,12 @@ func gm_teleport(player_id: int, node_id: int) -> bool:
 	if phase=="finished" or player_id<0 or player_id>=players.size() or node_id<0 or node_id>=nodes.size() or players[player_id].bankrupt or not players[player_id].status.is_empty(): return false
 	players[player_id].pos=node_id
 	players[player_id].previous=-1
+	players[player_id].erase("next_direction")
 	if player_id==current:
+		controlled_path.clear()
+		controlled_dice=0
+		forced_next=-1
+		cached_next=-1
 		steps_left=0
 		bank_visited.clear()
 		for id in lots_at_node(node_id):
@@ -542,6 +632,20 @@ func gm_give_card(player_id: int, card_id: String) -> bool:
 	if phase=="finished" or player_id<0 or player_id>=players.size() or not CARD_NAMES.has(card_id) or players[player_id].bankrupt: return false
 	return give_card(player_id,card_id)
 
+func gm_vehicle(player_id: int, kind: String) -> bool:
+	if phase in ["finished", "reaction"] or player_id < 0 or player_id >= players.size() or players[player_id].bankrupt or kind not in ["foot", "motorbike", "car"]: return false
+	players[player_id].vehicle = kind
+	if player_id == current:
+		dice_count = mini(dice_count, max_dice())
+		controlled_dice = 0
+		controlled_path.clear()
+	return true
+
+func gm_bomb(player_id: int, remaining: int) -> bool:
+	if phase in ["finished", "reaction"] or player_id < 0 or player_id >= players.size() or players[player_id].bankrupt or remaining < 0 or remaining > 30: return false
+	players[player_id].bomb = {"remaining":remaining, "owner":-1} if remaining > 0 else {}
+	return true
+
 func _log(message: String) -> void:
 	logs.append(message)
 	if logs.size()>150: logs.pop_front()
@@ -551,7 +655,7 @@ func reaction_player() -> int:
 
 func reaction_description() -> String:
 	if reaction_player()<0: return ""
-	return "%s：%s，持续%d次行动（计时规则待核验）。" % [CARD_NAMES.get(pending_attack.source,pending_attack.source), {"hospital":"住院","prison":"入狱","hibernate":"冬眠"}.get(pending_attack.kind,pending_attack.kind),pending_attack.days]
+	return "%s：%s，持续%d次行动（计时规则待核验）。" % [CARD_NAMES.get(pending_attack.source,pending_attack.source), {"hospital":"住院","prison":"入狱","hibernate":"冬眠","sleepwalk":"梦游"}.get(pending_attack.kind,pending_attack.kind),pending_attack.days]
 
 func reaction_options() -> Array[String]:
 	return Combat.options(self)
@@ -561,3 +665,11 @@ func reaction_targets(card_id:String) -> Array[int]:
 
 func resolve_reaction(card_id:String="",target:int=-1) -> bool:
 	return Combat.resolve(self,card_id,target)
+
+func teleport_destinations(_player_id:int)->Array[int]:
+	var result:Array[int]=[]
+	for n in nodes: result.append(n.id)
+	return result
+
+func controlled_routes(card_id:String)->Array[Dictionary]:
+	return RoutePlanner.routes(self,card_id)

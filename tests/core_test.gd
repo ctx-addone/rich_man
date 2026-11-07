@@ -46,8 +46,10 @@ func _initialize()->void:
 	check(g.phase=="bank" and g.steps_left==0,"GM bank landing opens service")
 	check(g.close_bank() and g.phase=="land","Final bank stop closes once without reopening")
 	g.setup(["甲","乙","丙","丁"],42)
-	g.lots.lot_1_1.owner=1
-	g.lots.lot_1_1.level=1
+	g.lots.small_1_6.owner=1
+	g.lots.small_1_6.building_type="house"
+	a=int(g.lots.small_1_6.frontage_nodes[0])
+	g.lots.small_1_6.level=1
 	g.players[0].cash=0
 	g.nodes[a].kind="event"
 	g.gm_teleport(0,a)
@@ -79,8 +81,10 @@ func _initialize()->void:
 	check(not g.roll_dice() and not g.gm_cash(0,100) and not g.send_to_facility(0,"hospital",2),"Finished game rejects mutations")
 	# These accounting tests lock provisional policy, not verified original-game economics.
 	g.setup(["甲","乙","丙","丁"],42)
-	g.lots.lot_1_1.owner=1
-	g.lots.lot_1_1.level=2
+	g.lots.small_1_6.owner=1
+	g.lots.small_1_6.building_type="house"
+	a=int(g.lots.small_1_6.frontage_nodes[0])
+	g.lots.small_1_6.level=2
 	g.players[0].cash=100
 	g.players[0].deposit=1000
 	g.gm_teleport(0,a)
@@ -88,34 +92,40 @@ func _initialize()->void:
 	check(g.players[1].cash==10440 and not g.players[0].bankrupt, "Full rent transferred from sufficient savings")
 	check(g.players[0].cash+g.players[0].deposit+g.players[1].cash==11100, "Rent conserves combined liquid balances")
 	g.setup(["甲","乙","丙","丁"],42)
-	g.lots.lot_1_1.owner=1
-	g.lots.lot_1_1.level=2
+	g.lots.small_1_6.owner=1
+	g.lots.small_1_6.building_type="house"
+	a=int(g.lots.small_1_6.frontage_nodes[0])
+	g.lots.small_1_6.level=2
 	g.players[0].cash=100
 	g.players[0].deposit=100
 	var sale:Dictionary=g.lots.lot_7_9
 	sale.owner=0
 	sale.level=3
-	sale.building_type="house"
+	sale.building_type="mall"
 	var retained:Dictionary=g.lots.lot_13_9
 	retained.owner=0
 	retained.level=1
-	retained.building_type="house"
+	retained.building_type="mall"
 	g.gm_teleport(0,a)
-	check(g.players[0].deposit==0 and g.players[0].cash==960, "Insufficient deposit precedes 1200 half-price liquidation and 880 rent")
+	check(g.players[0].deposit==0 and g.players[0].cash==960, "Insufficient deposit precedes 1200 half-price liquidation and 440 rent")
 	check(sale.owner==-1 and sale.level==0 and sale.building_type=="vacant", "Liquidation resets one whole lot")
 	check(retained.owner==0 and retained.level==1, "Liquidation stops once debt is covered")
 	for frontage in sale.frontage_nodes: check(g.lots_at_node(int(frontage)).has(sale.id) and g.lots[sale.id].owner==-1, "Every sold entrance shares released title")
 	check(g.players[0].cash+g.players[0].deposit+g.players[1].cash==11400, "Debt transfer conserved after bank-funded liquidation")
 	g.setup(["甲","乙","丙","丁"],42)
-	g.lots.lot_1_1.owner=1
-	g.lots.lot_1_1.level=1
+	g.lots.small_1_6.owner=1
+	g.lots.small_1_6.building_type="house"
+	a=int(g.lots.small_1_6.frontage_nodes[0])
+	g.lots.small_1_6.level=1
 	g.players[0].cash=120
 	g.players[0].deposit=100
 	g.gm_teleport(0,a)
 	check(g.players[0].cash==0 and g.players[0].deposit==0 and not g.players[0].bankrupt, "Exact payment leaves solvent zero balance")
 	g.setup(["甲","乙","丙","丁"],42)
-	g.lots.lot_1_1.owner=1
-	g.lots.lot_1_1.level=1
+	g.lots.small_1_6.owner=1
+	g.lots.small_1_6.building_type="house"
+	a=int(g.lots.small_1_6.frontage_nodes[0])
+	g.lots.small_1_6.level=1
 	g.players[0].cash=10
 	g.players[0].deposit=20
 	g.gm_teleport(0,a)

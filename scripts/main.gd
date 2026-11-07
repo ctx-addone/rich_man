@@ -126,7 +126,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.4 开发版  ·  股票与攻防结算  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.5 开发版  ·  载具、移动与爆炸连锁  /  同机热座  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -286,21 +286,36 @@ func refresh() -> void:
 	else:
 		sidebar.add_child(label("当前操作  /  " + p.name, 22, COLORS[portraits[game.current]]))
 		sidebar.add_child(label("骰子  %s    剩余步数  %d" % ["—" if game.last_roll == 0 else str(game.last_roll), game.steps_left], 20))
+		if not game.last_dice.is_empty():
+			var faces: Array[String] = []
+			for value in game.last_dice: faces.append(str(value))
+			sidebar.add_child(label("骰面  " + " + ".join(faces), 14))
 		if not p.status.is_empty() and game.phase != "detained":
-			sidebar.add_child(paragraph("当前%s。本次行程已结束，后续回合按提示推进状态。" % status_text(p), 16))
+			sidebar.add_child(paragraph("梦游中：自动掷骰和行走，不能主动出牌或交易。" if game.is_sleepwalking() else "当前%s。本次行程已结束，后续回合按提示推进状态。" % status_text(p), 16))
+		sidebar.add_child(label("载具 · " + vehicle_name(p), 15))
+		if p.get("turtle_turns", 0) > 0: sidebar.add_child(label("乌龟 · 余%d次行动，每次1步" % p.turtle_turns, 14))
+		if p.get("stay_turns", 0) > 0: sidebar.add_child(label("停留/麻痹 · 下次行动原地结束", 14, Color("f1a69c")))
+		if not p.get("bomb", {}).is_empty(): sidebar.add_child(label("附身炸弹 · 剩余 %d 步" % p.bomb.remaining, 17, Color("f28a79")))
 		match game.phase:
-			"roll": sidebar.add_child(button("掷骰子" + ("  [GM: %d]" % forced_dice if forced_dice > 0 else ""), roll))
+			"roll":
+				if game.max_dice() > 1 and not game.is_sleepwalking():
+					var dice_row := HBoxContainer.new()
+					sidebar.add_child(dice_row)
+					for count in range(1, game.max_dice()+1):
+						dice_row.add_child(button("%d颗骰子%s" % [count, " ✓" if game.dice_count == count else ""], func(): game.set_dice_count(count); refresh(), game.controlled_dice != 0))
+				sidebar.add_child(button("梦游 · 自动掷骰" if game.is_sleepwalking() else "掷骰子" + ("  [GM: %d]" % forced_dice if forced_dice > 0 else ""), roll, game.is_sleepwalking()))
 			"move":
 				sidebar.add_child(paragraph("选择金框出口继续前进。" if game.available_moves().size() > 1 else "正在移动…"))
 				for id in game.available_moves():
 					sidebar.add_child(button("→ %02d · %s" % [id, game.nodes[id].name], func(): act_move(id)))
 			"land":
 				for lot_id in game.lots_at_node(p.pos):
+					if game.is_sleepwalking(): break
 					var lot: Dictionary = game.lots[lot_id]
 					if lot.kind == "facility": continue
 					if lot.owner < 0: sidebar.add_child(button("购买地产 · %s" % lot.name, func(): choose_building(lot_id, false)))
 					elif lot.owner == game.current:
-						sidebar.add_child(button("升级建筑 · %s · %d" % [game.building_name(lot.building_type), game.upgrade_cost(lot_id)], func(): game.upgrade_property(lot_id); refresh(), lot.level >= game.max_level(lot_id) or p.cash < game.upgrade_cost(lot_id)))
+						sidebar.add_child(button("升级建筑 · %s · %d" % [game.building_name(lot.building_type), game.upgrade_cost(lot_id)], func(): game.upgrade_property(lot_id); refresh(), lot.building_type == "vacant" or lot.level >= game.max_level(lot_id) or p.cash < game.upgrade_cost(lot_id)))
 						sidebar.add_child(button("改建项目 · " + lot.name, func(): choose_building(lot_id, true)))
 			"bank":
 				sidebar.add_child(paragraph("银行服务\n可存入现金或提取存款。离开后继续剩余移动，不重复结算经过事件。"))
@@ -335,23 +350,27 @@ func refresh() -> void:
 			var row := HBoxContainer.new()
 			hand.add_child(row)
 			var reactive: bool = Game.CARD_TARGETS.get(card, "") == "reaction"
-			var b := button(Game.CARD_NAMES[card] + (" · 被动应对" if reactive else ""), func(): play_card(card), game.phase != "roll" or reactive)
+			var b := button(Game.CARD_NAMES[card] + (" · 被动应对" if reactive else ""), func(): play_card(card), game.phase != "roll" or reactive or game.is_sleepwalking())
 			b.tooltip_text = Game.CARD_DESCRIPTIONS[card]
 			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(b)
-			row.add_child(button("弃", func(): game.discard_card(card_index); refresh(), game.phase not in ["roll", "shop"]))
+			row.add_child(button("弃", func(): game.discard_card(card_index); refresh(), game.phase not in ["roll", "shop"] or game.is_sleepwalking()))
 	var id: int = selected if selected >= 0 else p.pos
 	var n: Dictionary = game.nodes[id]
 	var detail := panel(sidebar)
 	var detail_lots: Array = [selected_lot] if game.lots.has(selected_lot) else game.lots_at_node(id)
 	if not p.status.is_empty() and selected < 0 and selected_lot.is_empty():
 		detail.add_child(label("当前状态与位置", 18))
-		detail.add_child(paragraph("离开后返回：%s" % game.nodes[p.status.return_pos].name, 14))
+		detail.add_child(paragraph("当前仍在道路上，状态结束后继续当前位置。" if p.status.kind == "sleepwalk" else "离开后返回：%s" % game.nodes[p.status.return_pos].name, 14))
 		var facility: Dictionary = game.facility_lot(p.status.kind)
 		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else ([facility.id] if not facility.is_empty() else [])
 	else:
 		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
 		detail.add_child(paragraph({"metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取1000。", "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
+	if game.road_objects.has(id):
+		var object_kind: String = game.road_objects[id].kind
+		detail.add_child(label("道路物件 · " + Game.CARD_NAMES.get(object_kind, object_kind), 16, Color("e9c46a")))
+		detail.add_child(paragraph(Game.CARD_DESCRIPTIONS.get(object_kind, "经过时触发。"), 13))
 	for lot_id in detail_lots:
 		var lot: Dictionary = game.lots[lot_id]
 		detail.add_child(label(lot.name, 18, Color("e9c46a")))
@@ -373,6 +392,21 @@ func refresh() -> void:
 	for j in range(maxi(0, game.logs.size() - 5), game.logs.size()): log_panel.add_child(paragraph(game.logs[j], 13))
 	if not handoff and game.phase == "move" and game.available_moves().size() == 1 and not advancing:
 		auto_step()
+	elif not handoff and game.phase == "roll" and game.is_sleepwalking() and not advancing:
+		auto_sleepwalk()
+
+func vehicle_name(p: Dictionary) -> String:
+	return {"foot":"步行 · 最多1颗骰子", "motorbike":"摩托车 · 最多2颗骰子", "car":"汽车 · 最多3颗骰子"}.get(p.get("vehicle", "foot"), "步行")
+
+func auto_sleepwalk() -> void:
+	advancing = true
+	var ticket := generation
+	await get_tree().create_timer(0.22).timeout
+	if ticket != generation or screen != "game": return
+	advancing = false
+	if popup != null or handoff or game.phase != "roll" or not game.is_sleepwalking(): return
+	game.roll_dice()
+	refresh()
 
 func roll() -> void:
 	game.roll_dice(forced_dice)
@@ -412,7 +446,7 @@ func on_lot(id: String) -> void:
 
 func status_text(p: Dictionary) -> String:
 	if p.status.is_empty(): return ""
-	return "%s %d回合" % [{"hospital":"住院", "prison":"入狱", "vacation":"度假", "hibernate":"冬眠"}.get(p.status.kind, "停留"), p.status.remaining]
+	return "%s %d回合" % [{"hospital":"住院", "prison":"入狱", "vacation":"度假", "hibernate":"冬眠", "sleepwalk":"梦游", "stay":"停留", "paralyzed":"麻痹"}.get(p.status.kind, "停留"), p.status.remaining]
 
 func show_reaction_controls() -> void:
 	var responder: int = game.reaction_player()
@@ -507,15 +541,52 @@ func play_card(card_id: String) -> void:
 	v.add_child(paragraph(Game.CARD_DESCRIPTIONS[card_id]))
 	var target_type: String = Game.CARD_TARGETS.get(card_id, "none")
 	var error_label := paragraph("", 14)
-	if target_type == "dice":
-		var row := HBoxContainer.new()
-		v.add_child(row)
-		for number in range(1, 7):
-			row.add_child(button(str(number), func():
-				if game.use_card(card_id, -1, number): dismiss()
-				else: error_label.text = "当前无法使用这张卡。"))
+	if target_type == "dice" or card_id == "robot":
+		var routes: Array = game.controlled_routes(card_id)
+		var route_choice := OptionButton.new()
+		route_choice.name = "RouteChoice"
+		route_choice.custom_minimum_size.x = 610
+		route_choice.clip_text = true
+		for index in range(routes.size()):
+			var route: Dictionary = routes[index]
+			route_choice.add_item("%02d · %s · %s%d步 · 路线%d" % [route.destination, game.nodes[route.destination].name, "后退" if route.steps < 0 else "前进", absi(route.steps), index+1])
+			route_choice.set_item_metadata(index, route.steps)
+		v.add_child(route_choice)
+		var route_detail := paragraph("", 14)
+		v.add_child(route_detail)
+		var preview_route := func():
+			if routes.is_empty(): route_detail.text = "当前没有合法路线，卡牌不会消耗。"; return
+			var path_labels: Array[String] = []
+			for node_id in routes[route_choice.selected].path: path_labels.append("%02d" % node_id)
+			route_detail.text = ("清除路径上的道路物件：" if card_id == "robot" else "指定路线，沿途仍会触发银行及道路物件：") + " → ".join(path_labels)
+		preview_route.call()
+		route_choice.item_selected.connect(func(_index): preview_route.call())
+		v.add_child(button("确认路线", func():
+			var route: Dictionary = routes[route_choice.selected]
+			if game.use_card(card_id, route.path, route.steps): dismiss()
+			else: error_label.text = "路线或状态已变化，卡牌未消耗。", routes.is_empty()))
+	elif target_type == "player_road":
+		var people: Array = game.card_targets(card_id)
+		var player_choice := OptionButton.new()
+		player_choice.name = "TeleportPlayer"
+		for player_id in people: player_choice.add_item(game.players[player_id].name)
+		v.add_child(player_choice)
+		var road_choice := OptionButton.new()
+		road_choice.name = "TeleportRoad"
+		v.add_child(road_choice)
+		var update_roads := func():
+			road_choice.clear()
+			if people.is_empty(): return
+			for road in game.teleport_destinations(people[player_choice.selected]): road_choice.add_item("%02d · %s" % [road, game.nodes[road].name], road)
+		update_roads.call()
+		player_choice.item_selected.connect(func(_index): update_roads.call())
+		v.add_child(button("确认传送", func():
+			if road_choice.selected < 0: return
+			if game.use_card(card_id, people[player_choice.selected], road_choice.get_selected_id()): dismiss()
+			else: error_label.text = "目标或目的地无效，卡牌未消耗。", people.is_empty() or road_choice.item_count == 0))
 	elif target_type in ["player", "road", "lot"]:
 		var target := OptionButton.new()
+		target.name = "CardTarget"
 		var options: Array = game.card_targets(card_id)
 		for id in options:
 			target.add_item(game.players[id].name if target_type == "player" else (game.lots[id].name if target_type == "lot" else "%02d · %s" % [id, game.nodes[id].name]))
@@ -591,7 +662,7 @@ func dismiss() -> void:
 
 func show_help() -> void:
 	var v := modal("玩法说明")
-	v.add_child(paragraph("1. 四个席位轮流操作；掷骰前选择卡牌，路口选择出口。\n2. 道路与建筑独立，多个入口可以关联同一建筑及产权。\n3. 停在临街入口可购买或升级对应地产，对手地产会收租。\n4. 经过银行时可存取款，离开后继续剩余步数。\n5. 住院或入狱时暂不能行走和主动出牌，按提示结束停留回合。\n6. 最后存活者获胜，或达到轮数上限后比较净资产。\n7. 点击建筑看产权与入口；F1可以构造资金、卡牌和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
+	v.add_child(paragraph("1. 四个席位轮流操作；掷骰前选择卡牌；途经岔路随机，停在岔路后可选方向。\n2. 道路与建筑独立，多个入口可以关联同一建筑及产权。\n3. 停在临街入口可购买或升级对应地产，对手地产会收租。\n4. 经过银行时可存取款，离开后继续剩余步数。\n5. 住院或入狱时暂不能行走和主动出牌，按提示结束停留回合。\n6. 最后存活者获胜，或达到轮数上限后比较净资产。\n7. 点击建筑看产权与入口；F1可以构造资金、卡牌和特殊状态。\n\n当前是系统验证版本，地图、经济参数与部分状态细则仍待原版核验。完整还原进度见项目策划文档。", 18))
 	v.add_child(button("知道了", dismiss))
 
 func show_stocks() -> void:
@@ -661,7 +732,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func show_gm() -> void:
 	if screen != "game": return
-	var v := modal("GM 测试工具")
+	var outer := modal("GM 测试工具")
+	var v := scroll_content(outer, 480)
 	v.add_child(label("测试操作会标记本局；传送当前玩家触发落地，但不领起点奖励。", 14))
 	var who := OptionButton.new()
 	for i in range(4): who.add_item(game.players[i].name, i)
@@ -689,5 +761,14 @@ func show_gm() -> void:
 	for kind in ["hospital", "prison"]:
 		state_row.add_child(button("住院2回合" if kind == "hospital" else "入狱2回合", func(): gm_used = true; game.send_to_facility(who.selected, kind, 2); dismiss()))
 	state_row.add_child(button("解除停留", func(): gm_used = true; game.gm_release(who.selected); dismiss()))
+	var vehicles := HBoxContainer.new()
+	v.add_child(vehicles)
+	for kind in ["foot", "motorbike", "car"]:
+		vehicles.add_child(button("设置" + {"foot":"步行", "motorbike":"摩托车", "car":"汽车"}[kind], func(): gm_used = true; game.gm_vehicle(who.selected, kind); dismiss(), game.phase == "reaction"))
+	var bombs := HBoxContainer.new()
+	v.add_child(bombs)
+	bombs.add_child(button("附身炸弹 · 剩1步", func(): gm_used = true; game.gm_bomb(who.selected, 1); dismiss(), game.phase == "reaction"))
+	bombs.add_child(button("清除附身炸弹", func(): gm_used = true; game.gm_bomb(who.selected, 0); dismiss(), game.phase == "reaction"))
+	v.add_child(button("手动选择所有岔路 · " + ("开" if game.gm_choose_route else "关"), func(): gm_used = true; game.gm_choose_route = not game.gm_choose_route; dismiss(), game.phase != "roll"))
 	v.add_child(button("立即结算整局", func(): gm_used = true; game.finish_game(); dismiss()))
-	v.add_child(button("关闭  /  Esc", dismiss))
+	outer.add_child(button("关闭  /  Esc", dismiss))
