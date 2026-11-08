@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 8
+const VERSION = 9
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -139,18 +139,21 @@ static func special_state_error(state: Dictionary, game) -> String:
 		for option in game.Specials.MAGIC: effects.append(option.id)
 		if not effects.has(magic.effect) or not game.Specials.CONDITIONS.has(magic.condition) or not unique_indices(magic.targets,count): return "魔法结果无效"
 	if not state.specials_enabled and (not visited.is_empty() or not magic.is_empty() or lottery != game.Specials.initial_lottery()): return "未启用的服务存在活动状态"
-	if state.shop_visit_serial < 0 or state.shop_purchases < 0 or state.shop_purchases > int(game.Buildings.PROFILE.shop_purchase_limit): return "商店访问计数无效"
+	var sample_shop:bool=state.shop_policy==game.Shop.SAMPLE_POLICY
+	var max_stock:int=game.Shop.SAMPLE_SLOTS if sample_shop else int(game.Shop.PROFILE.maximum_offers)
+	var min_stock:int=game.Shop.SAMPLE_SLOTS if sample_shop else int(game.Shop.PROFILE.minimum_offers)
+	if state.shop_visit_serial < 0 or state.shop_purchases < 0 or state.shop_purchases > game.Shop.purchase_limit(state.shop_policy): return "商店访问计数无效"
 	var stocked: Dictionary = {}
 	var pool: Array = game.Shop.pool(game)
 	for card in state.shop_stock:
-		if not card is String or not pool.has(card) or stocked.has(card): return "商店库存无效"
+		if not card is String or not pool.has(card) or (not sample_shop and stocked.has(card)): return "商店库存无效"
 		stocked[card] = true
-	if state.shop_stock.size() > int(game.Shop.PROFILE.maximum_offers): return "商店库存过多"
+	if state.shop_stock.size() > max_stock: return "商店库存过多"
 	if not state.specials_enabled and not state.shop_stock.is_empty(): return "旧版商店不能包含随机库存"
 	if not state.shop_stock.is_empty() and state.shop_visit_serial == 0: return "商店库存缺少访问记录"
 	if state.phase == "shop" and state.specials_enabled:
 		var original_stock: int = state.shop_stock.size()+state.shop_purchases
-		if state.shop_visit_serial < 1 or original_stock < int(game.Shop.PROFILE.minimum_offers) or original_stock > int(game.Shop.PROFILE.maximum_offers): return "商店阶段库存不一致"
+		if state.shop_visit_serial < 1 or original_stock < min_stock or original_stock > max_stock: return "商店阶段库存不一致"
 		var at_shop: bool = false
 		for lot in game.lots.values():
 			if lot.kind == "facility" and lot.building_type == "shop" and lot.frontage_nodes.has(str(state.players[state.current].pos)): at_shop = true
@@ -162,9 +165,13 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,3,4,5,6,7,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,4,5,6,7,8,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
+	if data.version < 9:
+		if state.has("shop_policy") and state.shop_policy != Game.Shop.LEGACY_POLICY: return failure("旧版本不能包含新版商店价格")
+		state.shop_policy = Game.Shop.LEGACY_POLICY
+	if not Game.Shop.valid_policy(state.get("shop_policy")): return failure("商店价格策略无效")
 	if data.version < 8:
 		if state.get("phase")=="merchant": return failure("旧版本不包含神秘人交易")
 		var npc_additions:Dictionary={"npcs_enabled":false,"road_npcs":{},"npc_respawn_due":{},"npc_seen":[]}

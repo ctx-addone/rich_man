@@ -1,0 +1,91 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: main menu identifies v0.18
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: new UI passes sample shop pricing policy
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: GM isolates unrelated NPCs
+PASS: ordinary shop opens through public landing
+PASS: fixed seed naturally includes verified roadblock card
+PASS: roadblock sample base4500 with Tangtang30percent costs1350
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: shop UI explains base price and Tangtang discount
+PASS: purchase button shows final actual quote
+PASS: screenshot 01-sample-shop-quotes
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: full hand shows guidance and disables purchase
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: GM constructs zero cash without bankruptcy
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: insufficient cash disables purchase
+PASS: screenshot 02-insufficient-cash
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: GM restores cash
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: button exists: 购买卡牌 · 路障卡
+PASS: button enabled: 购买卡牌 · 路障卡
+PASS: actual purchase deducts exactly displayed1350 and grants one card
+PASS: bought card disappears without resetting quota
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: 存读档
+PASS: button enabled: 存读档
+PASS: button exists: 新建存档
+PASS: button enabled: 新建存档
+PASS: button exists: 读取 ·
+PASS: button enabled: 读取 ·
+PASS: button exists: 确认读取
+PASS: button enabled: 确认读取
+PASS: new shop save restores exact state and pricing policy
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 离开商店
+PASS: button enabled: 离开商店
+PASS: NPC merchant remains available independently
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: NPC price stays1000 under sample ordinary-shop policy
+PASS: button exists: 购买 · 遥控骰子卡
+PASS: button enabled: 购买 · 遥控骰子卡
+PASS: NPC purchase deducts its independent1000 quote
+PASS: screenshot 03-independent-npc-price
+PASS: genuine v8 active-shop fixture loads
+PASS: old UI restores legacy pricing policy
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 浏览商店
+PASS: button enabled: 浏览商店
+PASS: old unfinished visit retains exact210 quote
+PASS: old visit explains its preserved historical discount
+PASS: screenshot 04-legacy-shop-quotes
+PASS: button exists: 购买卡牌 · 路障卡
+PASS: button enabled: 购买卡牌 · 路障卡
+PASS: old visit continues with original210 deduction and quota
+PASS: button exists: 返回对局
+PASS: button enabled: 返回对局
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: button exists: 相同设置 · 再来一局
+PASS: button enabled: 相同设置 · 再来一局
+PASS: same-settings restart keeps loaded legacy shop policy
+PASS: restarted Tangtang legacy game still quotes210
+ROUND18_SHOP_UI failures=0

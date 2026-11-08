@@ -34,6 +34,7 @@ var npcs_enabled: bool = true
 var teams: Array[int] = [0, 1, 2, 3]
 var turns: int = 20
 var match_seed: int = 0 # Zero uses ordinary random initialization; nonzero is a reproducible test entry point.
+var shop_policy: String = Game.Shop.SAMPLE_POLICY
 var economy_config: Dictionary = {"initial_cash":100000,"initial_deposit":100000,"inflation_interval":15,"policy":"r16_samples"}
 var screen: String = "menu"
 var handoff: bool = true
@@ -201,7 +202,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.17 开发版  ·  道路 NPC 与交易  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.18 开发版  ·  商店报价与旧局兼容  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -236,7 +237,7 @@ func map_select() -> void:
 	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱  ·  商店"))
 	var preview = Board.new()
 	var sample = Game.new()
-	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "economy":economy_config.duplicate(true)})
+	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "shop_policy":shop_policy, "economy":economy_config.duplicate(true)})
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
@@ -428,9 +429,10 @@ func start_game() -> void:
 	if not Game.Teams.valid_assignment(teams, 4): return
 	var next_game = Game.new()
 	ensure_characters()
-	if not next_game.setup(player_names, match_seed, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "characters":character_ids, "teams":teams, "map_id":map_id, "economy":economy_config.duplicate(true)}): return
+	if not next_game.setup(player_names, match_seed, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "shop_policy":shop_policy, "characters":character_ids, "teams":teams, "map_id":map_id, "economy":economy_config.duplicate(true)}): return
 	game = next_game
 	economy_config = game.economy_config.duplicate(true)
+	shop_policy = game.shop_policy
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -882,6 +884,7 @@ func show_shop() -> void:
 	for offer in game.shop_offers():
 		content.add_child(button("购买卡牌 · %s · %d" % [offer.name, offer.price], func():
 			if game.buy_card(offer.id): show_shop(), p.cash < offer.price or p.cards.size() >= Game.HAND_LIMIT or game.shop_remaining() <= 0))
+		content.add_child(paragraph(game.Shop.quote_detail(offer), 13))
 		content.add_child(paragraph(Game.CARD_DESCRIPTIONS[offer.id], 13))
 	v.add_child(button("返回对局", dismiss))
 
@@ -1257,6 +1260,7 @@ func load_snapshot(path: String) -> Dictionary:
 	gods_enabled = game.gods_enabled
 	specials_enabled = game.specials_enabled
 	npcs_enabled = game.npcs_enabled
+	shop_policy = game.shop_policy
 	teams.clear()
 	for player in game.players: teams.append(player.team)
 	turns = game.round_limit

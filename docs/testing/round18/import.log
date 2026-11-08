@@ -1,0 +1,47 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Registering global classes... (29 steps)
+[   0% ] update_scripts_classes | RichCharacterTraits
+[   3% ] update_scripts_classes |
+[   6% ] update_scripts_classes | RichShopRules
+[  10% ] update_scripts_classes | RichGame
+[  13% ] update_scripts_classes |
+[  16% ] update_scripts_classes |
+[  20% ] update_scripts_classes |
+[  23% ] update_scripts_classes |
+[  26% ] update_scripts_classes |
+[  30% ] update_scripts_classes |
+[  33% ] update_scripts_classes |
+[  36% ] update_scripts_classes |
+[  40% ] update_scripts_classes |
+[  43% ] update_scripts_classes |
+[  46% ] update_scripts_classes |
+[  50% ] update_scripts_classes |
+[  53% ] update_scripts_classes |
+[  56% ] update_scripts_classes |
+[  60% ] update_scripts_classes |
+[  63% ] update_scripts_classes |
+[  66% ] update_scripts_classes |
+[  70% ] update_scripts_classes |
+[  73% ] update_scripts_classes |
+[  76% ] update_scripts_classes |
+[  80% ] update_scripts_classes |
+[  83% ] update_scripts_classes |
+[  86% ] update_scripts_classes |
+[  90% ] update_scripts_classes |
+[  93% ] update_scripts_classes |
+[ DONE ] update_scripts_classes
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout

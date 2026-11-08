@@ -18,7 +18,7 @@ const CATALOG = {
  "wumi": {"name":"乌咪", "description":"出狱获得传送卡；转向全图可用。", "unknowns":"出院不会触发；全图范围不移除目标资格限制。", "source":"https://gl.ali213.net/html/2022-10/934689_11.html", "implemented":"implemented"},
  "miyamoto": {"name":"宫本宝藏", "description":"所有神仙持续 +1 天；附身得送神；送神范围 ×2。", "unknowns":"持续单位与满手处理待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_12.html", "implemented":"implemented"},
  "danny": {"name":"小丹尼", "description":"免疫梦游；果冻墙/香蕉皮范围 ×2。", "unknowns":"范围叠加顺序待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_13.html", "implemented":"implemented"},
- "tangtang": {"name":"糖糖", "description":"离商店随机得1卡；秘密购卡；商店大幅折扣。", "unknowns":"原版折扣未知，测试七折；随机池暂用已实现卡池。", "source":"https://gl.ali213.net/html/2022-10/934689_14.html", "implemented":"partial"},
+ "tangtang": {"name":"糖糖", "description":"离商店随机得1卡；秘密购卡；新版普通商店通常支付三折。", "unknowns":"谋划卡采用实机样本价630，例外原因待核。旧档保留测试七折；随机池与能源叠加仍待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_14.html", "implemented":"partial"},
  "john": {"name":"约翰乔", "description":"使用路障概率返还；路障范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_15.html", "implemented":"partial"},
  "wu_meila": {"name":"舞美拉", "description":"使用停留概率返还；停留范围 ×2。", "unknowns":"原版概率未知；测试30%，非原版数值。", "source":"https://gl.ali213.net/html/2022-10/934689_16.html", "implemented":"partial"},
  "ludwig": {"name":"路德维希", "description":"回合外意外失牌，我方未破产角色各得1卡；所有卡范围 +1。", "unknowns":"队伍关系沿用对局配置；无有效队伍只奖励自己；随机池与完整触发名单待核验。", "source":"https://richman.fandom.com/zh/wiki/路德維希", "implemented":"partial"},
@@ -110,8 +110,8 @@ static func on_card_lost(g, p: int, reason: String = "unexpected") -> void:
  for i in range(g.players.size()):
   if not g.players[i].get("bankrupt",false) and _allied(g,p,i): g.give_card(i,g.random_card())
 
-static func shop_price_multiplier(g, p: int) -> float:
- return TEST_PROFILE.shop_price_multiplier if _is(g,p,"tangtang") else 1.0
+static func shop_price_multiplier(g, p: int, sample_policy:bool=false) -> float:
+ return (0.30 if sample_policy else TEST_PROFILE.shop_price_multiplier) if _is(g,p,"tangtang") else 1.0
 
 static func shop_purchase_private(g, p: int) -> bool:
  return _is(g,p,"tangtang")

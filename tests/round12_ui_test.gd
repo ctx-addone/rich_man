@@ -8,6 +8,7 @@ func run()->void:
 	out_dir="res://docs/testing/round12"
 	root.size=Vector2i(1440,900)
 	app=load("res://scenes/main.tscn").instantiate()
+	app.shop_policy = "legacy_v8" # Preserve historical scenarios; R18 covers the new shop.
 	app.npcs_enabled = false # Preserve the pre-NPC scenario; R17 tests cover NPCs.
 	app.controllers.assign(["human","human","human","human"])
 	app.gods_enabled=false;app.talents_enabled=false

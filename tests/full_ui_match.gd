@@ -25,6 +25,8 @@ func run() -> void:
 	var card_played := false
 	var minigames:Dictionary={}
 	var merchants:int=0
+	var shop_purchases:int=0
+	var shop_transactions:Array[Dictionary]=[]
 	while app.screen == "game" and actions < 5000:
 		actions += 1
 		if app.handoff:
@@ -65,7 +67,34 @@ func run() -> void:
 			"bank":
 				await click("离开银行")
 				bank_used = true
-			"shop": await click("离开商店")
+			"shop":
+				# One genuine purchase is enough to cover pricing; full hands can
+				# leave normally and wait for a later participant's shop visit.
+				if shop_purchases == 0 and app.game.shop_remaining() > 0 and app.game.players[app.game.current].cards.size() < app.game.HAND_LIMIT:
+					await click("浏览商店")
+					var buyer:int = app.game.current
+					for offer in app.game.shop_offers():
+						var prefix:String = "购买卡牌 · %s · " % offer.name
+						var purchase:Button = find_button(app, prefix)
+						if purchase == null or purchase.disabled: continue
+						var displayed_price:int = purchase.text.get_slice(" · ", 2).to_int()
+						check(displayed_price == int(offer.price), "ordinary shop button displays current offer price")
+						var cash_before:int = app.game.players[buyer].cash
+						var cards_before:int = app.game.players[buyer].cards.count(offer.id)
+						var quota_before:int = app.game.shop_remaining()
+						var stock_before:int = app.game.shop_stock.count(offer.id)
+						await capture("06-natural-shop-quote")
+						await click(purchase.text)
+						var paid:int = cash_before - app.game.players[buyer].cash
+						check(paid == displayed_price, "ordinary shop deducts exactly the displayed cash price")
+						check(app.game.players[buyer].cards.count(offer.id) == cards_before + 1 and app.game.shop_remaining() == quota_before - 1, "natural shop purchase grants one card and consumes one quota")
+						check(app.game.shop_stock.count(offer.id) == stock_before - 1, "natural shop purchase removes exactly one matching stock slot")
+						if paid == displayed_price and app.game.players[buyer].cards.count(offer.id) == cards_before + 1:
+							shop_purchases += 1
+							shop_transactions.append({"player":buyer,"day":app.game.round_number,"card":offer.id,"displayed_price":displayed_price,"paid":paid,"policy":app.game.shop_policy})
+						break
+					await click("返回对局")
+				await click("离开商店")
 			"lottery": await click("离开乐透站")
 			"magic": await click("施放 · 获得3张卡片")
 			"news": await click("确认新闻")
@@ -102,6 +131,7 @@ func run() -> void:
 	check(not app.game.winners.is_empty(), "natural winner exists")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_MINIGAME")=="1":check(not minigames.is_empty(),"natural UI match actually played a minigame")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_MERCHANT")=="1":check(merchants>0,"natural UI match actually encountered a merchant")
+	if OS.get_environment("RICHMAN_TEST_REQUIRE_SHOP")=="1":check(shop_purchases>0,"natural UI match actually purchased from an ordinary shop")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_INFLATION")=="1":
 		check(app.game.economy_config.policy=="r16_samples" and app.game.price_index()>1,"natural UI match crossed an inflation boundary")
 	if team_match:
@@ -110,5 +140,6 @@ func run() -> void:
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])
 	print("FULL_UI_MINIGAMES ",minigames.keys())
 	print("FULL_UI_MERCHANT_ACTIONS ",merchants)
+	print("FULL_UI_SHOP_PURCHASES ",shop_purchases," transactions=",shop_transactions)
 	print("FULL_UI_ECONOMY ",app.game.economy_config," final_price=",app.game.price_index())
 	quit(1 if failures > 0 else 0)

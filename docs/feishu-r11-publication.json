@@ -1240,6 +1240,90 @@
       "normalized_sha256": "600F3E34098D764E4382A368CB94CE67F21C5AB502475E7F4D1C8717B43AA10C",
       "source_sha256": "E86C9938B85162E175F49756E1FBD98BC7556C5F90C063799C6F5545AA7561A0",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-18-report.md",
+      "title": "80 · 逐卡报价九槽库存与v9验收",
+      "node_token": "VHOUwQigviDVHFkoQ4dcS6WwnGf",
+      "document_id": "XshpdvM7bojfrJxuBztcKLOansg",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/VHOUwQigviDVHFkoQ4dcS6WwnGf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-80.json",
+      "revision_id": 2,
+      "remote_characters": 2105,
+      "normalized_sha256": "EDA6232CCA4C72F0566E2FD223B983CDCFAF5DD211E4768019502711F0A6D9F7",
+      "source_sha256": "3983C5F17502D68C5B5ACA465276772032672739C7668E544F97239479B5B8D9",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-18-shop-rules.md",
+      "title": "81 · 普通商店价格库存与兼容策划",
+      "node_token": "M45Zw1ve0i06shkiZ40cY8rxnfb",
+      "document_id": "ADCYdYx0QoL4ghx5ZtIcrVv3nxh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/M45Zw1ve0i06shkiZ40cY8rxnfb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-81.json",
+      "revision_id": 2,
+      "remote_characters": 1877,
+      "normalized_sha256": "290DE9DA34315AA129496DD481386C6658B70FB61923977518620F79C4DDC260",
+      "source_sha256": "26D5B3B0A7556E15EB874918EAB277B9FD95C8689B5B6D3D49EFD265EFAA7015",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-18-runtime-review.md",
+      "title": "82 · 商店界面与真实v8存档验收",
+      "node_token": "Ea75wQgx2i84zpkiBRQcpMiknK9",
+      "document_id": "JQHkdXzaYof0lLxqJWlc7s3en2c",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/Ea75wQgx2i84zpkiBRQcpMiknK9",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-82.json",
+      "revision_id": 2,
+      "remote_characters": 7364,
+      "normalized_sha256": "77E0FEEFFA09486F03E66B22C027236244F02BF397B1AFB8578C5B526396B494",
+      "source_sha256": "FED969A9EF0224A1C7243BD6C17544C01D979EE5C77FB28AD9837603F3373942",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r18-shop-prices.md",
+      "title": "83 · 28种逐卡报价及九槽实机证据",
+      "node_token": "QDDNwv7TJiNdtBkvEjQcFCtHnxb",
+      "document_id": "YIGsdjiKKoo7poxybTdcm053nad",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/QDDNwv7TJiNdtBkvEjQcFCtHnxb",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-83.json",
+      "revision_id": 2,
+      "remote_characters": 5677,
+      "normalized_sha256": "5DBC0F7C033F4E161277CD8B5F8D73240EF1A890C8A9F1829DCE714B528C217B",
+      "source_sha256": "ACDFA4DB7AC828D311CE2E30A9991D439F2DDA541F4FF1F0AE4D5735496BCE88",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r18-shop-modifiers.md",
+      "title": "84 · 糖糖物价与能源修正证据",
+      "node_token": "M5aMwopxuigfcekMRwCcUPPPn4b",
+      "document_id": "SYdOd5MOPoHLmXxNSaUc8cGpnQb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/M5aMwopxuigfcekMRwCcUPPPn4b",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-84.json",
+      "revision_id": 2,
+      "remote_characters": 5394,
+      "normalized_sha256": "F14B54AC3D8557E674CF2249E6E89D20364F557DB18F7890737B00D415EA6CD5",
+      "source_sha256": "21D13DC93EEE92FF8B5A6114568276D83AD5211350BC764DCFC9505033B8899B",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-18-shop-review.md",
+      "title": "85 · 报价与重复库存独立审查",
+      "node_token": "VPu3wddLfisVfcktTTGcDmAAnuv",
+      "document_id": "WWVodfOKuoRNMvxWZLlccVG5niG",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/VPu3wddLfisVfcktTTGcDmAAnuv",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-85.json",
+      "revision_id": 2,
+      "remote_characters": 2047,
+      "normalized_sha256": "A7224E098009526B2BB5D61A267F7FA8DD1E1B1E39FEDF1BD406A45B626A5D4F",
+      "source_sha256": "18CCFD1C9CAFDC4ACA088F58656D9E238BCFEF2C42431A1C34ADEA7D4C8A7568",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -1263,5 +1347,6 @@
   "round15_updated_at": "2026-11-08",
   "round16-prep_updated_at": "2026-11-08",
   "round16_updated_at": "2026-11-08",
-  "round17_updated_at": "2026-11-08"
+  "round17_updated_at": "2026-11-08",
+  "round18_updated_at": "2026-11-08"
 }

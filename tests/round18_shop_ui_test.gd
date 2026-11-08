@@ -1,0 +1,118 @@
+extends "res://tests/round16_settings_ui_test.gd"
+
+func offer_for(card_id: String) -> Dictionary:
+	for offer in app.game.shop_offers():
+		if offer.id == card_id: return offer
+	return {}
+
+func run() -> void:
+	out_dir = "res://docs/testing/round18"
+	root.size = Vector2i(1440, 900)
+	app = load("res://scenes/main.tscn").instantiate()
+	app.map_id = "knight_manor"
+	app.match_seed = 180231 # Public setup search: two roadblocks and two schemes, no stock writes.
+	app.controllers.assign(["human", "human", "human", "human"])
+	app.character_ids.assign(["tangtang", "sun_xiaomei", "qian", "shalong"])
+	app.talents_enabled = true
+	app.gods_enabled = false
+	app.save_directory = "res://.godot/r18-shop-ui-%d" % Time.get_ticks_usec()
+	root.add_child(app)
+	check(has_text(app.page, "v0.18"), "main menu identifies v0.18")
+	await click("开始游戏")
+	await click("选择角色")
+	await click("开始对局")
+	check(app.shop_policy == "r18_samples" and app.game.shop_policy == "r18_samples", "new UI passes sample shop pricing policy")
+	await click("我已就位")
+	check(app.game.NPC.gm_place(app.game, "merchant", 80) and app.game.NPC.gm_place(app.game, "dog", 81), "GM isolates unrelated NPCs")
+	app.gm_used = true
+	var shop_road: int = int(app.game.facility_lot("shop").frontage_nodes[0])
+	check(app.game.gm_teleport(0, shop_road) and app.game.phase == "shop", "ordinary shop opens through public landing")
+	app.refresh()
+	check(app.game.shop_stock.size() == 9 and app.game.shop_remaining() == 9, "sample ordinary shop exposes nine purchase slots")
+	var offer: Dictionary = offer_for("roadblock")
+	check(not offer.is_empty(), "fixed seed naturally includes verified roadblock card")
+	if offer.is_empty(): quit(1); return
+	check(offer.base_price == 4500 and offer.price == 1350, "roadblock sample base4500 with Tangtang30percent costs1350")
+	await click("浏览商店")
+	check(has_text(app.popup, "基础 4500") and has_text(app.popup, "糖糖3折"), "shop UI explains base price and Tangtang discount")
+	check(offer_for("scheme").price == 630 and has_text(app.popup, "糖糖样本价630"), "exceptional scheme quote displays630 as a sample, not misleading universal30percent")
+	check(offer_for("mine").price == 600 and has_text(app.popup, "糖糖样本价600"), "Tangtang mine600 is displayed as an observed special quote without inferring its ordinary base")
+	check(app.game.shop_stock.count("roadblock") == 2, "fixed seed naturally draws duplicate roadblock slots")
+	var quoted := find_button(app, "购买卡牌 · 路障卡 · 1350")
+	check(quoted != null and not quoted.disabled, "purchase button shows final actual quote")
+	await capture("01-sample-shop-quotes")
+	await click("返回对局")
+	while app.game.players[0].cards.size() < app.Game.HAND_LIMIT: app.game.gm_give_card(0, "dice")
+	app.refresh()
+	await click("浏览商店")
+	quoted = find_button(app, "购买卡牌 · 路障卡")
+	check(quoted != null and quoted.disabled and has_text(app.popup, "手牌已满"), "full hand shows guidance and disables purchase")
+	await click("返回对局")
+	await click("弃")
+	var cash: int = app.game.players[0].cash
+	check(app.game.gm_cash(0, -cash), "GM constructs zero cash without bankruptcy")
+	app.refresh()
+	await click("浏览商店")
+	quoted = find_button(app, "购买卡牌 · 路障卡")
+	check(quoted != null and quoted.disabled, "insufficient cash disables purchase")
+	await capture("02-insufficient-cash")
+	await click("返回对局")
+	check(app.game.gm_cash(0, cash), "GM restores cash")
+	app.refresh()
+	await click("浏览商店")
+	var count_before: int = app.game.players[0].cards.count("roadblock")
+	var stock_before: int = app.game.shop_stock.count("roadblock")
+	var remaining_before: int = app.game.shop_remaining()
+	await click("购买卡牌 · 路障卡")
+	check(app.game.players[0].cash == cash - 1350 and app.game.players[0].cards.count("roadblock") == count_before + 1, "actual purchase deducts exactly displayed1350 and grants one card")
+	check(app.game.shop_stock.count("roadblock") == stock_before - 1 and app.game.shop_purchases == 1 and app.game.shop_remaining() == remaining_before - 1, "buying removes exactly one matching slot and consumes one remaining item")
+	if stock_before == 1: check(find_button(app, "购买卡牌 · 路障卡") == null, "last matching card disappears from UI")
+	await click("返回对局")
+	var snapshot: Dictionary = app.Saves.snapshot(app.game)
+	await click("存读档")
+	await click("新建存档")
+	await click("读取 · ")
+	await click("确认读取")
+	check(app.Saves.snapshot(app.game) == snapshot and app.shop_policy == "r18_samples", "new shop save restores exact state and pricing policy")
+	await click("我已就位")
+	# Three more real purchases prove duplicate copies survive and the old three-card cap is absent.
+	for card in ["roadblock", "scheme", "scheme"]:
+		while app.game.players[0].cards.size() >= app.Game.HAND_LIMIT: await click("弃")
+		var extra_offer: Dictionary = offer_for(card)
+		var quantity_before: int = app.game.shop_stock.count(card)
+		cash = app.game.players[0].cash
+		await click("浏览商店")
+		await click("购买卡牌 · " + extra_offer.name)
+		check(app.game.shop_stock.count(card) == quantity_before - 1 and app.game.players[0].cash == cash - int(extra_offer.price), "duplicate slot purchase removes one copy and pays displayed amount")
+		await click("返回对局")
+	check(app.game.shop_purchases == 4 and app.game.shop_remaining() == 5, "four real purchases exceed old cap and retain five remaining slots")
+	check(not app.game.shop_stock.has("roadblock") and not app.game.shop_stock.has("scheme"), "both duplicate pairs sell out only after buying each copy")
+	await click("离开商店")
+	# NPC merchant is a separate fixed1000 shelf, unaffected by Tangtang ordinary-shop discount.
+	check(app.game.gm_teleport(0, 80) and app.game.phase == "merchant", "NPC merchant remains available independently")
+	app.refresh()
+	while app.game.players[0].cards.size() >= app.Game.HAND_LIMIT: await click("弃")
+	var npc_offers: Array = app.game.NPC.offers(app.game)
+	check(npc_offers.size() == 6 and npc_offers[0].price == 1000, "NPC price stays1000 under sample ordinary-shop policy")
+	cash = app.game.players[0].cash
+	await click("购买 · " + npc_offers[0].name)
+	check(app.game.players[0].cash == cash - 1000, "NPC purchase deducts its independent1000 quote")
+	await capture("03-independent-npc-price")
+	check(app.load_snapshot("res://tests/fixtures/round17-v8-shop.rms").ok, "genuine v8 active-shop fixture loads")
+	check(app.shop_policy == "legacy_v8" and app.game.shop_policy == "legacy_v8", "old UI restores legacy pricing policy")
+	await click("我已就位")
+	await click("浏览商店")
+	check(offer_for("roadblock").price == 210 and find_button(app, "购买卡牌 · 路障卡 · 210") != null, "old unfinished visit retains exact210 quote")
+	check(has_text(app.popup, "糖糖7折"), "old visit explains its preserved historical discount")
+	await capture("04-legacy-shop-quotes")
+	cash = app.game.players[0].cash
+	await click("购买卡牌 · 路障卡")
+	check(app.game.players[0].cash == cash - 210 and app.game.shop_purchases == 2, "old visit continues with original210 deduction and quota")
+	await click("返回对局")
+	await click("GM · F1")
+	await click("立即结算整局")
+	await click("相同设置 · 再来一局")
+	check(app.game.shop_policy == "legacy_v8" and app.shop_policy == "legacy_v8", "same-settings restart keeps loaded legacy shop policy")
+	check(app.game.Shop.quote(app.game, "roadblock").price == 210, "restarted Tangtang legacy game still quotes210")
+	print("ROUND18_SHOP_UI failures=", failures)
+	quit(1 if failures else 0)

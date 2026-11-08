@@ -1,0 +1,290 @@
+[
+  {
+    "test": "board_model_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "BOARD_MODEL_CONTRACT failures=0"
+  },
+  {
+    "test": "core_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "R3_CORE failures=0 complete_matches=50"
+  },
+  {
+    "test": "buildings_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "BUILDINGS_TEST failures=0"
+  },
+  {
+    "test": "cards_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "R3_CARDS failures=0"
+  },
+  {
+    "test": "stocks_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "STOCKS_TEST failures=0"
+  },
+  {
+    "test": "stock_integration_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "R4_STOCK_INTEGRATION failures=0"
+  },
+  {
+    "test": "combat_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": ""
+  },
+  {
+    "test": "round4_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND4_REVIEW failures=0"
+  },
+  {
+    "test": "route_planner_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": ""
+  },
+  {
+    "test": "movement_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": ""
+  },
+  {
+    "test": "explosives_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": ""
+  },
+  {
+    "test": "round5_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": ""
+  },
+  {
+    "test": "characters_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "CHARACTERS_TEST failures=0"
+  },
+  {
+    "test": "gods_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "GODS TEST failures=0"
+  },
+  {
+    "test": "round6_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND6_REVIEW_TEST failures=0"
+  },
+  {
+    "test": "money_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "MONEY_TEST failures=0"
+  },
+  {
+    "test": "god_interactions_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "GOD_INTERACTIONS_TEST failures=0"
+  },
+  {
+    "test": "round7_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND7_REVIEW_TEST failures=0"
+  },
+  {
+    "test": "ai_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "AI_TEST failures=0 completed_matches=8"
+  },
+  {
+    "test": "services_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "SERVICES_TEST failures=0 completed_matches=3"
+  },
+  {
+    "test": "world_cycle_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "WORLD_AI completed_matches=4 WORLD_CYCLE_TEST failures=0"
+  },
+  {
+    "test": "teams_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "TEAMS_TEST failures=0 completed_matches=4"
+  },
+  {
+    "test": "team_ai_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "TEAM_AI completed_matches=8 TEAM_AI_TEST failures=0"
+  },
+  {
+    "test": "team_interactions_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "TEAM_INTERACTIONS failures=0"
+  },
+  {
+    "test": "map_catalog_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "MAP_CATALOG_TEST failures=0"
+  },
+  {
+    "test": "save_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "SAVE_TEST failures=0"
+  },
+  {
+    "test": "round8_save_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND8_SAVE_REVIEW failures=0"
+  },
+  {
+    "test": "round9_save_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND9_SAVE rejected=44 failures=0"
+  },
+  {
+    "test": "round10_save_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND10_SAVE rejected=22 failures=0"
+  },
+  {
+    "test": "round11_save_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND11_SAVE failures=0 rejected=43"
+  },
+  {
+    "test": "magic_house_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "MAGIC_HOUSE_TEST failures=0"
+  },
+  {
+    "test": "round12_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND12_REVIEW_TEST failures=0"
+  },
+  {
+    "test": "news_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "NEWS_TEST failures=0 rejected=27 completed_matches=2"
+  },
+  {
+    "test": "minigame_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "MINIGAME_TEST failures=0"
+  },
+  {
+    "test": "round14_save_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND14_SAVE_TEST failures=0 rejected=73"
+  },
+  {
+    "test": "round14_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND14_REVIEW_TEST failures=0 interrupted=42"
+  },
+  {
+    "test": "map_runtime_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "MAP_RUNTIME_TEST failures=0"
+  },
+  {
+    "test": "round13_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND13_REVIEW_TEST failures=0"
+  },
+  {
+    "test": "stay_landing_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "STAY_LANDING_TEST failures=0"
+  },
+  {
+    "test": "toss_dolls_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "TOSS_DOLLS_TEST failures=0"
+  },
+  {
+    "test": "disarm_bomb_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "DISARM_BOMB_TEST failures=0 rejected=39"
+  },
+  {
+    "test": "round15_pool_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND15_POOL_TEST failures=0 games=[\"catch_coins\", \"toss_dolls\", \"shoot_balloons\", \"disarm_bomb\"]"
+  },
+  {
+    "test": "round15_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND15_REVIEW_TEST failures=0 interruptions=108 ui_states=18 pool=[\"catch_coins\", \"toss_dolls\", \"disarm_bomb\", \"shoot_balloons\"]"
+  },
+  {
+    "test": "shoot_balloons_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "SHOOT_BALLOONS_TEST failures=0"
+  },
+  {
+    "test": "round16_economy_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND16_ECONOMY failures=0 rejected=49 completed_matches=2"
+  },
+  {
+    "test": "round17_npc_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND17_NPC failures=0 rejected=30 restores=73 completed_matches=3"
+  },
+  {
+    "test": "round18_shop_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND18_SHOP failures=0 rejected=15 completed_matches=2"
+  },
+  {
+    "test": "round18_shop_review_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND18_SHOP_REVIEW failures=0 rejected=6 duplicate_seed=1800"
+  }
+]

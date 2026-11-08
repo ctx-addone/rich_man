@@ -51,6 +51,7 @@ var current := 0
 var round_number := 1
 var round_limit := 20
 var economy_config: Dictionary = Economy.legacy()
+var shop_policy: String = Shop.LEGACY_POLICY
 var npcs_enabled: bool = false
 var road_npcs: Dictionary = {}
 var npc_respawn_due: Dictionary = {}
@@ -86,11 +87,13 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	if requested_economy.is_empty(): return false
 	if rounds > Economy.MAX_DAYS: return false
 	if not options.get("npcs_enabled",false) is bool: return false
+	if not Shop.valid_policy(options.get("shop_policy",Shop.LEGACY_POLICY)): return false
 	var requested_id:Variant=options.get("map_id",Maps.DEFAULT_MAP_ID)
 	if not requested_id is String: return false
 	var prepared:Dictionary=Maps.load_map(requested_id)
 	if not prepared.ok: return false
 	economy_config = requested_economy
+	shop_policy = options.get("shop_policy",Shop.LEGACY_POLICY)
 	npcs_enabled = options.get("npcs_enabled",false)
 	road_npcs.clear()
 	npc_respawn_due.clear()
@@ -537,7 +540,9 @@ func discard_card(index:int)->bool:
 func shop_offers()->Array[Dictionary]:
 	return Shop.offers(self)
 func shop_remaining()->int:
-	return maxi(0,int(Buildings.PROFILE.shop_purchase_limit)-shop_purchases) if phase=="shop" else 0
+	if phase!="shop": return 0
+	if shop_policy==Shop.SAMPLE_POLICY and specials_enabled: return shop_stock.size()
+	return maxi(0,Shop.purchase_limit(shop_policy)-shop_purchases)
 func buy_card(card_id:String)->bool:
 	if is_sleepwalking() or phase!="shop" or shop_remaining()<=0 or players[current].cards.size()>=HAND_LIMIT: return false
 	for offer in shop_offers():

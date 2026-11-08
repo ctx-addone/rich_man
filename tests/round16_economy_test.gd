@@ -196,7 +196,7 @@ func test_legacy()->void:
 	var g=loaded.game;var now:Dictionary=Save.snapshot(g,old.metadata)
 	check(g.economy_config=={"initial_cash":10000,"initial_deposit":0,"inflation_interval":0,"policy":"legacy_v6"},"legacy migration adds only neutral economic config")
 	now.state.erase("economy_config");now.version=old.version
-	for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen"]: now.state.erase(key)
+	for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen","shop_policy"]: now.state.erase(key)
 	check(now==old,"all original fields, metadata, history and both RNGs unchanged")
 	check(not g.pending_service.has("pricing") and g.price_index()==1,"legacy service gains no pricing schema")
 	check(g.purchase_cost("p_001")==2400 and g.upgrade_cost("p_001")==600 and g.rent_preview("p_001",1)==440,"legacy economic quotes preserved")

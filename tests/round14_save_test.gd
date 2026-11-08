@@ -29,7 +29,7 @@ func _init()->void:
 		var migrated:Dictionary=Save.snapshot(legacy.game).state
 		check(migrated.economy_config==Game.Economy.legacy(),"v4 gains neutral economy configuration")
 		migrated.erase("economy_config")
-		for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen"]: migrated.erase(key)
+		for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen","shop_policy"]: migrated.erase(key)
 		check(original.version==4 and migrated==original.state,"v4 all historical game fields preserved")
 		check(Save.snapshot(legacy.game).rng_state==original.rng_state,"v4 random state preserved")
 	var g=fresh();g.gm_teleport(0,road(g,"news"))

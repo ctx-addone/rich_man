@@ -62,7 +62,7 @@ func test_setup_legacy()->void:
 	if loaded.ok:
 		var now:Dictionary=Save.snapshot(loaded.game,old.metadata)
 		check(not now.state.npcs_enabled and now.state.road_npcs.is_empty() and now.state.npc_respawn_due.is_empty() and now.state.npc_seen.is_empty(),"migration adds exactly neutral NPC values")
-		for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen"]:now.state.erase(key)
+		for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen","shop_policy"]:now.state.erase(key)
 		now.version=7
 		check(now==old,"v7 every old field and both RNGs preserved")
 		var peer=roundtrip(loaded.game,"migrated priced service")
@@ -234,7 +234,7 @@ func test_strict_save()->void:
 		var bad:Dictionary=base.duplicate(true);bad.state.road_npcs.merchant[pair[0]]=pair[1];reject(bad,"npc "+str(pair))
 	for pair in [["purchases",3],["purchases",true],["bought",["dice"]],["bought",["dice","dice"]],["npc_id","dog"],["road",target+1],["return_phase","land"],["extra",0]]:
 		var bad:Dictionary=base.duplicate(true);bad.state.pending_service[pair[0]]=pair[1];reject(bad,"merchant "+str(pair))
-	for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen"]:
+	for key in ["npcs_enabled","road_npcs","npc_respawn_due","npc_seen","shop_policy"]:
 		var bad:Dictionary=base.duplicate(true);bad.state.erase(key);reject(bad,"missing v8 "+key)
 	var bad:Dictionary=base.duplicate(true);bad.state.steps_left=1;reject(bad,"merchant cannot be pass service")
 	bad=base.duplicate(true);bad.state.players[0].god={"id":"fierce","remaining":2};reject(bad,"merchant fierce invalid")
