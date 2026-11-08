@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 5
+const VERSION = 6
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -159,10 +159,13 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,3,4,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,4,5,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
 	if data.version < 5 and state.get("phase", "") in ["news","minigame"]: return failure("旧版本不包含新闻或小游戏阶段")
+	if data.version < 6 and state.get("phase", "") == "minigame":
+		var service = state.get("pending_service")
+		if not service is Dictionary or not service.get("game") is Dictionary or service.game.get("id") != "catch_coins": return failure("旧版本不包含此小游戏")
 	if data.version == 1:
 		var additions: Dictionary = v1_additions()
 		for key in additions:

@@ -7,6 +7,8 @@ func run() -> void:
 	app = load("res://scenes/main.tscn").instantiate()
 	var test_map:String = OS.get_environment("RICHMAN_TEST_MAP")
 	if not test_map.is_empty(): app.map_id = test_map
+	var test_turns:String=OS.get_environment("RICHMAN_TEST_TURNS")
+	if not test_turns.is_empty():app.turns=int(test_turns)
 	app.controllers.assign(["human", "human", "human", "human"])
 	var team_match:bool=OS.get_environment("RICHMAN_TEST_TEAMS")=="2v2"
 	if team_match: app.teams.assign([0,1,0,1])
@@ -14,10 +16,12 @@ func run() -> void:
 	await click("开始游戏")
 	await click("选择角色")
 	await click("开始对局")
-	app.game.rng.seed = 19
+	var seed_text:String=OS.get_environment("RICHMAN_TEST_SEED")
+	app.game.rng.seed = 19 if seed_text.is_empty() else int(seed_text)
 	var actions := 0
 	var bank_used := false
 	var card_played := false
+	var minigames:Dictionary={}
 	while app.screen == "game" and actions < 5000:
 		actions += 1
 		if app.handoff:
@@ -57,13 +61,24 @@ func run() -> void:
 			"magic": await click("施放 · 获得3张卡片")
 			"news": await click("确认新闻")
 			"minigame":
+				minigames[app.game.Minigame.id(app.game)]=true
 				match app.game.pending_service.game.status:
-					"ready": await click("开始接金币")
+					"ready": await click("开始"+app.game.Minigame.title(app.game))
 					"participant_result": await process_frame
 					"result": await click("领取奖励")
 					"playing":
-						var next:int=app.game.Minigame.ai_cell(app.game)
-						await click_point(app.minigame_view.global_position + app.minigame_view.cells[next].get_center())
+						if app.game.Minigame.id(app.game)=="toss_dolls":
+							var bin_id:int=app.game.Minigame.ai_bin(app.game)
+							if bin_id>=0: await click_point(app.minigame_view.global_position+app.minigame_view.bins[bin_id].get_center())
+						elif app.game.Minigame.id(app.game)=="disarm_bomb":
+							var switch_id:int=app.game.Minigame.ai_switch(app.game)
+							if switch_id>=0: await click_point(app.minigame_view.global_position+app.minigame_view.switches[switch_id].get_center())
+						elif app.game.Minigame.id(app.game)=="shoot_balloons":
+							var lane:int=app.game.Minigame.ai_lane(app.game)
+							if lane>=0:await click_point(app.minigame_view.global_position+app.minigame_view.lane_buttons[lane].get_center())
+						else:
+							var next:int=app.game.Minigame.ai_cell(app.game)
+							await click_point(app.minigame_view.global_position + app.minigame_view.cells[next].get_center())
 						await create_timer(0.1).timeout
 			"reaction":
 				if find_button(app, "我来应对") != null: await click("我来应对")
@@ -76,8 +91,10 @@ func run() -> void:
 	check(not app.gm_used, "match never used GM")
 	check(card_played and bank_used, "card and bank exercised")
 	check(not app.game.winners.is_empty(), "natural winner exists")
+	if OS.get_environment("RICHMAN_TEST_REQUIRE_MINIGAME")=="1":check(not minigames.is_empty(),"natural UI match actually played a minigame")
 	if team_match:
 		check(app.game.winners.size()>=2 and app.game.same_team(0,2), "team configuration persists through natural result")
 	await capture("07-natural-results")
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])
+	print("FULL_UI_MINIGAMES ",minigames.keys())
 	quit(1 if failures > 0 else 0)

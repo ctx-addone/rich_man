@@ -66,7 +66,7 @@ func _process(delta: float) -> void:
 		if game.pending_service.game.status == "playing":
 			if popup != null or (handoff and not is_automated()) or (is_automated() and ai_paused): return
 			minigame_elapsed += delta
-			var interval: float = game.Minigame.TEST_PROFILE.tick_seconds
+			var interval: float = game.Minigame.profile(game).tick_seconds
 			if minigame_elapsed >= interval:
 				minigame_elapsed = fmod(minigame_elapsed, interval)
 				if is_automated(): game.Minigame.ai_step(game)
@@ -226,7 +226,7 @@ func map_select() -> void:
 		var index := choices.item_count - 1
 		choices.set_item_metadata(index, entry.id)
 		choices.set_item_disabled(index, not entry.playable)
-		choices.set_item_tooltip(index, entry.description)
+		choices.set_item_tooltip(index, entry.description.replace("新闻及小游戏待还原", "新闻及小游戏已接入，细则仍在核验"))
 		if entry.id == map_id: choices.select(index)
 	choices.item_selected.connect(func(index): map_id = str(choices.get_item_metadata(index)); map_select())
 	v.add_child(choices)
@@ -237,7 +237,7 @@ func map_select() -> void:
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
-	v.add_child(paragraph(sample.map_metadata.description + "\n滚轮缩放 · 按住右键拖动。当前经济参数及部分状态规则仍在核验。", 16))
+	v.add_child(paragraph(sample.map_metadata.description.replace("新闻及小游戏待还原", "新闻及小游戏已接入，细则仍在核验") + "\n滚轮缩放 · 按住右键拖动。当前经济参数及部分状态规则仍在核验。", 16))
 	var row := HBoxContainer.new()
 	v.add_child(row)
 	row.add_child(button("← 返回", menu))
@@ -399,6 +399,20 @@ func build_game() -> void:
 		if not handoff and not is_automated() and popup == null:
 			game.Minigame.select_cell(game, cell)
 			minigame_view.queue_redraw())
+	minigame_view.bin_selected.connect(func(bin_id):
+		if not handoff and not is_automated() and popup == null:
+			game.Minigame.toss(game, bin_id)
+			minigame_view.queue_redraw())
+	minigame_view.switch_selected.connect(func(switch_id):
+		if not handoff and not is_automated() and popup == null:
+			if game.Minigame.choose(game, switch_id):
+				if game.pending_service.game.status == "participant_result": game.Minigame.settle_others(game)
+				if game.pending_service.game.status != "playing": refresh()
+			minigame_view.queue_redraw())
+	minigame_view.lane_selected.connect(func(lane):
+		if not handoff and not is_automated() and popup == null:
+			game.Minigame.shoot(game, lane)
+			minigame_view.queue_redraw())
 	board_col.add_child(minigame_view)
 	var view_controls := HBoxContainer.new()
 	board_controls = view_controls
@@ -553,17 +567,18 @@ func refresh() -> void:
 				sidebar.add_child(button("确认新闻 · 结算", func(): game.News.resolve(game); refresh()))
 			"minigame":
 				var activity: Dictionary = game.pending_service.game
-				sidebar.add_child(label("接金币", 24, Color("efd18b")))
+				sidebar.add_child(label(game.Minigame.title(game), 24, Color("efd18b")))
 				sidebar.add_child(label("本次操作 · %s" % p.name, 17))
-				sidebar.add_child(paragraph("点击上下左右相邻的发光格移动。金币落地后会短暂停留，移动过去拾取；避开空中和地面的红色炸弹。", 17))
+				sidebar.add_child(paragraph(game.Minigame.instructions(game), 17))
 				if activity.status == "ready":
-					sidebar.add_child(paragraph("你操作本次小游戏，其余角色自动参与并获得各自奖励。金币+100，金元宝+500；本版暂定12秒，炸弹扣300分，得分最低为0。", 15))
-					sidebar.add_child(button("开始接金币", func(): minigame_elapsed=0.0; game.Minigame.start(game); refresh()))
+					sidebar.add_child(paragraph("你操作本次小游戏，其余角色自动参与并获得各自奖励。" + game.Minigame.parameters(game), 15))
+					sidebar.add_child(button("开始" + game.Minigame.title(game), func(): minigame_elapsed=0.0; game.Minigame.start(game); refresh()))
 				elif activity.status == "playing":
 					sidebar.add_child(button("暂停小游戏", show_minigame_pause))
 				elif activity.status == "participant_result":
 					sidebar.add_child(label("正在结算其他角色…", 20))
 				else:
+					sidebar.add_child(paragraph(game.Minigame.outcome(game), 17))
 					for result in activity.history:
 						sidebar.add_child(paragraph("%s · %d 分 · 待领现金 %d" % [game.players[result.player].name, result.score, result.reward], 16))
 					sidebar.add_child(button("领取奖励 · 返回地图", func():
@@ -597,7 +612,7 @@ func refresh() -> void:
 		var facility: Dictionary = game.facility_lot(p.status.kind)
 		detail_lots = [p.status.lot_id] if p.status.kind == "vacation" else ([facility.id] if not facility.is_empty() else [])
 	else:
-		detail.add_child(label("%02d  /  %s" % [id, n.name], 18))
+		detail.add_child(label("%02d  /  %s" % [id, game.road_display_name(id)], 18))
 		detail.add_child(paragraph({"lottery":"经过时可选号购票，离开继续剩余步数。", "magic":"停留时选择魔法效果，再抽取作用条件。", "metro":"落在此处可付费换乘。", "start":"每次正常移动进入，领取%d。" % game.start_bonus, "event":"停留触发奖金、费用或抽卡。", "signal":game.signal_state(id), "junction":"移动至此可选择出口，不可立即回头。"}.get(n.kind, "道路只负责行走，产权属于路旁建筑。"), 14))
 	if n.kind == "lottery":
 		detail.add_child(paragraph("第%d轮开奖 · 当前奖池 %d" % [game.lottery_state.draw_round, game.lottery_state.pot], 14))
@@ -1183,9 +1198,17 @@ func show_gm() -> void:
 	for n in range(1,7): dice_row.add_child(button(str(n), func(): gm_used = true; forced_dice = n; dismiss(), game.phase != "roll"))
 	var destination := OptionButton.new()
 	destination.name = "GMRoad"
-	for n in game.nodes: destination.add_item("%02d · %s" % [n.id,n.name], n.id)
+	for n in game.nodes: destination.add_item("%02d · %s" % [n.id,game.road_display_name(n.id)], n.id)
 	v.add_child(destination)
 	v.add_child(button("传送选中玩家至此格", func(): gm_used = true; game.gm_teleport(who.selected, destination.selected); dismiss()))
+	var mini_ready: bool = game.phase == "minigame" and game.pending_service.game.status == "ready" and game.pending_service.game.cursor == 0
+	v.add_child(label("小游戏准备页可指定类型（先传送当前玩家至小游戏格）", 14))
+	var mini_row := HBoxContainer.new()
+	v.add_child(mini_row)
+	for mini_id in Game.Minigame.TEST_POOL:
+		mini_row.add_child(button("准备 · " + Game.Minigame.TITLES[mini_id], func():
+			if game.Minigame.gm_choose_ready(game, mini_id): gm_used = true; minigame_elapsed = 0.0
+			dismiss(), not mini_ready))
 	var cards := OptionButton.new()
 	var card_ids: Array = Game.CARD_NAMES.keys()
 	for card in card_ids: cards.add_item(Game.CARD_NAMES[card])

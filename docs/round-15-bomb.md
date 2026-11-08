@@ -1,0 +1,38 @@
+# 第十五轮：拆炸弹模型
+
+`scripts/model/disarm_bomb_rules.gd` 实现已取证的拆炸弹流程：预览物品→遮盖并可视换位→选择未开开关→得币或遇炸弹终止。原作证据见 [M1拆炸弹实机片段](https://www.bilibili.com/video/BV1hw4m1C7Tm/?t=645)，证据与未知边界整理在本地 `docs/research/r15-bomb.md`。模块不使用“按按钮时随机决定是否爆炸”的替代规则。
+
+## 流程和测试配置
+
+六槽初始展示4枚金币、2枚炸弹，当前采用该实机样本布局。开始后tick0..4显示预览；tick5..10每次交换两个不同槽，记录并显示交换；tick11起可选择未开槽。每tick暂定0.5秒，tick32超时结束。这些时长、交换次数、交换抽样方式都是TEST-R15参数。
+
+每次开金币得到2500分，取自M1录像单次前后帧；揭到炸弹立即结束，先前分数保留。没有重抽内容、重复揭币或普通提前退出领奖。全4枚金币开完后保持当前分数等待时限；原作是否立即全通关仍待核验。
+
+分数按1:1换现金仅为本版测试换算，不代表原作基础金额或物价倍率。全部未破产席位参与，只有棋盘触发者手操，其余自动模拟，最终由触发者确认统一发奖；非当前席资格和自动分数算法依旧为测试策略。
+
+## 公共接口
+
+`enter/start/tick/ai_step/next_player/settle_others/close/state_error` 与已有小游戏约定相同。`choose(game,index)` 只接受choose阶段未开的0..5槽，立即揭示；`ai_switch(game)` 返回下一安全槽，无可选金币时返回-1，AI继续tick至时限。界面使用 `TITLE`、`INSTRUCTIONS`、`PARAMETERS` 和 `TEST_PROFILE`。
+
+## 持久化字段
+
+复用 `pending_service={kind:"minigame",road,game}`，不增加顶层游戏字段。内部game有公共字段 `id="disarm_bomb"/version=1/player/tick/score/status/reason/reward/participants/cursor/history`，以及：
+
+| 字段 | 含义 |
+|---|---|
+| stage | preview、shuffle或choose；由tick严格推导 |
+| initial | 预览时的六个原始内容 |
+| order | 六槽现在分别对应哪个原始token |
+| swaps | 已公开演示的交换对，按发生顺序保存 |
+| last_swap | 当前换位动画的两槽；order已经是交换后的状态，界面可从对侧位置插值进入 |
+| opened | 按操作顺序记录已开槽；读取initial[order[index]]得到既定内容 |
+
+每个历史席位记录其player、tick、score、reward、reason、initial、order、swaps和opened。严格校验器重放交换与揭示记录，核对当前排列、分数、终止原因和历史收款人；拒绝重复开槽、炸弹后继续开槽、错误动画阶段、伪造分数及多发奖励。读档不重新洗牌。
+
+AI采用完美记忆测试策略：从已公开initial和swaps重建布局，不读取隐藏的当前order和未来RNG。这是可复现的本版AI，不声称原作电脑也使用该策略。
+
+## 验证结果
+
+`tests/disarm_bomb_test.gd` 当前实测：`DISARM_BOMB_TEST failures=0 rejected=39`。
+
+覆盖预览/换位禁止点击、实际排列随可见交换改变、未开槽选择、2500样本得分、炸弹保分、已开槽排除、AI只用公开轨迹、开完金币继续等时限、全员统一一次派奖，以及7种状态的存档往返和逐步RNG一致性。39项非法字段/轨迹/历史检查全部拒绝。Godot通过命令行运行，环境证书存储警告不影响离线测试通过。

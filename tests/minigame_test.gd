@@ -20,6 +20,7 @@ func road(g) -> int:
 
 func open(g) -> void:
 	check(g.gm_teleport(g.current,road(g)) and g.phase == "minigame","actual minigame landing opens ready state")
+	check(Mini.gm_choose_ready(g,"catch_coins"),"isolate catch_coins rules within the random pool")
 
 func restored(g, label:String):
 	var before:Dictionary = Save.snapshot(g)

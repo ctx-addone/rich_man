@@ -30,7 +30,7 @@ func _init()->void:
 		check(Save.snapshot(legacy.game).rng_state==original.rng_state,"v4 random state preserved")
 	var g=fresh();g.gm_teleport(0,road(g,"news"))
 	var news:Dictionary=Save.snapshot(g)
-	check(news.version==5 and news.state.phase=="news","news serialized in v5")
+	check(news.version==Save.VERSION and news.state.phase=="news","news serialized in current version")
 	var loaded:Dictionary=Save.restore(news)
 	check(loaded.ok,"pending news restores")
 	if loaded.ok:
@@ -42,6 +42,7 @@ func _init()->void:
 	bad=news.duplicate(true);bad.state.pending_service.reward=99999;reject(bad)
 	bad=news.duplicate(true);bad.version=4;reject(bad)
 	g=fresh();g.gm_teleport(0,road(g,"minigame"))
+	check(g.Minigame.gm_choose_ready(g,"catch_coins"),"isolate catch_coins save schema")
 	for stage in ["ready","playing","result"]:
 		if stage=="playing":g.Minigame.start(g);g.Minigame.ai_step(g)
 		if stage=="result":

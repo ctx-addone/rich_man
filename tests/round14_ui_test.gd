@@ -27,7 +27,7 @@ func run()->void:
 	check(news.ok and app.load_snapshot(news.path).ok,"pending news saves and restores from UI")
 	await click("我已就位");await click("确认新闻")
 	check(app.game.players[1].status.is_empty() and app.game.players[2].status.kind=="hospital","news releases prison but preserves hospital")
-	app.game.gm_teleport(0,road("minigame"));app.refresh()
+	app.game.gm_teleport(0,road("minigame"));app.game.Minigame.gm_choose_ready(app.game,"catch_coins");app.refresh()
 	var balances:Array=[]
 	for player in app.game.players: balances.append(player.cash)
 	check(app.game.pending_service.game.status=="ready","minigame waits for explicit start")

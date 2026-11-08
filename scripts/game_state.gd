@@ -183,6 +183,14 @@ func is_sleepwalking() -> bool:
 func max_dice() -> int:
 	return Movement.max_dice(players[current]) if not players.is_empty() else 1
 
+func road_display_name(node_id:int) -> String:
+	if node_id < 0 or node_id >= nodes.size(): return ""
+	var node:Dictionary = nodes[node_id]
+	# Keep historical map data byte-compatible; resolve current UI wording here.
+	if node.kind == "minigame": return "小游戏 · 随机挑战"
+	if node.kind == "news": return "新闻格"
+	return node.name
+
 func set_dice_count(count: int) -> bool:
 	if phase!="roll" or is_sleepwalking() or count<1 or count>max_dice() or controlled_dice!=0: return false
 	dice_count=count

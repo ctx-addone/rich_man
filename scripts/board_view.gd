@@ -315,7 +315,7 @@ func _gui_input(event: InputEvent) -> void:
 				return
 		for n in game.nodes:
 			if event.position.distance_to(points[n.id]) < maxf(6, cell / 2):
-				tooltip_text = "%02d · %s" % [n.id, n.name]
+				tooltip_text = "%02d · %s" % [n.id, game.road_display_name(n.id)]
 				return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		for i in range(points.size()):
