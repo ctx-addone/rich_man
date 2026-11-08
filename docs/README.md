@@ -1,5 +1,8 @@
 # 策划文档索引
 
+- [第二轮游戏设计与优化讨论基线](second-design-pass.md)：当前试玩版本、优化议题及验收方法。
+- [日历与开局设置研究](research/r16-calendar-economy.md)、[物价影响范围](research/r16-price-scope.md)、[经济改动前存档审查](round-16-runtime-review.md)：下一阶段准备材料，尚未修改经济规则。
+
 ## 当前重建基线
 
 当前目标以 [R11还原目标与完成门槛](r11-target.md) 为准；下方00—06是已交付的 v0.1 原型文档，保留作历史记录，不能作为本轮缩减玩法范围的依据。

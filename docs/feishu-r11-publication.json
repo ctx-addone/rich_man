@@ -1016,6 +1016,62 @@
       "normalized_sha256": "0462F91E15858F626A90B6DB3A2E58CD2A3D1D713F95C02BD6DD55858D992C52",
       "source_sha256": "8F749F29800CEF7FFD1F94C69FA00D724C710991F558E5DE1132F44B167BE01D",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/second-design-pass.md",
+      "title": "64 · 第二轮游戏设计与优化讨论基线",
+      "node_token": "GEabwjTkrigiG4kqfxscq6iKnAf",
+      "document_id": "OO7ndBxZJohpYgxUhHMcjnmPnQh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/GEabwjTkrigiG4kqfxscq6iKnAf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-64.json",
+      "revision_id": 2,
+      "remote_characters": 1461,
+      "normalized_sha256": "B146628938B3042D39C0F7AA828A4BF59D7FAB190542933C2D49B26FA5ACCA3D",
+      "source_sha256": "B5420C0CB6AEEE400210FF81190E5B916893623DA5FEA92C1003EA7AC533FA94",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r16-calendar-economy.md",
+      "title": "65 · 日历物价与自由比赛设置研究",
+      "node_token": "R81TwFrWsiTeR9kVIlncHxWbnNf",
+      "document_id": "DUmwdS7Sso4lPQx3VllcRHJ2nSe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/R81TwFrWsiTeR9kVIlncHxWbnNf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-65.json",
+      "revision_id": 2,
+      "remote_characters": 3390,
+      "normalized_sha256": "6417E96240FA921A540A2533D543B9B622BC7F90333400EB8CB0CC15CAB2EA94",
+      "source_sha256": "3717DC06AD44D382E91BA7551D86B87EAD6F38A759AC9583F14A12A47E428CCD",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r16-price-scope.md",
+      "title": "66 · 物价影响的收支分类证据",
+      "node_token": "TQ1nwm77tieKCBkMnuycblAan1c",
+      "document_id": "L5sDdtdHRonv4TxUE9Yc2dWdnFb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/TQ1nwm77tieKCBkMnuycblAan1c",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-66.json",
+      "revision_id": 2,
+      "remote_characters": 4522,
+      "normalized_sha256": "79B399B122A404143AE91223FB3F6FF58131F48D23A0024CE461CC0239BCA8C1",
+      "source_sha256": "4BE8F15860364DA1C7B6B81DFE53847898C262D5ED7536A7E2CB437BF38C6527",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-16-runtime-review.md",
+      "title": "67 · 经济改动前旧存档与兼容审查",
+      "node_token": "NDecwDyOXiuyBgkbq3Ec18G0nJe",
+      "document_id": "ZF5Td5wFRoQBbLxrHYKcXou0n9b",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/NDecwDyOXiuyBgkbq3Ec18G0nJe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-67.json",
+      "revision_id": 2,
+      "remote_characters": 4584,
+      "normalized_sha256": "85309795CF68C4AC8E5AF401D95D540F714BDA1327F102B1CE7E350AF03AB757",
+      "source_sha256": "6BBBB7DE2C7751C0CB8C4D98FA4AF60B04E38C935000F65319C60CE6BE3D6E78",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -1036,5 +1092,6 @@
   "round12_updated_at": "2026-11-08",
   "round13_updated_at": "2026-11-08",
   "round14_updated_at": "2026-11-08",
-  "round15_updated_at": "2026-11-08"
+  "round15_updated_at": "2026-11-08",
+  "round16-prep_updated_at": "2026-11-08"
 }
