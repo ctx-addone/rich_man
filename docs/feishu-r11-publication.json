@@ -1072,6 +1072,76 @@
       "normalized_sha256": "85309795CF68C4AC8E5AF401D95D540F714BDA1327F102B1CE7E350AF03AB757",
       "source_sha256": "6BBBB7DE2C7751C0CB8C4D98FA4AF60B04E38C935000F65319C60CE6BE3D6E78",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-16-report.md",
+      "title": "68 · 经济设置物价与无限期验收",
+      "node_token": "MqrlwBd0Hiq98Oke8eccxuVnnrf",
+      "document_id": "AnSsd3OZqoJu1kx2kRicnEIanib",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/MqrlwBd0Hiq98Oke8eccxuVnnrf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-68.json",
+      "revision_id": 2,
+      "remote_characters": 2048,
+      "normalized_sha256": "25D6B1373F3FD59D8702E63BFF3A8DF9096CC8D0F72376754538940061FF0CA0",
+      "source_sha256": "FD1114C96DD6853A38A11D1BB2A6CF8F7FF1352CC47E622385560C2B54F99DCF",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-16-economy.md",
+      "title": "69 · 分类经济规则与v7存档兼容",
+      "node_token": "NsyHwZfWXiHDk3kBfYEc00CEnJh",
+      "document_id": "X2r9dhgI4otm6LxPRpscVR8anLc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/NsyHwZfWXiHDk3kBfYEc00CEnJh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-69.json",
+      "revision_id": 2,
+      "remote_characters": 2003,
+      "normalized_sha256": "BBC8109011F7368741BC4653B6B5CFF468890C453488C6F72B0E44647815F8BE",
+      "source_sha256": "2CE3C99CD617DD08BF8A8FD2B859B8358961B9E6C60578960888F7F1F3A32FFB",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-16-settings-ui.md",
+      "title": "70 · 开局设置与界面验证",
+      "node_token": "JcwiwZ7ICiVymqkLiFZcSQ4Pnpw",
+      "document_id": "YAXXdgSzpo3Q1Lx8V7kc0n9Un4f",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/JcwiwZ7ICiVymqkLiFZcSQ4Pnpw",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-70.json",
+      "revision_id": 2,
+      "remote_characters": 2348,
+      "normalized_sha256": "F41B6959C1410A0A5347022FC07C3185717BDB6C639A2DA730E85464DD715388",
+      "source_sha256": "DCACD112AFAAE80F816397E5672468FEBAC02805EE02D40C3453AEFB3B29B3CB",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-16-economy-review.md",
+      "title": "71 · 经济与无限期独立审查",
+      "node_token": "LKgtwn4m0idzVHkdZPucFvbYnZf",
+      "document_id": "IQE9dlQ3ToKSypxB5TccFb8mnod",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/LKgtwn4m0idzVHkdZPucFvbYnZf",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-71.json",
+      "revision_id": 2,
+      "remote_characters": 3945,
+      "normalized_sha256": "1580A01AAEAAAB1ED8224A0E1E07D5AFD78EAF818053DE7BE0AA5BFC330C4E1E",
+      "source_sha256": "DF0E944DFAC9D7C2D100FB1FAE7B9FACEE6BDA0858694CD5B11A5687E665636F",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r16-settings-followup.md",
+      "title": "72 · 原作设置及首次涨价连续证据",
+      "node_token": "CGN1wOGUtiQK79kpmRmc1YkJnic",
+      "document_id": "MygFdfUzFoziqixiF7ic5gakndc",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/CGN1wOGUtiQK79kpmRmc1YkJnic",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-72.json",
+      "revision_id": 2,
+      "remote_characters": 3330,
+      "normalized_sha256": "08A6FEDD1024473C1E2AC518503805ECB3C7540145D616E2BD49EC226FE1D8EA",
+      "source_sha256": "5CF4BD09A627A531EDB54859B7D1A05121DDBF9F30AFF25E645FDFDBFCE2BBFC",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -1093,5 +1163,6 @@
   "round13_updated_at": "2026-11-08",
   "round14_updated_at": "2026-11-08",
   "round15_updated_at": "2026-11-08",
-  "round16-prep_updated_at": "2026-11-08"
+  "round16-prep_updated_at": "2026-11-08",
+  "round16_updated_at": "2026-11-08"
 }

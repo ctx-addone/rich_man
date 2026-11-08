@@ -51,7 +51,7 @@ static func close(g, kind:String) -> bool:
 	return true
 
 static func advance_round(g) -> void:
-	if not g.specials_enabled or g.round_number<g.lottery_state.draw_round or g.round_number>g.round_limit+1: return
+	if not g.specials_enabled or g.round_number<g.lottery_state.draw_round or (g.round_limit>0 and g.round_number>g.round_limit+1): return
 	var number:int=g.rng.randi_range(TEST_PROFILE.number_min,TEST_PROFILE.number_max)
 	var winning_tickets:Array=[]
 	for ticket in g.lottery_state.tickets:

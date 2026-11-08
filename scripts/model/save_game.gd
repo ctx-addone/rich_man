@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 6
+const VERSION = 7
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -159,9 +159,14 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,3,4,5,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,4,5,6,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
+	if data.version < 7 and state.get("round_limit") is int and state.round_limit < 1: return failure("旧版本不支持无限期比赛")
+	if data.version < 7:
+		if state.has("economy_config") and state.economy_config != Game.Economy.legacy(): return failure("旧版本不能包含新经济策略")
+		state.economy_config = Game.Economy.legacy()
+	if not Game.Economy.valid(state.get("economy_config")): return failure("经济配置无效")
 	if data.version < 5 and state.get("phase", "") in ["news","minigame"]: return failure("旧版本不包含新闻或小游戏阶段")
 	if data.version < 6 and state.get("phase", "") == "minigame":
 		var service = state.get("pending_service")
@@ -200,7 +205,11 @@ static func restore(data: Variant) -> Dictionary:
 	if state.map_metadata != game.map_metadata or state.start_road != game.start_road or state.start_bonus != game.start_bonus: return failure("地图配置不一致")
 	var count: int = state.players.size()
 	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","news","minigame","end","detained","reaction","finished"]: return failure("行动状态无效")
-	if state.round_number < 1 or state.round_limit < 1 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
+	if state.round_number < 1 or state.round_limit < 0 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
+	if state.round_number > Game.Economy.MAX_DAYS+1 or state.round_limit > Game.Economy.MAX_DAYS: return failure("日期超过安全数值范围")
+	if state.round_limit > 0:
+		var last_day:int = state.round_limit + (1 if state.phase == "finished" else 0)
+		if state.round_number > last_day: return failure("比赛日期超过有限期限")
 	if state.reaction_reward_active: return failure("不能恢复未完成的内部奖励步骤")
 	for road in [state.forced_next,state.cached_next]:
 		if road < -1 or road >= game.nodes.size(): return failure("路线无效")
@@ -262,6 +271,8 @@ static func restore(data: Variant) -> Dictionary:
 		for event in a.events:
 			if not event is Dictionary or not event_valid(event,count): return failure("后续事件无效")
 	elif not state.pending_attack.is_empty(): return failure("事件与阶段不一致")
+	var pricing_error: String = Game.Economy.service_error(state)
+	if not pricing_error.is_empty(): return failure(pricing_error)
 	var service_error: String = special_state_error(state,game)
 	if not service_error.is_empty(): return failure(service_error)
 	var market: Dictionary = data.market

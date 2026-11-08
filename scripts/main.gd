@@ -32,6 +32,7 @@ var gods_enabled: bool = true
 var specials_enabled: bool = true
 var teams: Array[int] = [0, 1, 2, 3]
 var turns: int = 20
+var economy_config: Dictionary = {"initial_cash":100000,"initial_deposit":100000,"inflation_interval":15,"policy":"r16_samples"}
 var screen: String = "menu"
 var handoff: bool = true
 var advancing: bool = false
@@ -233,7 +234,7 @@ func map_select() -> void:
 	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱  ·  商店"))
 	var preview = Board.new()
 	var sample = Game.new()
-	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled})
+	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled, "economy":economy_config.duplicate(true)})
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
@@ -255,6 +256,7 @@ func character_select() -> void:
 	name_inputs.clear()
 	for i in range(4):
 		var col := panel(row)
+		col.add_theme_constant_override("separation", 10)
 		col.get_parent().size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		col.add_child(label("席位 %d" % (i + 1), 18, COLORS[portraits[i]]))
 		col.add_child(portrait(portraits[i], Vector2(140, 140)))
@@ -300,15 +302,30 @@ func character_select() -> void:
 			portraits[i] = next
 			character_select()))
 	spacer(v)
-	v.add_child(label("每人现金 10,000 · 同队免租并可协助升级 · 按存活队伍或队伍总资产判胜"))
-	if not Game.Teams.valid_assignment(teams, 4): v.add_child(label("至少需要两支队伍才能开始比赛。", 16, Color("f28a79")))
+	var economy_row := HBoxContainer.new()
+	v.add_child(economy_row)
+	var economy_text := paragraph(economy_summary(), 16)
+	economy_text.name = "EconomySummary"
+	economy_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	economy_row.add_child(economy_text)
+	economy_row.add_child(button("经济设置", show_economy_settings))
+	# Keep the footer height stable when a team choice becomes invalid, so the
+	# correction presets and start control stay inside the viewport.
+	var team_hint:Label = paragraph("同队免租并可协助升级 · 按队伍总资产判胜。1天暂按全局1轮计算；初始预设参考实机菜单样本，非确认出厂默认。", 13)
+	if not Game.Teams.valid_assignment(teams, 4):
+		team_hint.text = "至少需要两支队伍才能开始比赛，请调整队伍或使用下方组队预设。"
+		team_hint.modulate = Color("f28a79")
+	v.add_child(team_hint)
 	var controls := HBoxContainer.new()
 	v.add_child(controls)
 	controls.add_child(button("← 地图", func(): capture_names(); map_select()))
-	controls.add_child(label("对局轮数"))
+	controls.add_child(label("对局天数"))
 	var rounds := OptionButton.new()
-	for n in [10, 20, 30]: rounds.add_item(str(n) + " 轮", n)
-	rounds.select([10,20,30].find(turns))
+	rounds.name = "RoundLimitChoice"
+	var day_options: Array = [0,10,20,30]
+	if not day_options.has(turns): day_options.append(turns)
+	for n in day_options: rounds.add_item("无限期" if n == 0 else str(n) + " 天（测试）", n)
+	rounds.select(day_options.find(turns))
 	rounds.item_selected.connect(func(index): turns = rounds.get_item_id(index))
 	controls.add_child(rounds)
 	controls.add_child(button("四人混战", func(): capture_names(); teams.assign([0, 1, 2, 3]); character_select()))
@@ -333,6 +350,62 @@ func character_select() -> void:
 	controls.add_child(specials)
 	controls.add_child(button("开始对局 →", func(): capture_names(); start_game(), not Game.Teams.valid_assignment(teams, 4)))
 
+func economy_summary() -> String:
+	var interval: int = economy_config.inflation_interval
+	var inflation: String = "关闭" if interval == 0 else "每%d天上涨" % interval
+	return "每人初始现金 %d · 存款 %d · 物价%s" % [economy_config.initial_cash, economy_config.initial_deposit, inflation]
+
+func show_economy_settings() -> void:
+	var content := modal("新局经济设置")
+	content.add_child(paragraph("奖励按实机样本换算；其他参数仍为测试。1天暂按全局1轮计算，所有席位完成行动后进入下一天。", 16))
+	var cash_row := HBoxContainer.new()
+	content.add_child(cash_row)
+	var cash_label := label("每人初始现金", 17)
+	cash_label.custom_minimum_size.x = 180
+	cash_row.add_child(cash_label)
+	var cash := SpinBox.new()
+	cash.name = "InitialCash"
+	cash.min_value = 0
+	cash.max_value = 500000
+	cash.step = 1
+	cash.value = economy_config.initial_cash
+	cash.custom_minimum_size.x = 220
+	cash_row.add_child(cash)
+	var deposit_row := HBoxContainer.new()
+	content.add_child(deposit_row)
+	var deposit_label := label("每人初始存款", 17)
+	deposit_label.custom_minimum_size.x = 180
+	deposit_row.add_child(deposit_label)
+	var deposit := SpinBox.new()
+	deposit.name = "InitialDeposit"
+	deposit.min_value = 0
+	deposit.max_value = 500000
+	deposit.step = 1
+	deposit.value = economy_config.initial_deposit
+	deposit.custom_minimum_size.x = 220
+	deposit_row.add_child(deposit)
+	var interval_row := HBoxContainer.new()
+	content.add_child(interval_row)
+	var interval_label := label("物价上涨周期", 17)
+	interval_label.custom_minimum_size.x = 180
+	interval_row.add_child(interval_label)
+	var interval := OptionButton.new()
+	interval.name = "InflationInterval"
+	var intervals: Array = [0,1,5,10,15,20]
+	if not intervals.has(economy_config.inflation_interval): intervals.append(economy_config.inflation_interval)
+	for days in intervals: interval.add_item("关闭 · 物价固定×1" if days == 0 else "每%d天上涨（测试）" % days, days)
+	interval.select(intervals.find(economy_config.inflation_interval))
+	interval_row.add_child(interval)
+	content.add_child(paragraph("现金与存款各可设为0—500,000。预设100,000现金、100,000存款、每15天涨价取自实机菜单样本，非确认出厂默认。", 14))
+	if economy_config.policy == "legacy_v6":
+		content.add_child(paragraph("当前沿用旧存档规则；应用本设置后，新局将改用实机样本奖励换算。", 14))
+	content.add_child(button("应用到新局", func():
+		capture_names()
+		economy_config = {"initial_cash":int(cash.value),"initial_deposit":int(deposit.value),"inflation_interval":interval.get_selected_id(),"policy":"r16_samples"}
+		dismiss()
+		character_select()))
+	content.add_child(button("取消", dismiss))
+
 func ensure_characters() -> void:
 	if character_ids.size() != 4:
 		character_ids.assign(["sun_xiaomei", "atu", "qian", "shalong"])
@@ -347,8 +420,9 @@ func start_game() -> void:
 	if not Game.Teams.valid_assignment(teams, 4): return
 	var next_game = Game.new()
 	ensure_characters()
-	if not next_game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams, "map_id":map_id}): return
+	if not next_game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams, "map_id":map_id, "economy":economy_config.duplicate(true)}): return
 	game = next_game
+	economy_config = game.economy_config.duplicate(true)
 	selected = -1
 	selected_lot = ""
 	forced_dice = 0
@@ -459,7 +533,8 @@ func refresh() -> void:
 		col.add_child(label("现金 %s  存款 %s" % [p.cash, p.deposit], 14))
 		col.add_child(label(Traits.display_name(p.get("character_id", "original")) + (" · 电脑" if controllers[i] == "ai" else " · 人类") + (" · 天赋关" if not talents_enabled else ""), 13))
 		col.add_child(label("资产 %s%s" % [game.net_worth(i), " · " + status_text(p) if not p.status.is_empty() else ""], 13))
-	top_title.text = "%s   /   第 %d / %d 轮%s" % [game.map_metadata.name, game.round_number, game.round_limit, "  ·  GM测试局" if gm_used else ""]
+	var day_text: String = "第 %d 天 · 无限期" % game.round_number if game.round_limit == 0 else "第 %d / %d 天" % [game.round_number, game.round_limit]
+	top_title.text = "%s   /   %s · 物价×%s%s" % [game.map_metadata.name, day_text, str(game.price_index()), "  ·  GM测试局" if gm_used else ""]
 	board.selected = selected
 	board.selected_lot = selected_lot
 	board.queue_redraw()
@@ -570,6 +645,7 @@ func refresh() -> void:
 				sidebar.add_child(label(game.Minigame.title(game), 24, Color("efd18b")))
 				sidebar.add_child(label("本次操作 · %s" % p.name, 17))
 				sidebar.add_child(paragraph(game.Minigame.instructions(game), 17))
+				sidebar.add_child(paragraph(game.Minigame.reward_description(game), 15))
 				if activity.status == "ready":
 					sidebar.add_child(paragraph("你操作本次小游戏，其余角色自动参与并获得各自奖励。" + game.Minigame.parameters(game), 15))
 					sidebar.add_child(button("开始" + game.Minigame.title(game), func(): minigame_elapsed=0.0; game.Minigame.start(game); refresh()))
@@ -580,7 +656,7 @@ func refresh() -> void:
 				else:
 					sidebar.add_child(paragraph(game.Minigame.outcome(game), 17))
 					for result in activity.history:
-						sidebar.add_child(paragraph("%s · %d 分 · 待领现金 %d" % [game.players[result.player].name, result.score, result.reward], 16))
+						sidebar.add_child(paragraph("%s · %d 分 · 待领现金 %d" % [game.players[result.player].name, result.score, game.Minigame.cash_reward(game,result)], 16))
 					sidebar.add_child(button("领取奖励 · 返回地图", func():
 						if game.Minigame.close(game): handoff=not is_automated()
 						refresh()))
@@ -1087,7 +1163,7 @@ func show_saves() -> void:
 		var title_input := LineEdit.new()
 		title_input.name = "SaveTitle"
 		title_input.max_length = 40
-		title_input.text = "%s · 第%d轮 · %s" % [game.map_metadata.name, game.round_number, game.players[game.current].name]
+		title_input.text = "%s · 第%d天 · %s" % [game.map_metadata.name, game.round_number, game.players[game.current].name]
 		v.add_child(title_input)
 		var feedback := paragraph("", 14)
 		v.add_child(feedback)
@@ -1161,6 +1237,7 @@ func load_snapshot(path: String) -> Dictionary:
 	teams.clear()
 	for player in game.players: teams.append(player.team)
 	turns = game.round_limit
+	economy_config = game.economy_config.duplicate(true)
 	gm_used = bool(meta.get("gm_used", false))
 	forced_dice = clampi(int(meta.get("forced_dice", 0)), 0, 6)
 	selected = -1

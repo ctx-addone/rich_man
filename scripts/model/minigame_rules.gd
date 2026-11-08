@@ -89,6 +89,13 @@ static func close(g) -> bool:
 	var model = _model(id(g))
 	return model.close(g) if model != null else false
 
+static func cash_reward(g, record:Dictionary) -> int:
+	return g.Economy.minigame_cash(g,record)
+
+static func reward_description(g) -> String:
+	if not g.pending_service.has("pricing"): return "旧局规则：每位角色按分数等额获得现金。"
+	return "本次物价×%d；操作席按分数×物价领奖，其他席按分数×物价÷3向下取整（实机样本推广）。" % g.Economy.service_price(g)
+
 static func select_cell(g, cell:int) -> bool:
 	return Coins.select_cell(g,cell) if id(g) == "catch_coins" else false
 static func legal_cells(g) -> Array[int]:

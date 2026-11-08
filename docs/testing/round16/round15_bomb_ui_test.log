@@ -1,0 +1,45 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 准备 · 拆炸弹
+PASS: button enabled: 准备 · 拆炸弹
+PASS: GM picker opens actual bomb preparation
+PASS: screenshot 06-bomb-preview
+PASS: button exists: 开始拆炸弹
+PASS: button enabled: 开始拆炸弹
+PASS: preview cannot be clicked for an early reward
+PASS: button exists: 暂停小游戏
+PASS: button enabled: 暂停小游戏
+PASS: shuffle pause freezes RNG, swaps and clock
+PASS: screenshot 07-bomb-shuffle-pause
+PASS: button exists: 继续小游戏
+PASS: button enabled: 继续小游戏
+PASS: shuffle saves and restores through UI
+PASS: loaded shuffle waits for human handoff
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: visible swap sequence completes before choices
+PASS: real switch click reveals coin and adds observed score
+PASS: same switch cannot reward twice
+PASS: screenshot 08-bomb-coin
+PASS: bomb ends trigger and automatically settles other humans
+PASS: explosion preserves already earned score
+PASS: screenshot 09-bomb-results
+PASS: button exists: 领取奖励
+PASS: button enabled: 领取奖励
+PASS: bomb results pay every recorded seat once
+PASS: bomb results pay every recorded seat once
+PASS: bomb results pay every recorded seat once
+PASS: bomb results pay every recorded seat once
+PASS: bomb returns to board and repeat claim fails
+ROUND15_BOMB_UI failures=0

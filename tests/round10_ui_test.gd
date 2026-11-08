@@ -11,6 +11,8 @@ func run()->void:
 	out_dir="res://docs/testing/round10"
 	root.size=Vector2i(1440,900)
 	app=load("res://scenes/main.tscn").instantiate()
+	# Historical-rule regression; round16 setup tests cover modern new games.
+	app.economy_config = app.Game.Economy.legacy()
 	app.controllers.assign(["human","human","human","human"])
 	app.talents_enabled=false
 	app.gods_enabled=false

@@ -26,7 +26,10 @@ func _init()->void:
 	if legacy.ok:
 		var bytes=FileAccess.open(fixture,FileAccess.READ);bytes.seek(44)
 		var original:Dictionary=bytes_to_var(bytes.get_buffer(bytes.get_length()-44))
-		check(original.version==4 and Save.snapshot(legacy.game).state==original.state,"v4 all game state preserved")
+		var migrated:Dictionary=Save.snapshot(legacy.game).state
+		check(migrated.economy_config==Game.Economy.legacy(),"v4 gains neutral economy configuration")
+		migrated.erase("economy_config")
+		check(original.version==4 and migrated==original.state,"v4 all historical game fields preserved")
 		check(Save.snapshot(legacy.game).rng_state==original.rng_state,"v4 random state preserved")
 	var g=fresh();g.gm_teleport(0,road(g,"news"))
 	var news:Dictionary=Save.snapshot(g)

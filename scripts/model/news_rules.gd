@@ -5,7 +5,7 @@ extends RefCounted
 # Equal weights, subsidy amount and service eligibility are explicit test policy.
 const CATALOG = [
 	{"id":"release_prisoners", "name":"释放在押者", "description":"当前仍在监狱中的未破产角色全部获释，返回各自记录的释放位置。", "source":"https://www.chuapp.com/article/288938.html"},
-	{"id":"house_subsidy", "name":"房屋补贴", "description":"当前角色获得5000现金（本版固定按基准物价1结算）。", "source":"https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=125", "source_base":"https://www.gamespark.jp/imgs/zoom/627516.png"}
+	{"id":"house_subsidy", "name":"房屋补贴", "description":"当前角色获得房屋补贴，金额按本次新闻的物价结算。", "source":"https://www.bilibili.com/video/BV18HeHz7EdD/?p=8&t=125", "source_base":"https://www.gamespark.jp/imgs/zoom/627516.png"}
 ]
 const TEST_PROFILE = {"event_ids":["release_prisoners","house_subsidy"], "weights":[1,1], "house_subsidy_amount":5000, "price_index":1}
 
@@ -26,6 +26,7 @@ static func enter(g)->bool:
 	var id:String=TEST_PROFILE.event_ids[g.rng.randi_range(0,TEST_PROFILE.event_ids.size()-1)]
 	g.service_visited.append(road)
 	g.pending_service={"kind":"news","road":road,"event_id":id}
+	g.Economy.freeze_service(g)
 	g.phase="news"
 	g._log("新闻："+event_info(id).name+"（已核验事件子集）。")
 	return true
@@ -43,8 +44,13 @@ static func targets(g,id:String)->Array[int]:
 static func current(g)->Dictionary:
 	if g.phase!="news" or g.pending_service.get("kind","")!="news": return {}
 	var result:Dictionary=event_info(str(g.pending_service.get("event_id","")))
-	if not result.is_empty(): result.targets=targets(g,result.id)
+	if not result.is_empty():
+		result.targets=targets(g,result.id)
+		if result.id=="house_subsidy": result.description="当前角色获得%d现金（本次物价×%d）。" % [subsidy(g),g.Economy.service_price(g)]
 	return result
+
+static func subsidy(g)->int:
+	return int(TEST_PROFILE.house_subsidy_amount) * g.Economy.service_price(g)
 
 static func resolve(g)->bool:
 	if not g.specials_enabled or g.phase!="news" or g.pending_service.get("kind","")!="news" or not eligible(g) or not g.pending_attack.is_empty(): return false
@@ -53,11 +59,12 @@ static func resolve(g)->bool:
 	if event_info(id).is_empty(): return false
 	# Clear before applying effects: re-entry/repeated confirmation cannot apply twice.
 	var affected:Array[int]=targets(g,id)
+	var amount:int=subsidy(g)
 	g.pending_service.clear()
 	g.phase="land"
 	if id=="house_subsidy":
-		g.players[g.current].cash+=int(TEST_PROFILE.house_subsidy_amount)
-		g._log("新闻结算：房屋补贴，获得%d现金（测试金额）。"%TEST_PROFILE.house_subsidy_amount)
+		g.players[g.current].cash+=amount
+		g._log("新闻结算：房屋补贴，获得%d现金。"%amount)
 		return true
 	var released:int=0
 	for who in affected:
@@ -66,6 +73,7 @@ static func resolve(g)->bool:
 	return true
 
 static func state_error(state:Dictionary,g)->String:
+	state=g.Economy.scoring_state(state)
 	if state.get("phase")!="news" or not state.get("specials_enabled") is bool or state.specials_enabled!=true: return "新闻阶段或服务开关无效"
 	var service:Variant=state.get("pending_service")
 	if not service is Dictionary or service.size()!=3: return "新闻记录字段无效"

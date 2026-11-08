@@ -26,7 +26,7 @@ func _draw() -> void:
 	if state.status == "result":
 		for index in range(state.history.size()):
 			var result: Dictionary = state.history[index]
-			draw_string(font, Vector2(40, 120 + index * 68), "%s     %d 分     奖励 %d" % [game.players[result.player].name, result.score, result.reward], HORIZONTAL_ALIGNMENT_LEFT, size.x - 80, 23, Color("e8d7a5") if result.player == game.current else Color("c7d8dd"))
+			draw_string(font, Vector2(40, 120 + index * 68), "%s     %d 分     奖励 %d" % [game.players[result.player].name, result.score, game.Minigame.cash_reward(game,result)], HORIZONTAL_ALIGNMENT_LEFT, size.x - 80, 23, Color("e8d7a5") if result.player == game.current else Color("c7d8dd"))
 		return
 	var rules: Dictionary = game.Minigame.profile(game)
 	var remaining: float = (rules.ticks - state.tick) * rules.tick_seconds

@@ -22,6 +22,8 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	# Historical-rule regression; round16 setup tests cover modern new games.
+	app.economy_config = app.Game.Economy.legacy()
 	app.controllers.assign(["human", "human", "human", "human"])
 	app.character_ids.assign(["eleven", "original", "original", "original"])
 	root.add_child(app)

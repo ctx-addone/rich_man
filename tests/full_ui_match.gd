@@ -92,9 +92,12 @@ func run() -> void:
 	check(card_played and bank_used, "card and bank exercised")
 	check(not app.game.winners.is_empty(), "natural winner exists")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_MINIGAME")=="1":check(not minigames.is_empty(),"natural UI match actually played a minigame")
+	if OS.get_environment("RICHMAN_TEST_REQUIRE_INFLATION")=="1":
+		check(app.game.economy_config.policy=="r16_samples" and app.game.price_index()>1,"natural UI match crossed an inflation boundary")
 	if team_match:
 		check(app.game.winners.size()>=2 and app.game.same_team(0,2), "team configuration persists through natural result")
 	await capture("07-natural-results")
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])
 	print("FULL_UI_MINIGAMES ",minigames.keys())
+	print("FULL_UI_ECONOMY ",app.game.economy_config," final_price=",app.game.price_index())
 	quit(1 if failures > 0 else 0)

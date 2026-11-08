@@ -62,7 +62,7 @@ static func spawn_roads(g)->Array:
   if node.id!=int(g.get("start_road") if g.get("start_road")!=null else 0) and not occupied.has(node.id) and not g.road_gods.has(node.id) and not g.road_objects.has(node.id): roads.append(node.id)
  return roads
 static func advance_round(g,profile:Dictionary=CYCLE_PROFILE)->void:
- if not g.gods_enabled or g.round_number>g.round_limit: return
+ if not g.gods_enabled or (g.round_limit>0 and g.round_number>g.round_limit): return
  if (g.round_number-1)%maxi(1,int(profile.get("check_every_rounds",1)))!=0: return
  var present:Dictionary={}
  for god_id in g.road_gods.values(): present[god_id]=true

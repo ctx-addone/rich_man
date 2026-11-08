@@ -1,0 +1,57 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 配置地产与租金测试
+PASS: button enabled: 配置地产与租金测试
+PASS: screenshot 00-gm-property
+PASS: button exists: 应用地产配置
+PASS: button enabled: 应用地产配置
+PASS: GM configures a shared property for fee testing
+PASS: rent opens money defense before debit
+PASS: cash unchanged during decision
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: screenshot 01-free-reaction
+PASS: button exists: 使用 免费卡
+PASS: button enabled: 使用 免费卡
+PASS: free prevents payment without crediting receiver
+PASS: eleven rewards a die after passive free consumption
+PASS: rent continuation restores land
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: screenshot 02-free-resolved
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: money transfer exposes another payer
+PASS: button exists: 使用 转移卡
+PASS: button enabled: 使用 转移卡
+PASS: transfer hands decision to selected payer
+PASS: button exists: 我来应对
+PASS: button enabled: 我来应对
+PASS: screenshot 03-transfer-reaction
+PASS: button exists: 使用 免费卡
+PASS: button enabled: 使用 免费卡
+PASS: transferred free prevents both debits
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 神眷卡
+PASS: button enabled: 神眷卡
+PASS: attached god is selectable without ground gods
+PASS: screenshot 04-attached-god
+PASS: button exists: 确认使用
+PASS: button enabled: 确认使用
+PASS: possession moves to inviter
+PASS: sixth recipe converts five send cards into green
+ROUND7_UI_TEST failures=0

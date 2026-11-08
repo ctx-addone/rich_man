@@ -1,0 +1,44 @@
+[
+  {
+    "test": "ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "UI_TEST failures=0"
+  },
+  {
+    "test": "round7_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND7_UI_TEST failures=0"
+  },
+  {
+    "test": "round10_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND10_UI failures=0 frames=198"
+  },
+  {
+    "test": "round14_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND14_UI failures=0 frames=5212"
+  },
+  {
+    "test": "round15_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND15_UI failures=0 manual_frames=367"
+  },
+  {
+    "test": "round15_bomb_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND15_BOMB_UI failures=0"
+  },
+  {
+    "test": "round15_balloons_ui_test",
+    "exit_code": 0,
+    "errors": 0,
+    "summary": "ROUND15_BALLOONS_UI failures=0 manual_frames=358"
+  }
+]

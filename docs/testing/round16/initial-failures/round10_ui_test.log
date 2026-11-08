@@ -1,0 +1,38 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 2 对 2
+PASS: button enabled: 2 对 2
+PASS: preset configures two alternating teams
+PASS: screenshot 01-team-setup
+PASS: team selector exists
+PASS: team selector exists
+PASS: one-team game is blocked in setup
+PASS: button exists: 2 对 2
+PASS: button enabled: 2 对 2
+PASS: button exists: 开始对局
+ERROR: FAIL: button enabled: 开始对局
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/ui_test.gd:13)
+       [1] click (res://tests/ui_test.gd:36)
+ERROR: FAIL: button exists: 我已就位
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/ui_test.gd:13)
+       [1] click (res://tests/ui_test.gd:34)
+ERROR: FAIL: actual game uses selected relations
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/ui_test.gd:13)
+       [1] run (res://tests/round10_ui_test.gd:32)
+       [2] click (res://tests/ui_test.gd:35)
+SCRIPT ERROR: Invalid access to property or key 'lot_1_1' on a base object of type 'Dictionary'.
+   at: run (res://tests/round10_ui_test.gd:34)
+   GDScript backtrace (most recent call first):
+       [0] run (res://tests/round10_ui_test.gd:34)
+       [1] click (res://tests/ui_test.gd:35)

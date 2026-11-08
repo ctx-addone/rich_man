@@ -1,5 +1,7 @@
 # 策划文档索引
 
+- [第十六轮经济与物价验收](round-16-report.md)、[经济规则与v7兼容](round-16-economy.md)、[设置界面](round-16-settings-ui.md)、[独立审查](round-16-economy-review.md)、[原作菜单及日界连续证据](research/r16-settings-followup.md)。
+
 - [第二轮游戏设计与优化讨论基线](second-design-pass.md)：当前试玩版本、优化议题及验收方法。
 - [日历与开局设置研究](research/r16-calendar-economy.md)、[物价影响范围](research/r16-price-scope.md)、[经济改动前存档审查](round-16-runtime-review.md)：下一阶段准备材料，尚未修改经济规则。
 

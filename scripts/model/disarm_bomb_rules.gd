@@ -28,6 +28,7 @@ static func enter(g)->bool:
 	var game:Dictionary={"id":GAME_ID,"version":1,"player":g.current,"participants":_participants(g.players,g.current),"cursor":0,"history":[]}
 	_reset(game)
 	g.service_visited.append(road);g.pending_service={"kind":"minigame","road":road,"game":game};g.phase="minigame"
+	g.Economy.freeze_service(g)
 	g._log("拆炸弹：记住物品、追踪换位，再选择开关；数值和时长见测试配置。")
 	return true
 
@@ -122,10 +123,13 @@ static func settle_others(g)->bool:
 static func close(g)->bool:
 	if not _active(g,"result"):return false
 	var history:Array=g.pending_service.game.history.duplicate(true)
+	var payouts:Dictionary={}
+	for record in history: payouts[record.player]=g.Economy.minigame_cash(g,record)
 	g.pending_service.clear();g.phase="land"
 	for record in history:
-		g.players[record.player].cash+=record.reward
-		g._log("%s 完成拆炸弹：%d分，奖励现金%d（测试换算）。"%[g.players[record.player].name,record.score,record.reward])
+		var paid:int=payouts[record.player]
+		g.players[record.player].cash+=paid
+		g._log("%s 完成拆炸弹：%d分，奖励现金%d。"%[g.players[record.player].name,record.score,paid])
 	return true
 
 static func _keys(value:Dictionary,keys:Array)->bool:
@@ -168,6 +172,7 @@ static func _record_error(record:Dictionary)->String:
 	return ""
 
 static func state_error(state:Dictionary,g)->String:
+	state=g.Economy.scoring_state(state)
 	if state.get("phase")!="minigame" or not state.get("specials_enabled") is bool or not state.specials_enabled or not state.get("current") is int or not state.get("players") is Array:return "拆炸弹对局无效"
 	if state.current<0 or state.current>=state.players.size():return "拆炸弹触发者无效"
 	if not state.get("service_visited") is Array or not state.get("pending_attack") is Dictionary or not state.pending_attack.is_empty():return "拆炸弹访问或攻击状态无效"

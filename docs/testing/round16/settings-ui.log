@@ -1,0 +1,94 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: new UI uses witnessed menu sample, not legacy test preset
+PASS: button exists: 经济设置
+PASS: button enabled: 经济设置
+PASS: screenshot 01-economy-settings
+PASS: numeric setting exists: InitialCash
+PASS: keyboard entered InitialCash
+PASS: numeric setting exists: InitialDeposit
+PASS: keyboard entered InitialDeposit
+PASS: cycle choices include disabled, 1, 5, 10, 15, 20
+PASS: native menu opens for InflationInterval
+PASS: real dropdown input chooses 1
+PASS: button exists: 应用到新局
+PASS: button enabled: 应用到新局
+PASS: apply commits exact typed settings
+PASS: character screen summarizes exact settings
+PASS: button exists: 经济设置
+PASS: button enabled: 经济设置
+PASS: numeric setting exists: InitialCash
+PASS: keyboard entered InitialCash
+PASS: button exists: 取消
+PASS: button enabled: 取消
+PASS: cancel discards uncommitted draft
+PASS: native menu opens for RoundLimitChoice
+PASS: real dropdown input chooses 0
+PASS: unlimited selection updates startup setting
+PASS: screenshot 00-characters-configured
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: unlimited game starts without zero denominator
+PASS: all four seats receive configured starting balances
+PASS: all four seats receive configured starting balances
+PASS: all four seats receive configured starting balances
+PASS: all four seats receive configured starting balances
+PASS: header shows initial day and price
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: map contains neutral testing road
+PASS: GM places current seat on neutral road
+PASS: public end turn advances seat
+PASS: GM places current seat on neutral road
+PASS: public end turn advances seat
+PASS: GM places current seat on neutral road
+PASS: public end turn advances seat
+PASS: GM places current seat on neutral road
+PASS: public end turn advances seat
+PASS: four completed seats advance day and daily price
+PASS: header refreshes inflated price
+PASS: screenshot 02-day-two-price
+PASS: button exists: 存读档
+PASS: button enabled: 存读档
+PASS: button exists: 新建存档
+PASS: button enabled: 新建存档
+PASS: real save button creates a new save
+PASS: button exists: 读取 ·
+PASS: button enabled: 读取 ·
+PASS: button exists: 确认读取
+PASS: button enabled: 确认读取
+PASS: load preserves entire state and restart configuration
+PASS: load preserves unlimited setting
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: button exists: 相同设置 · 再来一局
+PASS: button enabled: 相同设置 · 再来一局
+PASS: same-settings restart retains chosen policy and resets day
+PASS: same-settings restart retains unlimited duration
+PASS: restart resets each starting balance
+PASS: restart resets each starting balance
+PASS: restart resets each starting balance
+PASS: restart resets each starting balance
+PASS: genuine v6 fixture loads in economic UI
+PASS: old save preserves old reward policy and disabled inflation
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: old minigame sidebar explains legacy rewards
+PASS: screenshot 03-legacy-reward-policy
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: button exists: 相同设置 · 再来一局
+PASS: button enabled: 相同设置 · 再来一局
+PASS: restarting migrated old save keeps legacy initial settings
+ROUND16_SETTINGS_UI failures=0

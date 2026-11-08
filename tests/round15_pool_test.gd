@@ -25,7 +25,8 @@ func _init()->void:
 		var twin:Dictionary=Save.restore(old)
 		var now:Dictionary=Save.snapshot(loaded.game,old.metadata)
 		var expected:Dictionary=old.duplicate(true);expected.version=Save.VERSION
-		check(now==expected,"all state, participants, historical scores and RNG preserved; only envelope version changes")
+		expected.state.economy_config=Game.Economy.legacy()
+		check(now==expected,"all historical fields and RNG preserved; envelope version and neutral legacy economy are the only migrations")
 		while loaded.game.phase=="minigame":
 			check(loaded.game.Minigame.ai_step(loaded.game) and Coins.ai_step(twin.game),"new dispatcher and preserved legacy rules both advance")
 			check(Save.snapshot(loaded.game)==Save.snapshot(twin.game),"legacy continuation identical to preserved catch v1 after each command")

@@ -1,0 +1,39 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 2 对 2
+PASS: button enabled: 2 对 2
+PASS: preset configures two alternating teams
+PASS: screenshot 01-team-setup
+PASS: team selector exists
+PASS: team selector exists
+PASS: one-team game is blocked in setup
+PASS: button exists: 2 对 2
+PASS: button enabled: 2 对 2
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: actual game uses selected relations
+PASS: teammate hotel neither charges nor detains
+PASS: screenshot 02-allied-hotel
+PASS: button exists: 升级建筑
+PASS: button enabled: 升级建筑
+PASS: UI upgrade uses actor cash and retains teammate property
+PASS: team game saves
+PASS: load restores team setup and runtime relations
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: screenshot 03-team-loaded
+PASS: result uses combined team assets
+PASS: screenshot 04-team-results
+PASS: button exists: 相同设置
+PASS: button enabled: 相同设置
+PASS: rematch retains team assignment
+PASS: natural team AI match reaches team result without GM
+PASS: screenshot 05-team-ai-results
+ROUND10_UI failures=0 frames=198

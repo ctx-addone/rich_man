@@ -25,6 +25,7 @@ static func enter(g) -> bool:
 	g.service_visited.append(road)
 	g.pending_service = {"kind":"minigame","road":road,"game":{"id":GAME_ID,"version":1,"player":g.current,"tick":0,"score":0,"status":"ready","reason":"","reward":0,"participants":_participants(g.players,g.current),"cursor":0,"history":[],"balloons":[],"choice":-1,"events":[]}}
 	g.phase = "minigame"
+	g.Economy.freeze_service(g)
 	g._log("打气球：选择整列射击，避开炸弹；生成与结算数值为测试参数。")
 	return true
 
@@ -142,8 +143,9 @@ static func settle_others(g) -> bool:
 static func close(g) -> bool:
 	if not _active(g,"result"): return false
 	for record in g.pending_service.game.history:
-		g.players[record.player].cash += record.reward
-		g._log("%s 完成打气球：%d 分，奖励现金 %d。" % [g.players[record.player].name,record.score,record.reward])
+		var paid:int = g.Economy.minigame_cash(g,record)
+		g.players[record.player].cash += paid
+		g._log("%s 完成打气球：%d 分，奖励现金 %d。" % [g.players[record.player].name,record.score,paid])
 	g.pending_service.clear()
 	g.phase = "land"
 	return true
@@ -177,6 +179,7 @@ static func _record_error(record:Dictionary) -> String:
 	return ""
 
 static func state_error(state:Dictionary, g) -> String:
+	state=g.Economy.scoring_state(state)
 	if state.get("phase") != "minigame" or not state.get("current") is int or not state.get("players") is Array or not state.get("specials_enabled") is bool or not state.specials_enabled: return "打气球所属对局无效"
 	if state.current < 0 or state.current >= state.players.size(): return "打气球触发者无效"
 	if not state.get("service_visited") is Array or not state.get("pending_attack") is Dictionary or not state.pending_attack.is_empty(): return "打气球访问或攻击状态无效"

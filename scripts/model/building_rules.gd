@@ -34,4 +34,5 @@ static func rent(game,lot:Dictionary,payer:int=-1)->int:
 		amount*=game.Traits.receive_rent_multiplier(game,payer)
 		if game.Gods.id(game,payer)=="wealth": amount=0
 		elif game.Gods.id(game,payer)=="poor": amount*=2
-	return maxi(0,int(amount))
+	# Inflation is a rent category modifier, never a generic money mutation.
+	return maxi(0,int(amount * game.price_index()))

@@ -11,6 +11,7 @@ const Market = preload("res://scripts/model/stock_market.gd")
 const Gods = preload("res://scripts/model/god_rules.gd")
 const Specials = preload("res://scripts/model/special_services.gd")
 const News = preload("res://scripts/model/news_rules.gd")
+const Economy = preload("res://scripts/model/economy_rules.gd")
 const Minigame = preload("res://scripts/model/minigame_rules.gd")
 const Shop = preload("res://scripts/model/shop_rules.gd")
 const Maps = preload("res://scripts/model/map_catalog.gd")
@@ -48,6 +49,7 @@ var players: Array[Dictionary] = []
 var current := 0
 var round_number := 1
 var round_limit := 20
+var economy_config: Dictionary = Economy.legacy()
 var phase := "roll"
 var steps_left := 0
 var last_roll := 0
@@ -75,10 +77,14 @@ var landing_shop := false
 var reaction_reward_active := false
 
 func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Dictionary = {}) -> bool:
+	var requested_economy:Dictionary = Economy.normalize(options.economy) if options.has("economy") else Economy.legacy()
+	if requested_economy.is_empty(): return false
+	if rounds > Economy.MAX_DAYS: return false
 	var requested_id:Variant=options.get("map_id",Maps.DEFAULT_MAP_ID)
 	if not requested_id is String: return false
 	var prepared:Dictionary=Maps.load_map(requested_id)
 	if not prepared.ok: return false
+	economy_config = requested_economy
 	specials_enabled = options.get("specials_enabled",false)
 	lottery_state = Specials.initial_lottery()
 	service_visited.clear()
@@ -112,7 +118,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	shop_purchases = 0
 	current = 0
 	round_number = 1
-	round_limit = maxi(1, rounds)
+	round_limit = 0 if rounds == 0 else maxi(1, rounds)
 	phase = "roll"
 	steps_left = 0
 	last_roll = 0
@@ -122,7 +128,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	_build_map(prepared)
 	var spawns:Array=map_metadata.get("spawn_roads",[maxi(0,start_road)])
 	for n in names:
-		players.append({"id":players.size(), "name":str(n), "cash":10000, "deposit":0, "stocks":{}, "pos":int(spawns[players.size()%spawns.size()]), "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
+		players.append({"id":players.size(), "name":str(n), "cash":economy_config.initial_cash, "deposit":economy_config.initial_deposit, "stocks":{}, "pos":int(spawns[players.size()%spawns.size()]), "previous":-1, "bankrupt":false, "cards":["dice","scheme","mine"], "status":{},"vehicle":"foot","turtle_turns":0,"stay_turns":0})
 	var characters: Array = options.get("characters",[])
 	for i in range(players.size()):
 		players[i].character_id = str(characters[i]) if i<characters.size() else ""
@@ -131,6 +137,9 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	if gods_enabled: Gods.spawn(self)
 	_log(map_metadata.name+"："+map_metadata.description)
 	return true
+
+func price_index() -> int:
+	return Economy.index(economy_config,round_number,round_limit)
 
 func _build_map(prepared:Dictionary={}) -> void:
 	if prepared.is_empty(): prepared=Maps.load_map(map_id)
@@ -545,7 +554,7 @@ func _tick_economy()->void:
 	# Final settlement uses the last playable day's quotes, not an unplayed day.
 	# Lottery tickets for the just-completed final day still settle before ranking.
 	Specials.advance_round(self)
-	if round_number <= round_limit:
+	if round_limit == 0 or round_number <= round_limit:
 		stock_market.advance(round_number)
 		Gods.advance_round(self)
 	if (round_number-1)%int(Buildings.PROFILE.month_days)==0:
@@ -633,9 +642,11 @@ func end_turn() -> bool:
 	for ignored in range(players.size()):
 		current=(current+1)%players.size()
 		if current==0:
+			var prior_price:int=price_index()
 			round_number+=1
 			_tick_economy()
-			if round_number>round_limit: finish_game(); return true
+			if round_limit>0 and round_number>round_limit: finish_game(); return true
+			if price_index()!=prior_price: _log("第%d天开始，物价指数升至%d。" % [round_number,price_index()])
 		if not players[current].bankrupt: break
 	phase="roll"
 	pending_service.clear()

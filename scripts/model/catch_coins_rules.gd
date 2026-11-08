@@ -16,6 +16,7 @@ static func enter(g) -> bool:
 	g.service_visited.append(road)
 	g.pending_service = {"kind":"minigame","road":road,"game":{"id":GAME_ID,"version":1,"player":g.current,"tick":0,"cell":4,"score":0,"items":_wave(g),"results":[],"status":"ready","reason":"","reward":0,"participants":_participants(g.players,g.current),"cursor":0,"history":[]}}
 	g.phase = "minigame"
+	g.Economy.freeze_service(g)
 	g._log("接金币：点击九宫格移动，接金币并避开炸弹；计时与分值为测试参数。")
 	return true
 
@@ -132,8 +133,9 @@ static func close(g) -> bool:
 	if not _active(g,"result"): return false
 	var game:Dictionary = g.pending_service.game
 	for record in game.history:
-		g.players[record.player].cash += record.reward
-		g._log("%s 完成接金币：%d 分，奖励现金 %d。" % [g.players[record.player].name,record.score,record.reward])
+		var paid:int = g.Economy.minigame_cash(g,record)
+		g.players[record.player].cash += paid
+		g._log("%s 完成接金币：%d 分，奖励现金 %d。" % [g.players[record.player].name,record.score,paid])
 	g.pending_service.clear()
 	g.phase = "land"
 	return true
@@ -174,6 +176,7 @@ static func _score(results:Array) -> int:
 
 # Save receives the whole serialized game state, not an unchecked runtime object.
 static func state_error(state:Dictionary, g) -> String:
+	state=g.Economy.scoring_state(state)
 	if state.get("phase","") != "minigame": return "小游戏阶段无效"
 	if not state.get("current") is int or not state.get("players") is Array or not state.get("specials_enabled") is bool or not state.get("service_visited") is Array: return "小游戏所属对局结构无效"
 	if not state.get("pending_attack") is Dictionary or not state.get("landing_queue") is Array or not state.get("landing_hotel") is String or not state.get("landing_pending") is bool or not state.get("landing_shop") is bool or not state.get("steps_left") is int: return "小游戏行动结构无效"

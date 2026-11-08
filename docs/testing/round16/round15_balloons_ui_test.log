@@ -1,0 +1,43 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 准备 · 打气球
+PASS: button enabled: 准备 · 打气球
+PASS: GM picker opens balloon preparation
+PASS: screenshot 10-balloons-ready
+PASS: button exists: 开始打气球
+PASS: button enabled: 开始打气球
+PASS: visible safe target appears
+PASS: real cannon button queues column shot
+PASS: button exists: 暂停小游戏
+PASS: button enabled: 暂停小游戏
+PASS: balloons, pending shot, score and RNG freeze
+PASS: screenshot 11-balloons-pause
+PASS: button exists: 继续小游戏
+PASS: button enabled: 继续小游戏
+PASS: column shot and flying positions save and restore
+PASS: loaded balloon game waits for handoff
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: screenshot 12-balloons-playing
+PASS: balloon manual game leads to automatic other-seat scores
+PASS: visible target firing earns positive score
+PASS: screenshot 13-balloons-results
+PASS: button exists: 领取奖励
+PASS: button enabled: 领取奖励
+PASS: balloon result pays every seat once
+PASS: balloon result pays every seat once
+PASS: balloon result pays every seat once
+PASS: balloon result pays every seat once
+PASS: balloon returns to board and prevents double award
+ROUND15_BALLOONS_UI failures=0 manual_frames=358
