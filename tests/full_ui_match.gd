@@ -5,6 +5,8 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	var initial_seed:String=OS.get_environment("RICHMAN_TEST_SEED")
+	if not initial_seed.is_empty(): app.match_seed=int(initial_seed)
 	var test_map:String = OS.get_environment("RICHMAN_TEST_MAP")
 	if not test_map.is_empty(): app.map_id = test_map
 	var test_turns:String=OS.get_environment("RICHMAN_TEST_TURNS")
@@ -22,12 +24,19 @@ func run() -> void:
 	var bank_used := false
 	var card_played := false
 	var minigames:Dictionary={}
+	var merchants:int=0
 	while app.screen == "game" and actions < 5000:
 		actions += 1
 		if app.handoff:
 			await click("我已就位")
 			continue
 		match app.game.phase:
+			"merchant":
+				merchants+=1
+				var offers:Array=app.game.NPC.offers(app.game)
+				if app.game.NPC.remaining(app.game)>0 and app.game.players[app.game.current].cards.size()<app.game.HAND_LIMIT and not offers.is_empty() and app.game.players[app.game.current].cash>=offers[0].price:
+					await click("购买 · "+offers[0].name)
+				else: await click("离开流动商人")
 			"roll":
 				if app.game.is_sleepwalking():
 					await create_timer(0.05).timeout
@@ -92,6 +101,7 @@ func run() -> void:
 	check(card_played and bank_used, "card and bank exercised")
 	check(not app.game.winners.is_empty(), "natural winner exists")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_MINIGAME")=="1":check(not minigames.is_empty(),"natural UI match actually played a minigame")
+	if OS.get_environment("RICHMAN_TEST_REQUIRE_MERCHANT")=="1":check(merchants>0,"natural UI match actually encountered a merchant")
 	if OS.get_environment("RICHMAN_TEST_REQUIRE_INFLATION")=="1":
 		check(app.game.economy_config.policy=="r16_samples" and app.game.price_index()>1,"natural UI match crossed an inflation boundary")
 	if team_match:
@@ -99,5 +109,6 @@ func run() -> void:
 	await capture("07-natural-results")
 	print("FULL_UI_MATCH actions=%d rounds=%d failures=%d" % [actions,app.game.round_number,failures])
 	print("FULL_UI_MINIGAMES ",minigames.keys())
+	print("FULL_UI_MERCHANT_ACTIONS ",merchants)
 	print("FULL_UI_ECONOMY ",app.game.economy_config," final_price=",app.game.price_index())
 	quit(1 if failures > 0 else 0)

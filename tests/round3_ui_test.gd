@@ -4,6 +4,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.npcs_enabled = false # Preserve the pre-NPC scenario; R17 tests cover NPCs.
 	app.controllers.assign(["human", "human", "human", "human"])
 	app.talents_enabled = false
 	app.gods_enabled = false

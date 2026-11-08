@@ -11,6 +11,7 @@ var colors = [Color("e76f51"), Color("2a9d8f"), Color("5b7cfa"), Color("a66dd4")
 var player_colors: Array = [0, 1, 2, 3]
 var points: Array[Vector2] = []
 var lot_rects: Dictionary = {}
+var npc_rects: Dictionary = {}
 var cell: float = 28.0
 var step: float = 34.0
 var origin := Vector2.ZERO
@@ -140,6 +141,25 @@ func _draw() -> void:
 			draw_colored_polygon(diamond, god_color(god_id))
 			draw_string(font, center+Vector2(-radius,radius*0.6), god_glyph(god_id), HORIZONTAL_ALIGNMENT_CENTER, radius*2, maxi(9,int(radius*1.7)), Color("142532"))
 	_draw_players()
+	_draw_npcs()
+
+func _draw_npcs() -> void:
+	npc_rects.clear()
+	if not game.npcs_enabled: return
+	var font := get_theme_default_font()
+	for npc_id in game.road_npcs:
+		var npc: Dictionary = game.road_npcs[npc_id]
+		if npc.road < 0 or npc.road >= points.size(): continue
+		var same_road: Array = game.NPC.at(game, npc.road)
+		var radius: float = clampf(cell * 0.45, 7, 13)
+		var centre: Vector2 = points[npc.road] + Vector2((same_road.find(npc_id) - (same_road.size()-1)*0.5) * (radius*2+2), -radius-3)
+		var box := Rect2(centre-Vector2.ONE*radius, Vector2.ONE*radius*2)
+		npc_rects[npc_id] = box
+		var accent := Color({"merchant":"f1efe5", "dog":"dfae70", "beggar":"c49bcd"}.get(npc.kind, "dddddd"))
+		draw_line(points[npc.road], centre, accent, 1.5, true)
+		draw_circle(centre, radius+1, Color("142532"))
+		draw_circle(centre, radius, accent)
+		draw_string(font, centre+Vector2(-radius,radius*0.55), {"merchant":"商", "dog":"犬", "beggar":"乞"}.get(npc.kind,"人"), HORIZONTAL_ALIGNMENT_CENTER, radius*2, int(radius*1.5), Color("142532"))
 
 func _draw_lot(lot: Dictionary, highlighted: bool) -> void:
 	var box: Rect2 = lot_rects[lot.id]
@@ -308,6 +328,11 @@ func _gui_input(event: InputEvent) -> void:
 			return
 		dragging = false
 		tooltip_text = ""
+		for npc_id in npc_rects:
+			if npc_rects[npc_id].has_point(event.position) and game.road_npcs.has(npc_id):
+				var npc: Dictionary = game.road_npcs[npc_id]
+				tooltip_text = game.NPC.title(npc.kind) + " · " + game.NPC.description(npc.kind)
+				return
 		for id in lot_rects:
 			if lot_rects[id].has_point(event.position):
 				var lot: Dictionary = game.lots[id]
@@ -318,6 +343,11 @@ func _gui_input(event: InputEvent) -> void:
 				tooltip_text = "%02d · %s" % [n.id, game.road_display_name(n.id)]
 				return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		for npc_id in npc_rects:
+			if npc_rects[npc_id].has_point(event.position) and game.road_npcs.has(npc_id):
+				tile_clicked.emit(game.road_npcs[npc_id].road)
+				accept_event()
+				return
 		for i in range(points.size()):
 			if Rect2(points[i] - Vector2.ONE * cell / 2, Vector2.ONE * cell).has_point(event.position):
 				tile_clicked.emit(i)

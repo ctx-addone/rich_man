@@ -5,6 +5,7 @@ func run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.npcs_enabled = false # Preserve the pre-NPC scenario; R17 tests cover NPCs.
 	app.save_directory = "res://.godot/round8-ui-%d" % Time.get_ticks_usec()
 	app.ai_delay = 0.01
 	root.add_child(app)

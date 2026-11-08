@@ -39,8 +39,13 @@ static func options(g) -> Array[String]:
 		elif card=="same_fate" and attack.source in ["scheme","hibernate","sleepwalk"] and attack.attacker>=0 and attack.attacker!=who and g.players[attack.attacker].status.is_empty(): result.append(card)
 	return result
 
+static func npc_protected(g, who:int, event:Dictionary) -> bool:
+	if event.source not in ["dog","beggar"]: return false
+	return g.Traits.npc_immune(g,who,event.source) or (event.source=="dog" and g.players[who].get("vehicle","foot")!="foot")
+
 static func apply_hit(g, who:int) -> void:
 	var a:Dictionary=g.pending_attack
+	if npc_protected(g,who,a): return
 	if a.kind=="money":
 		g._pay(who,a.amount,a.receiver)
 		return
@@ -70,6 +75,9 @@ static func advance(g) -> void:
 		if a.visited.has(who) or g.players[who].bankrupt: continue
 		a.target=who
 		a.visited.append(who)
+		if npc_protected(g,who,a):
+			g._log("%s 免于本次%s影响。" % [g.players[who].name,"野狗" if a.source=="dog" else "乞丐"])
+			continue
 		g.phase="reaction"
 		if not options(g).is_empty():
 			g._log("等待%s选择防御或承受效果。"%g.players[who].name)

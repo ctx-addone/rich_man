@@ -30,8 +30,10 @@ var character_ids: Array[String] = []
 var talents_enabled: bool = true
 var gods_enabled: bool = true
 var specials_enabled: bool = true
+var npcs_enabled: bool = true
 var teams: Array[int] = [0, 1, 2, 3]
 var turns: int = 20
+var match_seed: int = 0 # Zero uses ordinary random initialization; nonzero is a reproducible test entry point.
 var economy_config: Dictionary = {"initial_cash":100000,"initial_deposit":100000,"inflation_interval":15,"policy":"r16_samples"}
 var screen: String = "menu"
 var handoff: bool = true
@@ -199,7 +201,7 @@ func menu() -> void:
 	help.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	v.add_child(help)
 	spacer(v)
-	v.add_child(label("v0.8 开发版  ·  单机托管与存读档  /  F1 测试工具", 14, Color("7f9aab")))
+	v.add_child(label("v0.17 开发版  ·  道路 NPC 与交易  /  F1 测试工具", 14, Color("7f9aab")))
 
 func portrait(index: int, dimensions: Vector2) -> Control:
 	var path := "res://assets/characters/player_%d.svg" % (index + 1)
@@ -234,7 +236,7 @@ func map_select() -> void:
 	v.add_child(label("独立道路与多格建筑  ·  银行  ·  医院  ·  监狱  ·  商店"))
 	var preview = Board.new()
 	var sample = Game.new()
-	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled, "economy":economy_config.duplicate(true)})
+	sample.setup(player_names, 0, turns, {"map_id":map_id, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "economy":economy_config.duplicate(true)})
 	preview.game = sample
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(preview)
@@ -308,6 +310,12 @@ func character_select() -> void:
 	economy_text.name = "EconomySummary"
 	economy_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	economy_row.add_child(economy_text)
+	var npcs := CheckButton.new()
+	npcs.name = "NPCsToggle"
+	npcs.text = "道路NPC"
+	npcs.button_pressed = npcs_enabled
+	npcs.toggled.connect(func(enabled): npcs_enabled = enabled)
+	economy_row.add_child(npcs)
 	economy_row.add_child(button("经济设置", show_economy_settings))
 	# Keep the footer height stable when a team choice becomes invalid, so the
 	# correction presets and start control stay inside the viewport.
@@ -420,7 +428,7 @@ func start_game() -> void:
 	if not Game.Teams.valid_assignment(teams, 4): return
 	var next_game = Game.new()
 	ensure_characters()
-	if not next_game.setup(player_names, 0, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "characters":character_ids, "teams":teams, "map_id":map_id, "economy":economy_config.duplicate(true)}): return
+	if not next_game.setup(player_names, match_seed, turns, {"gods_enabled":gods_enabled, "talents_enabled":talents_enabled, "specials_enabled":specials_enabled, "npcs_enabled":npcs_enabled, "characters":character_ids, "teams":teams, "map_id":map_id, "economy":economy_config.duplicate(true)}): return
 	game = next_game
 	economy_config = game.economy_config.duplicate(true)
 	selected = -1
@@ -514,6 +522,7 @@ func refresh() -> void:
 	if screen != "game": return
 	var state_key:String="%s:%d:%d"%[game.phase,automated_seat(),game.reaction_player()]
 	if game.phase == "minigame": state_key += ":" + game.pending_service.game.status
+	if game.phase == "merchant": state_key += ":" + str(game.pending_service.npc_id)
 	if is_instance_valid(sidebar) and state_key!=sidebar_state_key:
 		(sidebar.get_parent() as ScrollContainer).set_deferred("scroll_vertical",0)
 		sidebar_state_key=state_key
@@ -664,6 +673,13 @@ func refresh() -> void:
 				sidebar.add_child(paragraph("卡牌商店 · 本次还可买%d张\n手牌满时先弃牌；离店时结算书店奖励。" % game.shop_remaining()))
 				sidebar.add_child(button("浏览商店", show_shop))
 				sidebar.add_child(button("离开商店", func(): game.close_shop(); refresh()))
+			"merchant":
+				sidebar.add_child(label(game.NPC.title("merchant"), 23, Color("efd18b")))
+				sidebar.add_child(paragraph(game.NPC.description("merchant"), 15))
+				sidebar.add_child(paragraph("本次还可购买%d张 · 剩余%d步\n手牌满时可先弃牌。" % [game.NPC.remaining(game), game.steps_left], 16))
+				for offer in game.NPC.offers(game):
+					sidebar.add_child(button("购买 · %s · %d" % [offer.name, offer.price], func(): game.NPC.buy(game, offer.id); refresh(), p.cash < offer.price or p.cards.size() >= Game.HAND_LIMIT or game.NPC.remaining(game) <= 0))
+				sidebar.add_child(button("离开流动商人 · 继续行动", func(): game.NPC.close(game); refresh()))
 		if game.phase in ["land", "end", "detained"]: sidebar.add_child(button("结束回合 →", next_turn))
 		var hand := panel(sidebar)
 		hand.add_child(label("手牌 %d/%d · 掷骰前使用" % [p.cards.size(), Game.HAND_LIMIT], 15))
@@ -677,7 +693,7 @@ func refresh() -> void:
 			b.tooltip_text = Game.CARD_DESCRIPTIONS[card]
 			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(b)
-			row.add_child(button("弃", func(): game.discard_card(card_index); refresh(), game.phase not in ["roll", "shop"] or game.is_sleepwalking()))
+			row.add_child(button("弃", func(): game.discard_card(card_index); refresh(), game.phase not in ["roll", "shop", "merchant"] or game.is_sleepwalking()))
 	var id: int = selected if selected >= 0 else p.pos
 	var n: Dictionary = game.nodes[id]
 	var detail := panel(sidebar)
@@ -705,6 +721,11 @@ func refresh() -> void:
 		var god: Dictionary = Gods.CATALOG[game.road_gods[id]]
 		detail.add_child(label("道路神仙 · " + god.name, 16, Color("e9c46a")))
 		detail.add_child(paragraph(god.description, 13))
+	for npc_id in game.NPC.at(game, id):
+		var npc: Dictionary = game.road_npcs[npc_id]
+		detail.add_child(label("道路NPC · " + game.NPC.title(npc.kind), 16, Color("e9c46a")))
+		detail.add_child(paragraph(game.NPC.description(npc.kind), 13))
+		if npc.owner >= 0: detail.add_child(label("来自破产席位：" + game.players[npc.owner].name, 13))
 	for lot_id in detail_lots:
 		var lot: Dictionary = game.lots[lot_id]
 		detail.add_child(label(lot.name, 18, Color("e9c46a")))
@@ -1223,6 +1244,7 @@ func load_snapshot(path: String) -> Dictionary:
 	if typeof(meta.get("forced_dice", 0)) != TYPE_INT or typeof(meta.get("gm_used", false)) != TYPE_BOOL:
 		return {"ok":false,"error":"测试标记或骰子信息无效。"}
 	game = loaded
+	match_seed = 0
 	map_id = game.map_id
 	portraits = loaded_portraits.duplicate()
 	controllers.assign(loaded_controllers)
@@ -1234,6 +1256,7 @@ func load_snapshot(path: String) -> Dictionary:
 	talents_enabled = game.talents_enabled
 	gods_enabled = game.gods_enabled
 	specials_enabled = game.specials_enabled
+	npcs_enabled = game.npcs_enabled
 	teams.clear()
 	for player in game.players: teams.append(player.team)
 	turns = game.round_limit
@@ -1315,9 +1338,42 @@ func show_gm() -> void:
 	god_actions.add_child(button("放置道路神仙", func(): gm_used = true; game.gm_spawn_god(destination.get_selected_id(), god_ids[god_choice.selected]); dismiss(), game.phase == "reaction"))
 	god_actions.add_child(button("清除附身神仙", func(): gm_used = true; game.gm_god(who.selected, ""); dismiss(), game.phase == "reaction"))
 	v.add_child(button("配置地产与租金测试 →", show_gm_property, game.phase in ["reaction", "move"]))
+	v.add_child(button("配置道路NPC →", show_gm_npcs))
 	v.add_child(button("手动选择所有岔路 · " + ("开" if game.gm_choose_route else "关"), func(): gm_used = true; game.gm_choose_route = not game.gm_choose_route; dismiss(), game.phase != "roll"))
 	v.add_child(button("立即结算整局", func(): gm_used = true; game.finish_game(); dismiss()))
 	outer.add_child(button("关闭  /  Esc", dismiss))
+
+func show_gm_npcs() -> void:
+	if screen != "game": return
+	var outer := modal("GM · 道路NPC")
+	var v := scroll_content(outer, 450)
+	v.add_child(paragraph("NPC显示在道路上。放置会移动同名商人或狗；未决交易中的商人不能移除。乞丐须来自已破产席位。", 15))
+	if not game.npcs_enabled: v.add_child(paragraph("本局未开启道路NPC，请在新局选人页开启。", 15))
+	var road := OptionButton.new()
+	road.name = "GMNPCRoad"
+	for node in game.nodes: road.add_item("%02d · %s" % [node.id, game.road_display_name(node.id)], node.id)
+	road.select(selected if selected >= 0 else game.players[game.current].pos)
+	v.add_child(road)
+	var feedback := paragraph("", 14)
+	var actions := HBoxContainer.new()
+	v.add_child(actions)
+	for kind in ["merchant", "dog"]:
+		actions.add_child(button("放置 · " + game.NPC.title(kind), func():
+			if game.NPC.gm_place(game, kind, road.get_selected_id()): gm_used = true; dismiss()
+			else: feedback.text = "当前阶段或道路不能放置，未更改状态。", not game.npcs_enabled))
+	for player in game.players:
+		if player.bankrupt:
+			v.add_child(button("放置乞丐 · " + player.name, func():
+				if game.NPC.gm_place(game, "beggar", road.get_selected_id(), player.id): gm_used = true; dismiss()
+				else: feedback.text = "当前阶段或道路不能放置，未更改状态。", not game.npcs_enabled))
+	v.add_child(feedback)
+	for npc_id in game.road_npcs:
+		var npc: Dictionary = game.road_npcs[npc_id]
+		var active: bool = game.phase == "merchant" and game.pending_service.get("npc_id", "") == npc_id
+		v.add_child(button("移除 · %s · 道路%02d" % [game.NPC.title(npc.kind), npc.road], func():
+			if game.NPC.gm_remove(game, npc_id): gm_used = true; dismiss()
+			else: feedback.text = "当前NPC不能移除。", active))
+	outer.add_child(button("返回GM", show_gm))
 
 func show_gm_property() -> void:
 	var v := modal("GM · 配置地产")

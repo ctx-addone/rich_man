@@ -9,7 +9,7 @@ const CATALOG = {
  "original": {"name":"原创无天赋", "description":"原创几何外观；不启用角色天赋。", "unknowns":"无", "source":"本项目原创", "implemented":"implemented"},
  "sun_xiaomei": {"name":"孙小美", "description":"收租/爆炸伤害 +20%；武神附身 +10 天。", "unknowns":"热斗伤害未接；持续单位待实机核验。", "source":"https://gl.ali213.net/html/2022-10/934689_3.html", "implemented":"partial"},
  "atu": {"name":"阿土伯", "description":"租金/爆炸损失减免20%；土地公附身 +3 天。", "unknowns":"热斗伤害未接。", "source":"https://gl.ali213.net/html/2022-10/934689_4.html", "implemented":"partial"},
- "qian": {"name":"钱夫人", "description":"免疫乞丐、狗；有神仙时免疫拾取和查账选中。", "unknowns":"乞丐/狗 NPC 尚未实现，仅保留免疫接口。", "source":"https://gl.ali213.net/html/2022-10/934689_5.html", "implemented":"partial"},
+ "qian": {"name":"钱夫人", "description":"免疫乞丐、狗；有神仙时免疫拾取和查账选中。", "unknowns":"NPC触发、金额与移动周期仍有测试规则。", "source":"https://gl.ali213.net/html/2022-10/934689_5.html", "implemented":"partial"},
  "shalong": {"name":"沙隆巴斯", "description":"被乌龟选中获得香蕉皮；离商店得乌龟；乌龟范围 ×2。", "unknowns":"范围叠加顺序、满手处理待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_6.html", "implemented":"implemented"},
  "jin_beibei": {"name":"金贝贝", "description":"财神/福神 +3 天；自身回合外不可被对手送神选中。", "unknowns":"团队资格待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_7.html", "implemented":"implemented"},
  "nintaro": {"name":"忍太郎", "description":"天使/恶魔持续 ×2；神仙附身获得机器娃娃。", "unknowns":"持续计数与满手处理待核验。", "source":"https://gl.ali213.net/html/2022-10/934689_8.html", "implemented":"implemented"},

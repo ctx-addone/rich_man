@@ -46,6 +46,7 @@ func run() -> void:
 	out_dir = "res://docs/testing/round16"
 	root.size = Vector2i(1440, 900)
 	app = load("res://scenes/main.tscn").instantiate()
+	app.npcs_enabled = false # Preserve the pre-NPC scenario; R17 tests cover NPCs.
 	app.map_id = "knight_manor"
 	app.controllers.assign(["human", "human", "human", "human"])
 	app.talents_enabled = false

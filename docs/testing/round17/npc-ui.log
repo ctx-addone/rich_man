@@ -1,0 +1,121 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.60 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3060 Ti
+
+PASS: button exists: 开始游戏
+PASS: button enabled: 开始游戏
+PASS: button exists: 选择角色
+PASS: button enabled: 选择角色
+PASS: NPCs default on in new-game UI
+PASS: button exists: 道路NPC
+PASS: button enabled: 道路NPC
+PASS: NPC toggle off updates setup setting
+PASS: button exists: 道路NPC
+PASS: button enabled: 道路NPC
+PASS: screenshot 01-npc-setup
+PASS: button exists: 开始对局
+PASS: button enabled: 开始对局
+PASS: new match passes NPC setup option
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: neutral test roads exist
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 配置道路NPC
+PASS: button enabled: 配置道路NPC
+PASS: button exists: 放置 · 白衣神秘人
+PASS: button enabled: 放置 · 白衣神秘人
+PASS: GM merchant placement is applied and marked
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 配置道路NPC
+PASS: button enabled: 配置道路NPC
+PASS: button exists: 放置 · 野狗
+PASS: button enabled: 放置 · 野狗
+PASS: GM dog placement uses selected road
+PASS: NPC markers are drawn separately from property rectangles
+PASS: clicking NPC marker selects its road, not property
+PASS: road inspector describes selected merchant
+PASS: screenshot 02-road-npc-markers
+PASS: public GM landing enters merchant
+PASS: merchant landing is actionable
+PASS: GM fills hand with legal cards
+PASS: GM fills hand with legal cards
+PASS: GM fills hand with legal cards
+PASS: GM fills hand with legal cards
+PASS: GM fills hand with legal cards
+PASS: full hand disables merchant purchases
+PASS: button exists: 弃
+PASS: button enabled: 弃
+PASS: merchant exposes six fixed card types
+PASS: button exists: 购买 · 遥控骰子卡
+PASS: button enabled: 购买 · 遥控骰子卡
+PASS: one purchase pays displayed quote and consumes one quota
+PASS: already purchased type is removed from this visit's shelf
+PASS: screenshot 03-merchant-purchase
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 配置道路NPC
+PASS: button enabled: 配置道路NPC
+PASS: active merchant cannot be removed via GM
+PASS: button exists: 返回GM
+PASS: button enabled: 返回GM
+PASS: button exists: 关闭  /  Esc
+PASS: button enabled: 关闭  /  Esc
+PASS: button exists: 存读档
+PASS: button enabled: 存读档
+PASS: button exists: 新建存档
+PASS: button enabled: 新建存档
+PASS: button exists: 读取 ·
+PASS: button enabled: 读取 ·
+PASS: button exists: 确认读取
+PASS: button enabled: 确认读取
+PASS: merchant save restores quote history, quota, state and NPC toggle
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: button exists: 离开流动商人
+PASS: button enabled: 离开流动商人
+PASS: zero-step merchant closes into original landing
+PASS: merchant and marker disappear after closing
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: button exists: 相同设置 · 再来一局
+PASS: button enabled: 相同设置 · 再来一局
+PASS: same-settings restart retains NPC enablement
+PASS: button exists: 我已就位
+PASS: button enabled: 我已就位
+PASS: remove dog for isolated continuation test
+PASS: place merchant on first step
+PASS: normal movement passes merchant with a remaining step
+PASS: passing merchant does not open a final-stop service
+PASS: remove passed merchant before unrelated setup
+PASS: public neutral turn setup
+PASS: public neutral turn setup
+PASS: public neutral turn setup
+PASS: public neutral turn setup
+PASS: place seat0 beside shop
+PASS: return seat0 to roll phase without state mutation
+PASS: return seat0 to roll phase without state mutation
+PASS: return seat0 to roll phase without state mutation
+PASS: return seat0 to roll phase without state mutation
+PASS: merchant shares a shop frontage for ordering test
+PASS: normal final step arrives at merchant and shop
+PASS: merchant opens before same-road shop
+PASS: screenshot 04-merchant-shop-order
+PASS: button exists: 离开流动商人
+PASS: button enabled: 离开流动商人
+PASS: merchant close resumes independent shop service exactly once
+PASS: screenshot 05-shop-after-merchant
+PASS: button exists: 离开商店
+PASS: button enabled: 离开商店
+PASS: genuine pre-NPC v7 fixture loads
+PASS: old save retains disabled NPCs and no random spawn
+PASS: button exists: GM · F1
+PASS: button enabled: GM · F1
+PASS: button exists: 立即结算整局
+PASS: button enabled: 立即结算整局
+PASS: button exists: 相同设置 · 再来一局
+PASS: button enabled: 相同设置 · 再来一局
+PASS: legacy restart preserves disabled NPCs
+ROUND17_NPC_UI failures=0

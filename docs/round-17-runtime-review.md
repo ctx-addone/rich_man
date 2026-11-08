@@ -1,0 +1,137 @@
+# R17 NPC 扩展前真实存档与运行时审查
+
+核对日期：2026-11-08。该 fixture 使用 R16 原有 v7 核心和序列化器生成，供 NPC 扩展后的迁移回归；不得用未来版本重新生成或覆盖它。
+
+## 真实 v7 冻结基线
+
+- 来源提交：`9f3b8441b12c6920ce19133dd68c58c6de1c2667`，生成前 `git status --short` 为空，确认 clean。
+- 文件：`tests/fixtures/round16-v7-priced-service.rms`，外层版本 7。
+- SHA-256：`48AA4EB9A113A04C6E432E1BB0D65A13855EDBD874195441215EC27F2CC19B5A`。
+- 地图 `knight_manor`；种子 170017；无限期 `round_limit=0`；四席队伍 `[0,1,0,1]`。
+- 经济配置 `{initial_cash:100000, initial_deposit:100000, inflation_interval:15, policy:"r16_samples"}`；神仙、角色天赋关闭，特殊设施开启。
+- 使用原有 `Game.setup`、公开 GM 与普通操作，再用原有 `Save.save_to_file` 写入。未修改核心、随机数或成绩。
+
+构造命令：A 传送到 p_001，购买住宅；再次到访并升级；传送到 p_059，购买商业中心；进入银行存入 12000 并离开；传送到小游戏并用准备页 GM 选型接金币；第一席以普通小游戏 AI 命令完成，进入第二参与者并开始，再推进 5 tick。第二参与者是内部模拟进行中状态，不要求额外真人热座操作。
+
+metadata 保留 `source_commit`、fixture 名、purpose、完整 generation 构造说明、`gm_used=true`、四席 human 控制和 portraits `[0,1,2,3]`。生成后立即用同一 v7 序列化器读取，完整 snapshot（包括 metadata、游戏 RNG、股票 RNG）完全相同：`R17_FIXTURE failures=0`，退出码 0。生成日志 `.godot/r17-fixture.log`；临时生成脚本已移除。
+
+## 冻结资金与进行中服务
+
+| 席位 | 现金 | 存款 | 队伍 | 道路 |
+| --- | ---: | ---: | ---: | ---: |
+| A / 0 | 73000 | 112000 | 0 | 63 |
+| B / 1 | 100000 | 100000 | 1 | 45 |
+| C / 2 | 100000 | 100000 | 0 | 90 |
+| D / 3 | 100000 | 100000 | 1 | 44 |
+
+A 持有 p_001 住宅 2 级、p_059 商业中心 1 级；静态地价分别 2400 / 12000。本次未领奖分数未计入现金。当前日 1、物价 1、棋盘行动席 0、phase=`minigame`。
+
+| 字段 | 冻结值 |
+| --- | --- |
+| `pending_service.pricing` | `{day:1, price:1, other_divisor:3}` |
+| 小游戏 id / version | `catch_coins` / 1 |
+| player / cursor / status / tick | 1 / 1 / playing / 5 |
+| participants | `[0,1,2,3]` |
+| 首席 history score / reward | 6200 / 6200，未领奖 |
+| 第二席 score / reward | 2000 / 0 |
+| 第二席 results | `[500,500,500,500,0]` |
+| 当前格 | 1 |
+| 当前物品 | coin 在 2 剩 1 tick；bomb 在 3 剩 1 tick；ingot 在 6 剩 2 tick；life 均 3 |
+| 游戏 RNG seed / state | 170017 / -3823853949126522123 |
+| 股票 RNG seed / state | 170017 / -9202603589499062689 |
+
+顶层 state 共 47 字段，含 economy_config，尚无 NPC 状态字段。pricing 保留冻结的奖励换算政策；不能因为引入 NPC 字段而丢失 pricing、把第二席误当棋盘当前行动席、重新抽游戏或提前发放首席奖励。
+
+后续读取该旧档时，只能补有明确迁移定义的 NPC 中性状态。须保护原始地图、产权与等级、余额、日数、无限期、经济策略、服务进度、成绩、metadata 和两个 RNG；版本白名单必须继续接受 7。新版需要的 NPC 必填字段不能用旧版迁移宽容逻辑绕过校验。
+
+## NPC 接入前只读调用点审计
+
+以下基于冻结提交的现有代码，是集成风险清单，不是 NPC 原作触发规则的证据，也不代表新功能已实现。
+
+| 调用点 | 当前行为 | 接入时需保护的边界 |
+| --- | --- | --- |
+| `move_to` → `_resume_road_arrival` | 实际走一步先扣步数、更新 previous/pos，处理携带炸弹和路面爆炸，再处理路障/香蕉/果冻/传送门、神仙 | NPC 判断需明确在这些效果之前或之后；恢复遭遇不得再扣一次步数、重抽骰子或重复触发爆炸。传送门直接改位置并进入 `_continue_arrival`，不重走所有步进处理 |
+| `_continue_arrival` | 先过路神仙地产效果，再银行，后乐透，最后 `_check_movement` | NPC 与现有设施同格时需要明确先后和续行。若 NPC 插在银行之后，现有 `close_bank` 只到 `_check_movement`，不会自然回到 NPC 判断；不可假定关闭已有设施后会重走整个到达链 |
+| `close_bank` / `Specials.close(lottery)` | 清理本服务后恢复 move，按剩余步数继续或进入落点 | NPC 结束要恢复同一趟行走的 steps_left / controlled_path / cached_next 等，不把一次经过改为完整回合结束；剩余 0 步仍应结算原落点 |
+| `_land` → `_continue_land` | 形成 stop 地产队列；收租/旅馆可挂起；全部处理后清 landing_pending；现金格提前返回；新闻/小游戏/魔法各自进入服务 | 不能仅在函数尾追加 NPC 逻辑：现金分支会跳过尾部，新闻与小游戏又占用同一 pending_service。若 NPC 在落点前挂起，需持久化一次性续行标记，避免重复收租、现金奖励、能源收入和小游戏抽选 |
+| 停留卡、GM 传送、普通魔法传送 | 停留卡 `stay_landing` 与 GM 传送直接进入 `_land`；不经过完整步进链；魔法传送已有自身阶段约束 | 先定义是否只停在 NPC 即可触发，是否允许原地再次访问，GM 测试应与真实规则区分；不能仅测普通 move_to 后声称所有到达途径都支持 |
+| `service_visited` / `pending_service` | 经过记录只允许 lottery/magic/news/minigame 道路类型，记录去重；active pending 严格绑定阶段/道路/资格 | 任意道路 NPC 不能直接塞入现有经过列表。需要明确独立 NPC 遭遇记录或扩充形状与校验，不能为了兼容把所有普通道路都泛化为服务道路 |
+| `Money.begin` / `Combat.advance` | 金额、return_phase 和 arrival 进入反应链，结束后可能 `_resume_road_arrival` 或 `_continue_land` | 若 NPC 会收费或受防御影响，保存校验的 reaction return_phase 白名单需涵盖合法新阶段；反应恢复不能重复购买、赠卡或再次遭遇同 NPC。若设计为直接主动支付，应显式验证余额且不伪造债务反应 |
+| GM 住院/入狱/度假/传送/凶神/finish | 多处清 pending_service，中断现有小游戏并禁止未领奖收益泄漏 | 新 NPC 专有 pending、访问次数或报价也要一致清理；不要让原服务残留到下一席。测试应覆盖 ready/选择后/支付后或反应中，且保存恢复相同 |
+| `AI.step` | 未识别 phase 最终返回 false；路线评分只看公开路物/神仙/地产；卡牌和商店预算遵守储备 | 新交互阶段必须有关闭/选择路径，否则自然 AI 会停住；只能看公开 NPC、商品与资金，不能检查 RNG 决定选择。无钱、手牌满、无合法商品时也必须可离开 |
+| `Movement.available_moves` | 岔路可能生成并缓存随机下一步，controlled_path / forced_next 有优先级 | 展示 NPC 或询价不应为了预判而调用额外随机路线计算；已缓存转向经过遭遇和存读档必须保持 |
+| `main._process` / `refresh` | 调用 AI.step；侧栏重建键含 phase/current/reaction 玩家；小游戏另有定时和自动其他席结算 | 新 phase 需可操作侧栏、托管/暂停/交接支持；如果同 phase 的不同 NPC 需要不同内容，重建键要包含足以区分的公开状态。恢复旧 v7 非当前小游戏参与者不能被新 NPC 流程拦截 |
+
+## 存档及测试兼容检查建议
+
+- `Save.snapshot` 自动收集所有脚本变量；新 NPC 状态必须是普通 Array/Dictionary 等可序列化值，不能把唯一状态藏在模块静态量或独立 RNG 实例。独立 RNG 如确需新增，应显式快照和迁移。
+- `Save.restore` 创建当前 Game，再按所有字段检查 shape。新增字段须在旧版本迁移阶段添加明确中性值；当前白名单 `[1,2,3,4,5,6,VERSION]` 升版时必须保留 7。旧 v7 可以有新经济策略、pricing 和 round_limit=0，不能误套 v6 迁移为 legacy。
+- 当前地图 nodes、metadata 与产权静态属性严格对比资源。动态 NPC 应独立存储，不向节点随意新增字段；若改静态地图，真实旧 fixture 会被拒绝，需要正式地图迁移策略。
+- NPC 校验应验证有效种类、唯一 ID、合法道路、禁止重复或非法叠位的规则、报价/库存/已访问次数、与当前席/phase/剩余步数/落点队列的对应关系。字典有字段不等于状态合法；未知或越界数据需拒绝。
+- 不应在读取旧档时顺便调用随机刷新生成 NPC，这会改变其 RNG 轨迹；先明确旧档中性策略，刷新应由正常游戏生命周期触发。
+- 增补经过与停留、银行/乐透同格、负现金反应、传送/路障零步、手牌满/现金不足、拒绝重复交易、GM 中断、服务中读档、旧 v7 fixture 与两种队伍自然 AI 完局的有意义回归。测试不应只调用 NPC 模块后手写 phase 恢复，须走真实到达/关闭命令。
+
+审计阶段仅新增上述 fixture 与本文，未修改生产代码。随后在下述明确分工内实施 UI；核心、AI、保存器由本轮其他工作完成。
+
+## R17 NPC 界面集成
+
+本任务随后负责 `scripts/main.gd`、`scripts/board_view.gd` 和 `tests/round17_npc_ui_test.gd`。
+
+- 选人页新增“道路NPC”开关，新局默认开启；地图预览和正式 setup 都传递该值。读档从模型恢复开关，相同设置重开保留它；旧 v7 迁移关闭时不擅自开启。
+- `main.match_seed` 提供新局测试随机种子入口，默认 0 保持普通随机；测试可在入树前设置非零值，使初始化 NPC 等也能复现。预览仍用 0；不加入存档字段，成功读档重置入口为 0，存档内随机状态由模型完整恢复。
+- NPC 使用道路上的独立圆形字标：白色“商”、棕色“犬”、紫色“乞”，短线连接所属道路；不占建筑产权矩形。叠在同格时横向错开。图标点击选道路，悬停和道路详情显示模块提供的名称/说明，乞丐详情注明对应破产席位。
+- merchant 侧栏从核心读取报价、余下限购次数和六种可买卡；满手、钱不够或额度用完时禁用购买。可在交易中弃牌；某种卡买过后从本次货单移除，实际交易规则仍由模块验证。
+- “离开流动商人”调用模块 close，再刷新地图和原落点后续服务。直接证据支持最后停留触发；本轮不把路过就开启商人作为已知原作行为。
+- GM“配置道路NPC”独立弹窗支持在选定道路放置/移动商人和狗；乞丐按钮只列已有破产席位。活动交易中的商人不能移除；失败放置给出反馈，不假装成功。成功操作标记 GM 测试局。
+
+当前为方块/文字占位图标，不声称复制原作外观。商人刷新、狗/乞丐移动、伤害金额及资格等细则以本轮研究与模型说明为准，界面不独立发明规则。
+
+## GUI 验证记录
+
+2026-11-08，Godot 4.6.2 Windows，实际 GUI 1440×900：
+
+```powershell
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --resolution 1440x900 --log-file .godot/r17-npc-ui.log --script tests/round17_npc_ui_test.gd
+```
+
+`ROUND17_NPC_UI failures=0`，退出码 0。Godot 编辑器导入通过。GUI 原始日志完整归档 `docs/testing/round17/npc-ui.log`，该次无错误或警告；原 v7 生成日志保留为 `docs/testing/round17/v7-fixture-generation.log`。
+
+实测使用实际按钮点击：NPC 开关、GM 商人/狗放置、地图图标点击与道路详情、满手禁购→弃牌→购买并按所见报价扣款、同种货品买后隐藏、活动商人不能移除、未决交易新建存档/确认读取后完整 snapshot 相等、关闭后 NPC 和标记消失、新局重开保留开关、旧 v7 载入和重开都不生成 NPC。
+
+顺序测试使用公开模型命令构造状态，再通过真实 UI 关闭：正常两步中第一步经过商人但仍有一步时不打开；正常最后一步落在“商人＋商店”道路时先进入 merchant，点击离开后 merchant 消失且独立 shop 服务继续。没有把 GM 传送的快捷到达路径当作正常移动顺序证据，也没有通过手写 phase/steps_left 让断言成立。
+
+五张截图已输出到 `docs/testing/round17/`：`01-npc-setup.png`、`02-road-npc-markers.png`、`03-merchant-purchase.png`、`04-merchant-shop-order.png`、`05-shop-after-merchant.png`；已目视选人页、图标道路详情和商人报价截图。商品、手牌与道路详情使用现有可滚动侧栏。截图属于本项目验证产物，不是原作证据。
+
+此测试不代替狗/乞丐伤害反应、破产来源、跨日刷新、自然 AI 整局或存档篡改测试；这些由本轮模型和迁移测试独立覆盖。
+
+## 最终 GUI 复跑与自然完整热座局
+
+完成集成后，顺序复跑 NPC 专项 GUI 与完整热座 GUI，避免多个原生窗口同时抢焦点。专项再次得到 `ROUND17_NPC_UI failures=0`、退出码 0，`docs/testing/round17/npc-ui.log` 已更新为最终复跑原始日志。
+
+完整局使用 `tests/full_ui_match.gd`，环境如下：
+
+```powershell
+$env:RICHMAN_TEST_MAP='knight_manor'
+$env:RICHMAN_TEST_TEAMS='2v2'
+$env:RICHMAN_TEST_TURNS='40'
+$env:RICHMAN_TEST_SEED='1512'
+$env:RICHMAN_TEST_REQUIRE_MERCHANT='1'
+$env:RICHMAN_TEST_REQUIRE_INFLATION='1'
+$env:RICHMAN_TEST_OUTPUT='res://docs/testing/round17/hotseat'
+& 'D:/software/Godot/4.6.2/Godot_v4.6.2-stable_win64_console.exe' --path . --resolution 1440x900 --log-file .godot/r17-hotseat-1512.log --script tests/full_ui_match.gd
+```
+
+单次运行自然完成，没有更换种子、重启或 GM 操作。种子在新局初始化前通过 `match_seed` 固定，包含初始 NPC 分布；仍保留测试已有的开局后相同种子 RNG 设置。完整局通过真实 UI 点击操作四个人类热座，不使用模型 AI 整局替代界面流程；分岔选择由既有测试随机策略决定。
+
+最终输出：
+
+```text
+FULL_UI_MATCH actions=2843 rounds=41 failures=0
+FULL_UI_MINIGAMES ["disarm_bomb"]
+FULL_UI_MERCHANT_ACTIONS 3
+FULL_UI_ECONOMY { "initial_cash": 100000, "initial_deposit": 100000, "inflation_interval": 15, "policy": "r16_samples" } final_price=3
+```
+
+`rounds=41` 为完成第 40 天后进入结算时的内部结束标记，不代表又进行了第 41 天正常行动。自然遇到商人的 3 个动作分别是购买两张卡和离开；卡牌、银行、地产购建/升级、乐透离开、魔法、新闻、拆炸弹与领奖均推进。必须自然遇到商人、必须跨越涨价边界、无需 GM 到达结果页、队伍配置保持及存在获胜者等断言全部通过，退出码 0。
+
+原始完整日志保留为 `docs/testing/round17/hotseat/full-match-seed1512.log`，无警告或错误；结算截图 `docs/testing/round17/hotseat/07-natural-results.png` 已目视核对。本次只要求并覆盖一个自然商人和物价边界，不将单次拆炸弹抽样宣称为四小游戏全覆盖，也不替代狗/乞丐各反应分支的专项测试。

@@ -1,6 +1,6 @@
 extends RefCounted
 const Game = preload("res://scripts/game_state.gd")
-const VERSION = 7
+const VERSION = 8
 const MAGIC = "RMSAVE01"
 const MAX_BYTES = 16777216
 const EXCLUDED = ["board_model", "stock_market", "rng"]
@@ -128,6 +128,9 @@ static func special_state_error(state: Dictionary, game) -> String:
 	elif state.phase == "minigame":
 		var error: String = game.Minigame.state_error(state,game)
 		if not error.is_empty(): return error
+	elif state.phase == "merchant":
+		# NPC service is independent of fixed map service kinds and switches.
+		pass
 	elif not service.is_empty(): return "待处理服务与阶段不一致"
 	var magic: Dictionary = state.magic_last_result
 	if not magic.is_empty():
@@ -159,9 +162,15 @@ static func special_state_error(state: Dictionary, game) -> String:
 static func restore(data: Variant) -> Dictionary:
 	if not data is Dictionary or not plain(data): return failure("存档格式无效")
 	data = data.duplicate(true)
-	if not data.get("version") is int or data.version not in [1,2,3,4,5,6,VERSION]: return failure("存档版本不兼容")
+	if not data.get("version") is int or data.version not in [1,2,3,4,5,6,7,VERSION]: return failure("存档版本不兼容")
 	if not data.get("state") is Dictionary or not data.get("market") is Dictionary or not data.get("metadata") is Dictionary: return failure("存档缺少数据")
 	var state: Dictionary = data.state
+	if data.version < 8:
+		if state.get("phase")=="merchant": return failure("旧版本不包含神秘人交易")
+		var npc_additions:Dictionary={"npcs_enabled":false,"road_npcs":{},"npc_respawn_due":{},"npc_seen":[]}
+		for key in npc_additions:
+			if state.has(key) and state[key]!=npc_additions[key]: return failure("旧版本不能包含活动NPC")
+			state[key]=npc_additions[key]
 	if data.version < 7 and state.get("round_limit") is int and state.round_limit < 1: return failure("旧版本不支持无限期比赛")
 	if data.version < 7:
 		if state.has("economy_config") and state.economy_config != Game.Economy.legacy(): return failure("旧版本不能包含新经济策略")
@@ -204,7 +213,7 @@ static func restore(data: Variant) -> Dictionary:
 	if state.nodes != game.nodes or state.lots.keys() != game.lots.keys(): return failure("地图版本不兼容")
 	if state.map_metadata != game.map_metadata or state.start_road != game.start_road or state.start_bonus != game.start_bonus: return failure("地图配置不一致")
 	var count: int = state.players.size()
-	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","news","minigame","end","detained","reaction","finished"]: return failure("行动状态无效")
+	if not player_index(state.current,count) or state.phase not in ["roll","move","land","bank","shop","lottery","magic","news","minigame","merchant","end","detained","reaction","finished"]: return failure("行动状态无效")
 	if state.round_number < 1 or state.round_limit < 0 or state.steps_left < 0 or state.dice_count < 1 or state.dice_count > 3: return failure("行动参数无效")
 	if state.round_number > Game.Economy.MAX_DAYS+1 or state.round_limit > Game.Economy.MAX_DAYS: return failure("日期超过安全数值范围")
 	if state.round_limit > 0:
@@ -273,6 +282,8 @@ static func restore(data: Variant) -> Dictionary:
 	elif not state.pending_attack.is_empty(): return failure("事件与阶段不一致")
 	var pricing_error: String = Game.Economy.service_error(state)
 	if not pricing_error.is_empty(): return failure(pricing_error)
+	var npc_error: String = Game.NPC.state_error(state,game)
+	if not npc_error.is_empty(): return failure(npc_error)
 	var service_error: String = special_state_error(state,game)
 	if not service_error.is_empty(): return failure(service_error)
 	var market: Dictionary = data.market

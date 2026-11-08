@@ -10,6 +10,11 @@ static func step(g) -> bool:
 	if g.players.is_empty() or g.phase == "finished": return false
 	var p: Dictionary = g.players[g.current]
 	match g.phase:
+		"merchant":
+			if p.cards.size()<g.HAND_LIMIT and g.NPC.remaining(g)>0:
+				for offer in g.NPC.offers(g):
+					if p.cards.count(offer.id)<2 and p.cash>=CASH_RESERVE+offer.price: return g.NPC.buy(g,offer.id)
+			return g.NPC.close(g)
 		"news": return g.News.resolve(g)
 		"minigame": return g.Minigame.ai_step(g)
 		"reaction":

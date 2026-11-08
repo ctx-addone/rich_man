@@ -1018,7 +1018,7 @@
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     },
     {
-      "file": "docs/second-design-pass.md",
+      "file": "docs/second-design-pass-r15.md",
       "title": "64 · 第二轮游戏设计与优化讨论基线",
       "node_token": "GEabwjTkrigiG4kqfxscq6iKnAf",
       "document_id": "OO7ndBxZJohpYgxUhHMcjnmPnQh",
@@ -1142,6 +1142,104 @@
       "normalized_sha256": "08A6FEDD1024473C1E2AC518503805ECB3C7540145D616E2BD49EC226FE1D8EA",
       "source_sha256": "5CF4BD09A627A531EDB54859B7D1A05121DDBF9F30AFF25E645FDFDBFCE2BBFC",
       "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-17-report.md",
+      "title": "73 · 道路NPC与v8验收",
+      "node_token": "B9oAwfzdXiOatakmSS1cRfcfnDh",
+      "document_id": "W5h7dgEb0ou2sTxXCn1chof5n8f",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/B9oAwfzdXiOatakmSS1cRfcfnDh",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-73.json",
+      "revision_id": 2,
+      "remote_characters": 1476,
+      "normalized_sha256": "A447596AAF672A4F03B4ADC60054B88E2D1E6F8776597E70326C9A648E4B9471",
+      "source_sha256": "490372DE8381250C4F99F4ECC28B48E640289761CE5CFE44443E7F3D00680643",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-17-npc-rules.md",
+      "title": "74 · 神秘人狗乞丐功能策划",
+      "node_token": "BSSuwY18Bii44JkLsYmcwchSnab",
+      "document_id": "WciedF1CVojG7uxJlMhcltjmn8r",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/BSSuwY18Bii44JkLsYmcwchSnab",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-74.json",
+      "revision_id": 2,
+      "remote_characters": 1626,
+      "normalized_sha256": "D017D04212847D7B355758B41B9E2408521FA63CFA363CCB811E1F32D579ADA2",
+      "source_sha256": "C867D1B98227821139BF6398AB2B0CC416A91851FFE01A0AFC21408255A581C3",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-17-npc-review.md",
+      "title": "75 · NPC模型与存档独立审查",
+      "node_token": "GVIkwm5Kji4eqkk7rfFcKof4nHc",
+      "document_id": "NDspd7K2QotVklx8QRUcocWZnqh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/GVIkwm5Kji4eqkk7rfFcKof4nHc",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-75.json",
+      "revision_id": 2,
+      "remote_characters": 2025,
+      "normalized_sha256": "99958D8F91C674EE45371E78E2A2A4467B95BFFF3999121A6CFE2C9A32F9CEAB",
+      "source_sha256": "159C27DD9F64056D52049E3530F5B847D3AD07BA02DBB2BBDDBE237651B67783",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/round-17-runtime-review.md",
+      "title": "76 · NPC界面与真实v7基线",
+      "node_token": "UPsjwf8GPiUZQPkyAahceV0pn5c",
+      "document_id": "DGbgdpOmcobYBlxsC61cpgDcnJb",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/UPsjwf8GPiUZQPkyAahceV0pn5c",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-76.json",
+      "revision_id": 2,
+      "remote_characters": 8107,
+      "normalized_sha256": "2BAC7192F0C7DED8B545C5299133F5F193576A477EBA3A6B5C4028DE0C38920E",
+      "source_sha256": "4721DF7D0BA4E685A45DB3966DF838E99CF49242E01BD0D91DE570550DADF65E",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r17-mystery-merchant.md",
+      "title": "77 · 白衣神秘人实机与商店勘误",
+      "node_token": "ApSWwUWYzi3A1bkv3S0cXVscnff",
+      "document_id": "CcCbdHd4roHuVTxu4V4cXOgYnmd",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/ApSWwUWYzi3A1bkv3S0cXVscnff",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-77.json",
+      "revision_id": 2,
+      "remote_characters": 4454,
+      "normalized_sha256": "051C68DCFB07875F5ECC16F687685F7FFDA5455E846B03274C6FAF29AD2F3F2A",
+      "source_sha256": "894C2AD7A00CEE12EF3824C0BB74FEA73273C9946C51F8D3EF3CED794CFD5A44",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/research/r17-beggar-dog.md",
+      "title": "78 · 狗与破产乞丐证据边界",
+      "node_token": "V3DMwJ4uEiS8U1kkQuPcvAgDnxe",
+      "document_id": "HNusdnj51oXbuZxam10c2xXdnRe",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/V3DMwJ4uEiS8U1kkQuPcvAgDnxe",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-78.json",
+      "revision_id": 2,
+      "remote_characters": 4121,
+      "normalized_sha256": "168D9C68AAB0AF7C1491F90BE30EB4B4DB569F5CE60E786FF313CFFE95CBF2DA",
+      "source_sha256": "ADE3E843C0221A38B77ECB8CCDE2BC7364AA3D53332C11C8B0A6EF149DA319FD",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
+    },
+    {
+      "file": "docs/second-design-pass.md",
+      "title": "79 · 第二轮设计优化优先项",
+      "node_token": "SgeYwbqxMidvZkkieqEcD8N9n0c",
+      "document_id": "E6gkdLG8oo00qxxPEgIcbN64nhh",
+      "url": "https://dcncd5jl63xs.feishu.cn/wiki/SgeYwbqxMidvZkkieqEcD8N9n0c",
+      "verified": true,
+      "readback_file": "docs/r11-feishu-readback-79.json",
+      "revision_id": 2,
+      "remote_characters": 2290,
+      "normalized_sha256": "600F3E34098D764E4382A368CB94CE67F21C5AB502475E7F4D1C8717B43AA10C",
+      "source_sha256": "E86C9938B85162E175F49756E1FBD98BC7556C5F90C063799C6F5545AA7561A0",
+      "verification_method": "Full ordered content equality after removal of document title, whitespace and Markdown punctuation; source hash recorded."
     }
   ],
   "navigation_verified": true,
@@ -1164,5 +1262,6 @@
   "round14_updated_at": "2026-11-08",
   "round15_updated_at": "2026-11-08",
   "round16-prep_updated_at": "2026-11-08",
-  "round16_updated_at": "2026-11-08"
+  "round16_updated_at": "2026-11-08",
+  "round17_updated_at": "2026-11-08"
 }

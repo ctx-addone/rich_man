@@ -12,6 +12,7 @@ const Gods = preload("res://scripts/model/god_rules.gd")
 const Specials = preload("res://scripts/model/special_services.gd")
 const News = preload("res://scripts/model/news_rules.gd")
 const Economy = preload("res://scripts/model/economy_rules.gd")
+const NPC = preload("res://scripts/model/npc_rules.gd")
 const Minigame = preload("res://scripts/model/minigame_rules.gd")
 const Shop = preload("res://scripts/model/shop_rules.gd")
 const Maps = preload("res://scripts/model/map_catalog.gd")
@@ -50,6 +51,10 @@ var current := 0
 var round_number := 1
 var round_limit := 20
 var economy_config: Dictionary = Economy.legacy()
+var npcs_enabled: bool = false
+var road_npcs: Dictionary = {}
+var npc_respawn_due: Dictionary = {}
+var npc_seen: Array[String] = []
 var phase := "roll"
 var steps_left := 0
 var last_roll := 0
@@ -80,11 +85,16 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 	var requested_economy:Dictionary = Economy.normalize(options.economy) if options.has("economy") else Economy.legacy()
 	if requested_economy.is_empty(): return false
 	if rounds > Economy.MAX_DAYS: return false
+	if not options.get("npcs_enabled",false) is bool: return false
 	var requested_id:Variant=options.get("map_id",Maps.DEFAULT_MAP_ID)
 	if not requested_id is String: return false
 	var prepared:Dictionary=Maps.load_map(requested_id)
 	if not prepared.ok: return false
 	economy_config = requested_economy
+	npcs_enabled = options.get("npcs_enabled",false)
+	road_npcs.clear()
+	npc_respawn_due.clear()
+	npc_seen.clear()
 	specials_enabled = options.get("specials_enabled",false)
 	lottery_state = Specials.initial_lottery()
 	service_visited.clear()
@@ -135,6 +145,7 @@ func setup(names: Array, seed_value: int = 0, rounds: int = 20, options: Diction
 		players[i].god = {}
 	Teams.assign(self,options.get("teams",null))
 	if gods_enabled: Gods.spawn(self)
+	NPC.populate(self)
 	_log(map_metadata.name+"："+map_metadata.description)
 	return true
 
@@ -265,6 +276,7 @@ func roll_dice(forced: int = 0) -> bool:
 
 func move_to(node_id: int) -> bool:
 	if not available_moves().has(node_id): return false
+	npc_seen.clear()
 	var p: Dictionary=players[current]
 	p.previous=p.pos
 	p.pos=node_id
@@ -316,6 +328,7 @@ func _resume_road_arrival() -> bool:
 			Combat.explode(self,node_id,2,"mine",object_owner,true)
 			Combat.advance(self)
 			return true
+	if NPC.encounter(self,true): return true
 	Gods.arrive(self,current)
 	if Gods.id(self,current)=="confused" and rng.randf()<Gods.PROFILE.confused_reverse: Movement.reverse(self,current)
 	_continue_arrival()
@@ -365,6 +378,7 @@ func _land() -> void:
 
 func _continue_land() -> void:
 	if not landing_pending or phase=="finished": return
+	if NPC.encounter(self,false): return
 	var p:Dictionary=players[current]
 	if p.bankrupt:
 		landing_pending=false
@@ -517,7 +531,7 @@ func give_card(player_id:int,card_id:String)->bool:
 	_auto_craft(player_id)
 	return true
 func discard_card(index:int)->bool:
-	if is_sleepwalking() or phase not in ["roll","land","shop"] or index<0 or index>=players[current].cards.size(): return false
+	if is_sleepwalking() or phase not in ["roll","land","shop","merchant"] or index<0 or index>=players[current].cards.size(): return false
 	players[current].cards.remove_at(index)
 	return true
 func shop_offers()->Array[Dictionary]:
@@ -538,11 +552,13 @@ func close_shop()->bool:
 	if phase!="shop": return false
 	phase="end"
 	Traits.on_shop_exit(self,current)
+	bookstore_exit_rewards()
+	return true
+func bookstore_exit_rewards()->void:
 	for lot in lots.values():
 		if same_team(lot.owner,current) and lot.building_type=="bookstore" and lot.level>0 and lot.closed_until<=round_number:
 			if rng.randf()<minf(1.0,lot.level*Buildings.PROFILE.bookstore_chance_per_level):
 				for i in range(rng.randi_range(1,3)): give_card(current,CARD_NAMES.keys()[rng.randi_range(0,CARD_NAMES.size()-1)])
-	return true
 func send_on_vacation(player_id:int,lot_id:String)->void:
 	var p:Dictionary=players[player_id]
 	p.status={"kind":"vacation","remaining":Buildings.PROFILE.hotel_turns,"return_pos":p.pos,"return_previous":p.previous,"lot_id":lot_id}
@@ -557,6 +573,7 @@ func _tick_economy()->void:
 	if round_limit == 0 or round_number <= round_limit:
 		stock_market.advance(round_number)
 		Gods.advance_round(self)
+		NPC.advance_day(self)
 	if (round_number-1)%int(Buildings.PROFILE.month_days)==0:
 		for p in players:
 			if not p.bankrupt:
@@ -649,6 +666,7 @@ func end_turn() -> bool:
 			if price_index()!=prior_price: _log("第%d天开始，物价指数升至%d。" % [round_number,price_index()])
 		if not players[current].bankrupt: break
 	phase="roll"
+	npc_seen.clear()
 	pending_service.clear()
 	controlled_path.clear()
 	dice_count=1
@@ -689,6 +707,7 @@ func _pay(player_id: int, amount: int, receiver: int = -1) -> void:
 		p.bankrupt=true
 		p.cards.clear()
 		p.status={}
+		NPC.on_bankrupt(self,player_id)
 		_log(p.name+" 无法偿付，破产。")
 		_check_winner()
 
@@ -755,7 +774,11 @@ func gm_teleport(player_id: int, node_id: int) -> bool:
 		steps_left=0
 		bank_visited.clear()
 		service_visited.clear()
+		npc_seen.clear()
 		pending_service.clear()
+		landing_pending=false
+		landing_queue.clear()
+		landing_hotel=""
 		if nodes[node_id].kind=="lottery" and Specials.enter(self,"lottery"): return true
 		for id in lots_at_node(node_id):
 			if lots[id].building_type=="bank":
@@ -820,7 +843,9 @@ func gm_god(player_id:int,god_id:String)->bool:
 	if phase in ["reaction","finished"] or player_id<0 or player_id>=players.size(): return false
 	if god_id=="": players[player_id].god={}; return true
 	var attached:bool=Gods.attach(self,player_id,god_id)
-	if attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["lottery","magic"]:
+	if attached and player_id==current and Gods.id(self,current)=="fierce" and phase=="merchant":
+		NPC.close(self)
+	elif attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["lottery","magic"]:
 		Specials.close(self,phase)
 	elif attached and player_id==current and Gods.id(self,current)=="fierce" and phase in ["news","minigame"]:
 		pending_service.clear()
